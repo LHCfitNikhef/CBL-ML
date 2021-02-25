@@ -25,8 +25,8 @@ import glob
 import matplotlib.pyplot as plt
 import seaborn as sns
 import natsort
-import tensorflow.compat.v1 as tf
-import seaborn as sns
+#import tensorflow.compat.v1 as tf
+#import seaborn as sns
 import numpy as np
 import math
 from scipy.fftpack import next_fast_len
@@ -35,10 +35,10 @@ from ncempy.io import dm
 
 from k_means_clustering import k_means
 #from train_NN import train_NN
-from train_NN_pc import train_NN_pc
+#from train_NN_pc import train_NN_pc
 
 
-tf.get_logger().setLevel('ERROR')
+#tf.get_logger().setLevel('ERROR')
 
 _logger = logging.getLogger(__name__)
 

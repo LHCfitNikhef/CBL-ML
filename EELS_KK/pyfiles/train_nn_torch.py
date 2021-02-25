@@ -11,12 +11,13 @@ import random
 import os
 import scipy
 import pandas as pd
+import matplotlib.pyplot as plt
 from pathlib import Path
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import datetime
+import datetime as dt
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 
@@ -42,6 +43,12 @@ class MLP(nn.Module):
         x = self.relu(x)
         x = self.output(x)
         return x
+
+
+def scale(inp, min_out = 0.1, max_out=0.9):
+    pass
+
+
 
 def weight_reset(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -69,8 +76,160 @@ def split_test_train(data, test_size=0.2):
     pass
 
 
+def smooth(data, window_len=10,window='hanning', keep_original = False):
+    """smooth the data using a window with requested size.
+    
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+    
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window; should be an odd integer
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
 
-def train_nn(image, n_rep = 100, n_epochs = 30000, path_to_model = "models", display_step = 1000):
+    output:
+        the smoothed signal
+
+    """
+    #TODO: add comnparison
+    window_len += (window_len+1)%2
+    s=np.r_['-1', data[:,window_len-1:0:-1],data,data[:,-2:-window_len-1:-1]]
+
+    if window == 'flat': #moving average
+        w=np.ones(window_len,'d')
+    else:
+        w=eval('np.'+window+'(window_len)')
+    
+    #y=np.convolve(w/w.sum(),s,mode='valid')
+    surplus_data = int((window_len-1)*0.5)
+    return np.apply_along_axis(lambda m: np.convolve(m, w/w.sum(), mode='valid'), axis=1, arr=s)[:,surplus_data:-surplus_data]
+
+
+def smooth_clusters(image, clusters, window_len = None):
+    smoothed_clusters = np.zeros((len(clusters)), dtype = object)
+    for i in range(len(clusters)):
+        smoothed_clusters[i] = smooth(clusters[i])
+    return smoothed_clusters
+
+def derivative_clusters(image, clusters):
+    dx = image.ddeltaE
+    der_clusters = np.zeros((len(clusters)), dtype = object)
+    for i in range(len(clusters)):
+        der_clusters[i] = (clusters[i][:,1:]-clusters[i][:,:-1])/dx
+    return der_clusters
+
+
+def find_dE1(image, dy_dx, y_smooth):
+    #crossing
+    #first positive derivative after dE=0:
+    
+    crossing = (dy_dx > 0)
+    if not crossing.any():
+        print("shouldn't get here")
+        up = np.argmin(np.absolute(dy_dx)[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+    else:
+        up = np.argmax(crossing[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+    pos_der = image.deltaE[up]
+    return pos_der
+
+def determine_dE1_new(image, dy_dx_clusters, y_smooth_clusters, check_with_user = False):
+    dy_dx_avg = np.zeros((len(y_smooth_clusters), image.l-1))
+    dE1_clusters = np.zeros(len(y_smooth_clusters))
+    for i in range(len(y_smooth_clusters)):
+        dy_dx_avg[i,:] = np.average(dy_dx_clusters[i], axis=0)
+        y_smooth_cluster_avg = np.average(y_smooth_clusters[i], axis=0)
+        dE1_clusters[i] = find_dE1(image, dy_dx_avg[i,:], y_smooth_cluster_avg)
+        
+    if not check_with_user:
+        return dE1_clusters
+    
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    
+    if len(colors) < len(y_smooth_clusters):
+        print("thats too many clusters to effectively plot, man")
+        return dE1_clusters
+        #TODO: be kinder
+    der_deltaE = image.deltaE[:-1]
+    plt.figure()
+    for i in range(len(y_smooth_clusters)):
+        dx_dy_i_avg = dy_dx_avg[i,:]
+        #dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+        ci_low = np.nanpercentile(dy_dx_clusters[i],  16, axis=0)
+        ci_high = np.nanpercentile(dy_dx_clusters[i],  84, axis=0)
+        plt.fill_between(der_deltaE,ci_low, ci_high, color = colors[i], alpha = 0.2)
+        plt.vlines(dE1_clusters[i], -3E3, 2E3, ls = 'dotted', color= colors[i])
+        if i == 0:
+            lab = "vacuum"
+        else:
+            lab = "sample cl." + str(i)
+        plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
+    plt.title("derivatives of EELS per cluster, and range of first \npositive derivative of EELSs per cluster")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("dy/dx")
+    plt.legend()
+    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
+    plt.ylim(-3e3,2e3)
+    
+    
+    plt.figure()
+    for i in range(1,len(y_smooth_clusters)):
+        dx_dy_i_avg = dy_dx_avg[i,:]
+        dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+        #dx_dy_i_min = np.min(dy_dx_clusters[i], axis = 0)
+        #plt.fill_between(image.deltaE, dx_dy_i_avg-dx_dy_i_std, dx_dy_i_avg+dx_dy_i_std, color = colors[i], alpha = 0.2)
+        #plt.axvspand(dE1_i_avg-dE1_i_std, dE1_i_avg+dE1_i_std, color = colors[i], alpha=0.1)
+        plt.vlines(dE1_clusters[i], -2, 1, ls = 'dotted', color= colors[i])
+        lab = "sample cl." + str(i)
+        plt.plot(der_deltaE, dx_dy_i_avg/dy_dx_avg[0,:], color = colors[i], label = lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[1,1], color = 'black')
+    plt.title("ratio between derivatives of EELS per cluster and the  \nderivative of vacuum cluster, and average of first positive \nderivative of EELSs per cluster")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio dy/dx sample and dy/dx vacuum")
+    plt.legend()
+    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
+    plt.ylim(-2,3)
+    plt.show()
+    print("please review the two auxillary plots on the derivatives of the EEL spectra. \n"+\
+          "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
+    
+    for i in range(len(y_smooth_clusters)):
+        name = "sample cluster " + str(i)
+        dE1_clusters[i] = user_check("dE1 of " + name, dE1_clusters[i])
+    return dE1_clusters
+
+
+def user_check(dE12, value):
+    #TODO: opschonen?
+    ans = input("Are you happy with a " + dE12 + " of " + str(round(value, 4)) + "? [y/n/wanted "+dE12+"] \n")
+    if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
+        ans = input("Please respond with either 'yes', 'no', or your wanted " + dE12 + ", otherwise assumed yes: \n")
+    if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
+        print("Stupid, assumed yes, using " + dE12 + " of " + str(round(value, 4)))
+        return value
+    elif ans[0] == 'y':
+        print("Perfect, using " + dE12 + " of " + str(round(value, 4)))
+        return value
+    elif ans[0] == 'n':
+        ans = input("Please input your desired " + dE12 + ": \n")
+    if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
+        ans = input("Last chance, input your desired " + dE12 + ": \n")
+    if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
+        print("Stupid, using old " + dE12 + " of " + str(round(value, 4)))
+        return value
+    else: 
+        try:
+            return (float(ans))
+        except:
+            print("input was invalid number, using original " + dE12)
+            return value
+
+
+
+def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_model = "models", display_step = 1000):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
     if hasattr(image, "name"):
         path_to_model = image.name + "_" + path_to_model
@@ -90,38 +249,85 @@ def train_nn(image, n_rep = 100, n_epochs = 30000, path_to_model = "models", dis
     
     if display_step is None:
         print_progress = False
+    else:
+        print_progress = True
     
     
-    
+    for i  in range(len(spectra)):
+        spectra[i][spectra[i]<1] = 1
     
     loss_test_reps = np.zeros(n_rep)
     n_data = image.l*image.n_clusters
     
-    data_sigma = np.zeros((n_data,1))
+    #data_sigma = np.zeros((n_data,1))
+    sigma_clusters = np.zeros((image.n_clusters, image.l))
     for cluster in range(image.n_clusters):
-        ci_low = np.nanpercentile(spectra[cluster], 16, axis= 0)
-        ci_high = np.nanpercentile(spectra[cluster], 84, axis= 0)
-        data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
+        #TODO: add log!!!!!!!
+        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
+        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
+        sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
+        #data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
+    
+    
+    #new??? #TODO
+    wl1 = round(image.l/20)
+    wl2 = wl1*2
+    units_per_bin = 4
+    nbins = round(image.l/units_per_bin)#150
+    spectra_smooth = smooth_clusters(image, spectra, wl1)
+    dy_dx = derivative_clusters(image, spectra_smooth)
+    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
+    #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
+    
+    added_dE1 = 0.3
+    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
+    
+    
+    #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
+    times_dE1 = 8
+    dE2 = times_dE1 *dE1 #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
+    
+    print("dE1 & dE2:", np.round(dE1,3), dE2)
     
     for i in range(n_rep):
-        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", datetime.now())
-        data = np.zeros((n_data,1))
-        data_x = np.zeros((n_data,2))
+        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
+        data = np.empty((0,1))
+        data_x = np.empty((0,2))
+        data_sigma = np.empty((0,1))
         
         for cluster in range(image.n_clusters):
-            n_cluster = len(data[cluster])
+            n_cluster = len(spectra[cluster])
             idx = random.randint(0,n_cluster-1)
-            data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
-            data_x[cluster*image.l : (cluster+1)*image.l,0] = image.deltaE
-            data_x[cluster*image.l : (cluster+1)*image.l,1] = np.sum(np.log(spectra[cluster][idx]))
+            #data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
+            select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
+            select2 = len(image.deltaE[image.deltaE>dE2[cluster]])
+            data = np.append(data, np.log(spectra[cluster][idx][:select1]))
+            data = np.append(data, np.ones(select2))
+            
+            pseudo_x = np.ones((select1+select2, 2))
+            pseudo_x[:select1,0] = image.deltaE[:select1]
+            pseudo_x[-select2:,0] = image.deltaE[-select2:]
+            pseudo_x[:,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1 #TODO
+            
+            data_x = np.concatenate((data_x,pseudo_x))#np.append(data_x, pseudo_x)
+            
+            data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
+            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
+            
+            #data_x[cluster*image.l : (cluster+1)*image.l,0] = image.deltaE
+            #data_x[cluster*image.l : (cluster+1)*image.l,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1
         
+        #print(data)
+        #print(data_x)
+        
+        #data = data.reshape(-1,1)
         
         
 
         model = MLP(num_inputs=2, num_outputs=1)
         model.apply(weight_reset)
         #optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)
-        optimizer = optim.Adam(model.parameters(), lr=1e-3)
+        optimizer = optim.Adam(model.parameters(), lr=6e-3)
         """
         # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py
         full_y = full_y_reps[:, i].reshape(N_full, 1)
@@ -142,9 +348,9 @@ def train_nn(image, n_rep = 100, n_epochs = 30000, path_to_model = "models", dis
         N_test = len(test_x)
         N_train = len(train_x)
         
-        test_x = test_x.reshape(N_test, 1)
-        test_y = test_y.reshape(N_test, 2)
-        train_x = train_x.reshape(N_train, 1)
+        test_x = test_x.reshape(N_test, 2)
+        test_y = test_y.reshape(N_test, 1)
+        train_x = train_x.reshape(N_train, 2)
         train_y = train_y.reshape(N_train, 1)
         train_sigma = train_sigma.reshape(N_train, 1)
         test_sigma = test_sigma.reshape(N_test, 1)
@@ -301,3 +507,16 @@ def get_median(x,y,nbins):
 
 def get_mean(data):
     return np.mean(data)
+
+
+
+
+
+
+
+
+
+
+
+
+train_nn(im, path_to_model = "train_004_on_I_2")
