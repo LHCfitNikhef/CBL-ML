@@ -1384,7 +1384,7 @@ im2.calc_ZLPs_gen2_I()
 im.train_ZLPs(conf_interval = 0.7)
 """
 
-"""
+
 im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
 im.plot_sum()
 
@@ -1397,11 +1397,11 @@ for i in [5]:#[3,4,5,10]:
     xticks, yticks = im.get_ticks()
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
-
+"""
 for i in range(im.n_clusters):
     im.train_ZLPs_pc(conf_interval = 0.7, clusters=[i])
 
-"""
+
 cluster_ZLPs = np.zeros((im.n_clusters, 50, im.l))
 
 plt.figure()
@@ -1412,7 +1412,7 @@ for i in range(im.n_clusters):
     plt.fill_between(im.deltaE, low, high, alpha = 0.1)
     plt.plot(im.deltaE, avg, label = "cluser " + str(i))
 plt.legend()
-
+"""
 
 
 """
