@@ -1385,7 +1385,7 @@ im2.calc_ZLPs_gen2_I()
 im.train_ZLPs(conf_interval = 0.7)
 """
 
-
+"""
 im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
 im.plot_sum()
 
@@ -1401,7 +1401,7 @@ for i in [5]:#[3,4,5,10]:
 
 
 train_nn_scaled(im, path_to_model = "train_004", lr = 1e-3, n_epochs=300000)
-
+"""
 """
 for i in range(im.n_clusters):
     im.train_ZLPs_pc(conf_interval = 0.7, clusters=[i])
