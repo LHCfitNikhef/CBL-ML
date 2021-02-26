@@ -45,8 +45,25 @@ class MLP(nn.Module):
         return x
 
 
-def scale(inp, min_out = 0.1, max_out=0.9):
-    pass
+def scale(inp, ab):
+    """
+    min_inp = inp.min()
+    max_inp = inp.max()
+    
+    outp = inp/(max_inp-min_inp) * (max_out-min_out)
+    outp -= outp.min()
+    outp += min_out
+    
+    return outp
+    """
+    
+    return inp*ab[0] + ab[1]
+    #pass
+
+def find_scale_var(inp, min_out = 0.1, max_out=0.9):
+    a = (max_out - min_out)/(inp.max()- inp.min())
+    b = min_out - a*inp.min()
+    return [a, b]
 
 
 
@@ -407,7 +424,259 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_model = "models", dis
 
 
 
+def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model = "models", display_step = 1000):
+    """training also on intensity, so only one model per image, instead of one model per cluster"""
+    if hasattr(image, "name"):
+        path_to_model = image.name + "_" + path_to_model
+    
+    if not os.path.exists(path_to_model):
+        Path(path_to_model).mkdir(parents=True, exist_ok=True)
+    else:
+        ans = input("The directory " + path_to_model + " already exists, if there are trained models " +
+                    "in this folder, they will be overwritten. Do you want to continue? \n"+
+                    "yes [y], no [n], define new path[dp]\n")
+        if ans[0] == 'n':
+            return
+        elif not ans[0] == 'y':
+            path_to_model = input("Please define the new path: \n")
+    
+    spectra = image.get_cluster_spectra()
+    
+    if display_step is None:
+        print_progress = False
+    else:
+        print_progress = True
+    
+    
+    for i  in range(len(spectra)):
+        spectra[i][spectra[i]<1] = 1
+    
+    loss_test_reps = np.zeros(n_rep)
+    n_data = image.l*image.n_clusters
+    
+    #data_sigma = np.zeros((n_data,1))
+    sigma_clusters = np.zeros((image.n_clusters, image.l))
+    for cluster in range(image.n_clusters):
+        #TODO: add log!!!!!!!
+        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
+        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
+        sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
+        #data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
+    
+    
+    #new??? #TODO
+    wl1 = round(image.l/20)
+    wl2 = wl1*2
+    units_per_bin = 4
+    nbins = round(image.l/units_per_bin)#150
+    spectra_smooth = smooth_clusters(image, spectra, wl1)
+    dy_dx = derivative_clusters(image, spectra_smooth)
+    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
+    #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
+    
+    added_dE1 = 0.3
+    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
+    
+    
+    #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
+    times_dE1 = 8
+    dE2 = times_dE1 *dE1 #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
+    
+    print("dE1 & dE2:", np.round(dE1,3), dE2)
+    
+    ab_deltaE = find_scale_var(image.deltaE)
+    deltaE_scaled = scale(image.deltaE,ab_deltaE)
+    
+    
+    all_spectra = image.data
+    all_spectra[all_spectra<1] = 1
+    int_log_I = np.sum(np.log(all_spectra), axis=2).flatten()
+    ab_int_log_I = find_scale_var(int_log_I)
+    del all_spectra
+    
+    
+    
+    for i in range(n_rep):
+        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
+        data = np.empty((0,1))
+        data_x = np.empty((0,2))
+        data_sigma = np.empty((0,1))
+        
+        for cluster in range(image.n_clusters):
+            n_cluster = len(spectra[cluster])
+            idx = random.randint(0,n_cluster-1)
+            #data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
+            select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
+            select2 = len(image.deltaE[image.deltaE>dE2[cluster]])
+            data = np.append(data, np.log(spectra[cluster][idx][:select1]))
+            data = np.append(data, np.ones(select2))
+            
+            pseudo_x = np.ones((select1+select2, 2))
+            pseudo_x[:select1,0] = deltaE_scaled[:select1]
+            pseudo_x[-select2:,0] = deltaE_scaled[-select2:]
+            int_log_I_idx_scaled = scale(np.sum(np.log(spectra[cluster][idx])), ab_int_log_I)
+            pseudo_x[:,1] = int_log_I_idx_scaled
+            
+            data_x = np.concatenate((data_x,pseudo_x))#np.append(data_x, pseudo_x)
+            
+            data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
+            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
+            
+            #data_x[cluster*image.l : (cluster+1)*image.l,0] = image.deltaE
+            #data_x[cluster*image.l : (cluster+1)*image.l,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1
+        
+        #print(data)
+        #print(data_x)
+        
+        #data = data.reshape(-1,1)
+        
+        
 
+        model = MLP(num_inputs=2, num_outputs=1)
+        model.apply(weight_reset)
+        #optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)
+        optimizer = optim.Adam(model.parameters(), lr=lr)
+        """
+        # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py
+        full_y = full_y_reps[:, i].reshape(N_full, 1)
+        train_x, train_y,train_sigma = full_x, full_y, full_sigma
+        train_x = train_x.reshape(N_full, 1)
+        train_y = train_y.reshape(N_full, 1)
+        train_sigma = train_sigma.reshape(N_full, 1)
+        """
+        #full_y = full_y_reps[:, i].reshape(N_full,1)
+        #train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
+        #    train_test_split(full_x, full_y, full_sigma, test_size=.2)
+        
+        
+        #data = data.reshape(n_data, 1)
+        
+        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.2)
+        
+        N_test = len(test_x)
+        N_train = len(train_x)
+        
+        test_x = test_x.reshape(N_test, 2)
+        test_y = test_y.reshape(N_test, 1)
+        train_x = train_x.reshape(N_train, 2)
+        train_y = train_y.reshape(N_train, 1)
+        train_sigma = train_sigma.reshape(N_train, 1)
+        test_sigma = test_sigma.reshape(N_test, 1)
+        
+        if i < 3:
+            plt.figure()
+            plt.plot(train_x[:,0], train_y, 'o',label = "train")
+            plt.plot(test_x[:,0], test_y, 'o',label = "test")
+            plt.title("test and train x and y")
+            plt.ylabel("log intensity")
+            plt.xlabel("scaled energy loss [C*eV]")
+            plt.legend()
+        
+            plt.figure()
+            plt.plot(train_x[:,0], train_x[:,1], 'o',label = "train")
+            plt.plot(test_x[:,0], test_x[:,1], 'o',label = "test")
+            plt.title("test and train deltaE and integrated intensity")
+            plt.ylabel("log intensity")
+            plt.xlabel("scaled energy loss [C*eV]")
+            plt.legend()
+            
+            plt.figure()
+            plt.plot(train_x[:,0], train_sigma, 'o',label = "train")
+            plt.plot(test_x[:,0], test_sigma, 'o',label = "test")
+            plt.title("test and train x and sigma")
+            plt.xlabel("scaled energy loss [C*eV]")
+            plt.ylabel("sigma log intensity")
+            plt.legend()
+            
+            plt.figure()
+            plt.plot( train_y, 'o',label = "train")
+            plt.plot( test_y, 'o',label = "test")
+            plt.title("test and train y")
+            plt.ylabel("log intensity")
+            plt.xlabel("-")
+            plt.legend()
+            
+            plt.figure()
+            plt.plot(train_x[:,0] + train_x[:,1]*8, train_y, 'o',label = "train")
+            plt.plot(test_x[:,0] + test_x[:,1]*8, test_y, 'o',label = "test")
+            plt.title("test and train y")
+            plt.ylabel("log intensity")
+            plt.xlabel("-")
+            plt.legend()
+        
+        train_x = torch.from_numpy(train_x)
+        train_y = torch.from_numpy(train_y)
+        train_sigma = torch.from_numpy(train_sigma)
+        
+        test_x = torch.from_numpy(test_x)
+        test_y = torch.from_numpy(test_y)
+        test_sigma = torch.from_numpy(test_sigma)
+        
+        # train_data_x, train_data_y, train_errors = get_batch(i)
+        #loss_train = np.zeros(n_epochs)
+        loss_test = np.zeros(n_epochs)
+        loss_train_n = np.zeros(n_epochs)
+        min_loss_test = 1e6 #big number
+        n_stagnant = 0
+        n_stagnant_max = 5
+        for epoch in range(1, n_epochs + 1):
+            model.train()
+            output = model(train_x.float())
+            loss_train = loss_fn(output, train_y, train_sigma)
+            loss_train_n[epoch-1] = loss_train.item()
+            
+            
+            optimizer.zero_grad()
+            loss_train.backward()
+            optimizer.step()
+
+            #if epoch % display_step == 0:
+            #    print('Rep {}, Epoch {}, Training loss {}'.format(i, epoch, loss_train))
+            
+            model.eval()
+            with torch.no_grad():
+                output_test = model(test_x.float())
+                loss_test[epoch-1] = loss_fn(output_test, test_y, test_sigma).item()
+                if epoch % display_step == 0 and print_progress:
+                    print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch, round(loss_train.item(),3), round(loss_test[epoch-1],3)))
+                    if round(loss_test[epoch-1],3) >= round(loss_test[epoch-1-display_step],3):
+                        n_stagnant += 1
+                    else:
+                        n_stagnant = 0
+                    if n_stagnant >= n_stagnant_max:
+                        print("detected stagnant training, breaking")
+                        break
+                if loss_test[epoch-1] < min_loss_test:
+                    torch.save(model.state_dict(), path_to_model + "/nn_rep" + str(i))
+                    loss_test_reps[i] = loss_test[epoch-1]
+                    min_loss_test = loss_test_reps[i]
+                    #iets met copy.deepcopy(model)
+        if i < 3 :
+            plt.figure()
+            plt.plot(loss_test[:epoch-1], label = "test")
+            plt.plot(loss_train_n[:epoch-1], label = "train")
+            plt.title("test chi^2 over epochs for rep " + str(i))
+            min_x = np.argmin(loss_test[:epoch])
+            min_y = np.min(loss_test[:epoch])
+            plt.plot([0,epoch-1], [min_y, min_y], color = 'red', label = "min test")            
+            plt.plot([min_x,min_x], [0,loss_test.max()], color = "red")            
+            plt.xlabel("epoch")
+            plt.ylabel("chi^2 test")
+            plt.legend()
+            
+            plt.figure()
+            plt.plot(loss_test[:epoch-1], label = "test")
+            plt.plot(loss_train_n[:epoch-1], label = "train")
+            plt.title("test chi^2 over epochs for rep " + str(i))
+            min_x = np.argmin(loss_test[:epoch])
+            min_y = np.min(loss_test[:epoch])
+            plt.plot([0,epoch-1], [min_y, min_y], color = 'red', label = "min test")            
+            plt.plot([min_x,min_x], [0,loss_test.max()], color = "red")            
+            plt.xlabel("epoch")
+            plt.ylabel("chi^2 test")
+            plt.legend()
+            plt.yscale("log")
+        np.savetxt(path_to_model+ "/costs.txt", loss_test_reps[:epoch])
 
 
 
@@ -519,4 +788,5 @@ def get_mean(data):
 
 
 
-train_nn(im, path_to_model = "train_004_on_I_2")
+#train_nn(im, path_to_model = "train_004_on_I_2")
+train_nn_scaled(im, path_to_model = "train_004_on_I_scaled_5", lr = 1e6, n_epochs=300000)

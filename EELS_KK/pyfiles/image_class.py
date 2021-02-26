@@ -36,6 +36,7 @@ from ncempy.io import dm
 from k_means_clustering import k_means
 #from train_NN import train_NN
 #from train_NN_pc import train_NN_pc
+from train_nn_torch import train_nn_scaled
 
 
 #tf.get_logger().setLevel('ERROR')
@@ -1397,6 +1398,10 @@ for i in [5]:#[3,4,5,10]:
     xticks, yticks = im.get_ticks()
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
+
+
+train_nn_scaled(im, path_to_model = "train_004", lr = 1e-3, n_epochs=300000)
+
 """
 for i in range(im.n_clusters):
     im.train_ZLPs_pc(conf_interval = 0.7, clusters=[i])
