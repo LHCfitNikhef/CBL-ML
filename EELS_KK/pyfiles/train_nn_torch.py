@@ -13,6 +13,7 @@ import scipy
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
+import copy
 
 import torch
 import torch.nn as nn
@@ -84,6 +85,44 @@ def MC_reps(data_avg, data_std, n_rep):
         full_y_reps[:,i] = (data_avg + full_rep).reshape(n_full)
     return full_y_reps
 
+
+def binned_statistics(x,y, nbins, stats = None):
+    """Find the mean, variance and number of counts within the bins described by ewd"""
+    if stats is None:
+        stats = []
+        edges = None
+    
+    x = np.tile(x, len(y))
+    y = y.flatten()
+        
+    
+    
+    #df_train, 
+    cuts1, cuts2 = ewd(x,nbins)
+    result = []
+    if "mean" in stats:
+        mean, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='mean', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)
+        result.append(mean)
+    if "var" in stats:
+        #var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)
+        low, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_low, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
+        high, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_high, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)            
+        var = high-low
+        result.append(var)
+    if "count" in stats:
+        count, edges, binnum = scipy.stats.binned_statistic(x,y,statistic='count', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)
+        result.append(count)
+    if "low" in stats:
+        low, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_low, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
+        result.append(low)
+    if "high" in stats:
+        high, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_high, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)
+        result.append(high)
+    if "mean2" in stats:
+        mean2, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=get_mean, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=get_mean, bins=cuts2)
+        result.append(mean2)
+    
+    return result, edges
 
 def split_test_train(data, test_size=0.2):
     #TODO: to use if we do not use single complete spectra
@@ -246,7 +285,7 @@ def user_check(dE12, value):
 
 
 
-def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_model = "models", display_step = 1000):
+def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", display_step = 1000):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
     if hasattr(image, "name"):
         path_to_model = image.name + "_" + path_to_model
@@ -424,28 +463,29 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_model = "models", dis
 
 
 
-def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model = "models", display_step = 1000):
+def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_models = "models", display_step = 1000):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
     if hasattr(image, "name"):
-        path_to_model = image.name + "_" + path_to_model
+        path_to_models = image.name + "_" + path_to_models
     
-    if not os.path.exists(path_to_model):
-        Path(path_to_model).mkdir(parents=True, exist_ok=True)
+    if not os.path.exists(path_to_models):
+        Path(path_to_models).mkdir(parents=True, exist_ok=True)
     else:
-        ans = input("The directory " + path_to_model + " already exists, if there are trained models " +
+        ans = input("The directory " + path_to_models + " already exists, if there are trained models " +
                     "in this folder, they will be overwritten. Do you want to continue? \n"+
                     "yes [y], no [n], define new path[dp]\n")
         if ans[0] == 'n':
             return
         elif not ans[0] == 'y':
-            path_to_model = input("Please define the new path: \n")
-    
-    spectra = image.get_cluster_spectra()
+            path_to_models = input("Please define the new path: \n")
     
     if display_step is None:
         print_progress = False
     else:
         print_progress = True
+        
+    num_saving_per_rep = 50
+    saving_step = int(n_epochs/num_saving_per_rep)
     
     
     for i  in range(len(spectra)):
@@ -457,7 +497,6 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
     #data_sigma = np.zeros((n_data,1))
     sigma_clusters = np.zeros((image.n_clusters, image.l))
     for cluster in range(image.n_clusters):
-        #TODO: add log!!!!!!!
         ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
         ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
         sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
@@ -490,7 +529,7 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
     
     all_spectra = image.data
     all_spectra[all_spectra<1] = 1
-    int_log_I = np.sum(np.log(all_spectra), axis=2).flatten()
+    int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
     ab_int_log_I = find_scale_var(int_log_I)
     del all_spectra
     
@@ -509,12 +548,12 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
             select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
             select2 = len(image.deltaE[image.deltaE>dE2[cluster]])
             data = np.append(data, np.log(spectra[cluster][idx][:select1]))
-            data = np.append(data, np.ones(select2))
+            data = np.append(data, np.zeros(select2))
             
             pseudo_x = np.ones((select1+select2, 2))
             pseudo_x[:select1,0] = deltaE_scaled[:select1]
             pseudo_x[-select2:,0] = deltaE_scaled[-select2:]
-            int_log_I_idx_scaled = scale(np.sum(np.log(spectra[cluster][idx])), ab_int_log_I)
+            int_log_I_idx_scaled = scale(np.log(np.sum(spectra[cluster][idx])), ab_int_log_I)
             pseudo_x[:,1] = int_log_I_idx_scaled
             
             data_x = np.concatenate((data_x,pseudo_x))#np.append(data_x, pseudo_x)
@@ -522,13 +561,6 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
             data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
             data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
             
-            #data_x[cluster*image.l : (cluster+1)*image.l,0] = image.deltaE
-            #data_x[cluster*image.l : (cluster+1)*image.l,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1
-        
-        #print(data)
-        #print(data_x)
-        
-        #data = data.reshape(-1,1)
         
         
 
@@ -544,14 +576,9 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
         train_y = train_y.reshape(N_full, 1)
         train_sigma = train_sigma.reshape(N_full, 1)
         """
-        #full_y = full_y_reps[:, i].reshape(N_full,1)
-        #train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
-        #    train_test_split(full_x, full_y, full_sigma, test_size=.2)
         
         
-        #data = data.reshape(n_data, 1)
-        
-        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.2)
+        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.4)
         
         N_test = len(test_x)
         N_train = len(train_x)
@@ -562,47 +589,6 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
         train_y = train_y.reshape(N_train, 1)
         train_sigma = train_sigma.reshape(N_train, 1)
         test_sigma = test_sigma.reshape(N_test, 1)
-        
-        if i < 3:
-            plt.figure()
-            plt.plot(train_x[:,0], train_y, 'o',label = "train")
-            plt.plot(test_x[:,0], test_y, 'o',label = "test")
-            plt.title("test and train x and y")
-            plt.ylabel("log intensity")
-            plt.xlabel("scaled energy loss [C*eV]")
-            plt.legend()
-        
-            plt.figure()
-            plt.plot(train_x[:,0], train_x[:,1], 'o',label = "train")
-            plt.plot(test_x[:,0], test_x[:,1], 'o',label = "test")
-            plt.title("test and train deltaE and integrated intensity")
-            plt.ylabel("log intensity")
-            plt.xlabel("scaled energy loss [C*eV]")
-            plt.legend()
-            
-            plt.figure()
-            plt.plot(train_x[:,0], train_sigma, 'o',label = "train")
-            plt.plot(test_x[:,0], test_sigma, 'o',label = "test")
-            plt.title("test and train x and sigma")
-            plt.xlabel("scaled energy loss [C*eV]")
-            plt.ylabel("sigma log intensity")
-            plt.legend()
-            
-            plt.figure()
-            plt.plot( train_y, 'o',label = "train")
-            plt.plot( test_y, 'o',label = "test")
-            plt.title("test and train y")
-            plt.ylabel("log intensity")
-            plt.xlabel("-")
-            plt.legend()
-            
-            plt.figure()
-            plt.plot(train_x[:,0] + train_x[:,1]*8, train_y, 'o',label = "train")
-            plt.plot(test_x[:,0] + test_x[:,1]*8, test_y, 'o',label = "test")
-            plt.title("test and train y")
-            plt.ylabel("log intensity")
-            plt.xlabel("-")
-            plt.legend()
         
         train_x = torch.from_numpy(train_x)
         train_y = torch.from_numpy(train_y)
@@ -630,8 +616,6 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
             loss_train.backward()
             optimizer.step()
 
-            #if epoch % display_step == 0:
-            #    print('Rep {}, Epoch {}, Training loss {}'.format(i, epoch, loss_train))
             
             model.eval()
             with torch.no_grad():
@@ -644,39 +628,17 @@ def train_nn_scaled(image, n_rep = 500, n_epochs = 30000, lr=1e-3, path_to_model
                     else:
                         n_stagnant = 0
                     if n_stagnant >= n_stagnant_max:
-                        print("detected stagnant training, breaking")
+                        if print_progress: print("detected stagnant training, breaking")
                         break
                 if loss_test[epoch-1] < min_loss_test:
-                    torch.save(model.state_dict(), path_to_model + "/nn_rep" + str(i))
                     loss_test_reps[i] = loss_test[epoch-1]
                     min_loss_test = loss_test_reps[i]
+                    min_model = copy.deepcopy(model)
                     #iets met copy.deepcopy(model)
-        if i < 3 :
-            plt.figure()
-            plt.plot(loss_test[:epoch-1], label = "test")
-            plt.plot(loss_train_n[:epoch-1], label = "train")
-            plt.title("test chi^2 over epochs for rep " + str(i))
-            min_x = np.argmin(loss_test[:epoch])
-            min_y = np.min(loss_test[:epoch])
-            plt.plot([0,epoch-1], [min_y, min_y], color = 'red', label = "min test")            
-            plt.plot([min_x,min_x], [0,loss_test.max()], color = "red")            
-            plt.xlabel("epoch")
-            plt.ylabel("chi^2 test")
-            plt.legend()
-            
-            plt.figure()
-            plt.plot(loss_test[:epoch-1], label = "test")
-            plt.plot(loss_train_n[:epoch-1], label = "train")
-            plt.title("test chi^2 over epochs for rep " + str(i))
-            min_x = np.argmin(loss_test[:epoch])
-            min_y = np.min(loss_test[:epoch])
-            plt.plot([0,epoch-1], [min_y, min_y], color = 'red', label = "min test")            
-            plt.plot([min_x,min_x], [0,loss_test.max()], color = "red")            
-            plt.xlabel("epoch")
-            plt.ylabel("chi^2 test")
-            plt.legend()
-            plt.yscale("log")
-        np.savetxt(path_to_model+ "/costs.txt", loss_test_reps[:epoch])
+                if epoch % saving_step == 0:
+                    torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(i))
+        torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(i))
+        np.savetxt(path_to_models+ "/costs.txt", loss_test_reps[:epoch])
 
 
 
@@ -788,5 +750,5 @@ def get_mean(data):
 
 
 
-#train_nn(im, path_to_model = "train_004_on_I_2")
-train_nn_scaled(im, path_to_model = "train_004_on_I_scaled_5", lr = 1e6, n_epochs=300000)
+#train_nn(im, path_to_models = "train_004_on_I_2")
+#train_nn_scaled(im, path_to_models = "train_004_on_I_scaled_5", lr = 1e6, n_epochs=300000)

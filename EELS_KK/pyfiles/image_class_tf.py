@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Mon Mar  1 13:57:37 2021
+
+@author: isabel
+"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Dec 18 17:38:57 2020
 
 @author: isabel
@@ -25,21 +32,17 @@ import glob
 import matplotlib.pyplot as plt
 import seaborn as sns
 import natsort
-import seaborn as sns
+#import tensorflow.compat.v1 as tf
+#import seaborn as sns
 import numpy as np
 import math
 from scipy.fftpack import next_fast_len
 import logging
 from ncempy.io import dm
-import os
-import copy
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
 
 from k_means_clustering import k_means
+#from train_NN import train_NN
+#from train_NN_pc import train_NN_pc
 from train_nn_torch import train_nn_scaled
 
 
@@ -203,31 +206,7 @@ class Spectral_image():
             return np.copy(self.data[ i, j, :])
     
     
-    def get_cluster_spectra(self, conf_interval = 0.68, clusters = None, save_as_attribute = False, based_upon = "sum"):
-        """
-        Parameters
-        ----------
-        conf_interval : float, optional
-            The ratio of spectra returned. The spectra are selected based on the 
-            based_upon value. The default is 0.68.
-        clusters : list of ints, optional #TODO: finish
-            DESCRIPTION. The default is None.
-        save_as_attribute : TYPE, optional
-            DESCRIPTION. The default is False.
-
-        Returns
-        -------
-        cluster_data : np.array of type object, filled with 2D numpy arrays
-            Each cell of the super numpy array is filled with the data of all spectra 
-            with in one of the requested clusters.
-            
-        Atributes
-        ---------
-        self.cluster_data: np.array of type object, filled with 2D numpy arrays
-            If save_as_attribute set to True, the cluster data is also saved as attribute
-
-        """
-        
+    def get_cluster_spectra(self, conf_interval = 0.68, clusters = None, save_as_attribute = False):
         if clusters is None:
             clusters = range(self.n_clusters)
         if conf_interval >= 1:
@@ -256,30 +235,8 @@ class Spectral_image():
     
     #%%METHODS ON SIGNAL
     
-    def cut(self, E1 = None, E2 = None, in_ex = "in"):
-        """
-        Parameters
-        ----------
-        E1 : TYPE, optional
-            DESCRIPTION. The default is None.
-        E2 : TYPE, optional
-            DESCRIPTION. The default is None.
-
-        Returns
-        -------
-        None.
-        """
-        if E1 is None:
-            E1 = self.deltaE.min() -1
-        if E2 is None:
-            E2 = self.deltaE.max() +1
-        if in_ex == "in":
-            select = ((self.deltaE >= E1) & (self.deltaE <= E2))
-        else: 
-            select = ((self.deltaE > E1) & (self.deltaE < E2))
-        self.data = self.data[:,:,select]
-        self.deltaE = self.deltaE[select]
-        #TODO add selecting of all attributes
+    def cut(self, E1, E2):
+        #TODO
         pass
     
     def cut_image(self, range_width, range_height):
@@ -373,51 +330,423 @@ class Spectral_image():
     
     #%%METHODS ON ZLP
     #CALCULATING ZLPs FROM PRETRAINDED MODELS
-  
-  
-       
-
-    
-    def calc_ZLPs(self, i,j, **kwargs):
-        ### Definition for the matching procedure
-        signal = self.get_pixel_signal(i,j, **kwargs)
+    def calculate_general_ZLPs(self, path_to_models):
+        tf.reset_default_graph()
+        #TODO: redifine paths based upon new fitter saving modes
+        #TODO: rewrite to have models as atributes?
         
-        if not hasattr(self, 'ZLP_models'):
-            try:
-                self.load_ZLP_models(**kwargs)
-            except:
-                self.load_ZLP_models()
-        if not hasattr(self, 'ZLP_models'):
-            ans = input("No ZLP models found. Please specify directory or train models. \n" + 
-                        "Do you want to define path to models [p], train models [t] or quit [q]?\n")
-            if ans[0] == "q":
-                return
-            elif ans[0] == "p":
-                path_to_models = input("Please input path to models: \n")
-                try:
-                    self.load_ZLP_models(**kwargs)
-                except:
-                    self.load_ZLP_models()
-                if not hasattr(self, 'ZLP_models'):
-                    print("You had your chance. Please locate your models.")
-                    return
-            elif ans[0] == "t":
-                try:
-                    self.train_ZLPs(**kwargs)
-                except:
-                    self.train_ZLPs()
-                if "path_to_models" in kwargs:
-                    path_to_models = kwargs["path_to_models"]
-                    self.load_ZLP_models(path_to_models)
-                else:
-                    self.load_ZLP_models()
+        d_string = '07.09.2020'
+        path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
+        
+        training_data = pd.concat(li, axis=0, ignore_index=True)
+        
+        self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        good_files = []
+        count = 0
+        threshold = 6
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
             else:
-                print("unvalid input, not calculating ZLPs")
-                return
+                good_fi
+                
+                les.append(0)
+        
+        tf.get_default_graph()
+        tf.disable_eager_execution()
+        #config = tf.ConfigProto()
+        #config.gpu_options.allow_growth = True
+        
+        
+        def make_model(inputs, n_outputs):
+            hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+            hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+            hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+            output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+            return output
+        
+        x = tf.placeholder("float", [None, 1], name="x")
+        predictions = make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        predict_x = self.deltaE.reshape(self.l,1)
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        with tf.Session() as sess: #TODO: gives warning
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    best_model = 'Models_oud/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions, #TODO: RESTARTS KERNEL!!!!!
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
+  
+    
+  
+    def calc_ZLPs_gen2_I(self, path_model = "Models", d_string = '13.02.2021', count = 50, n_input = 1, specimen = 4):
+        #GET GOODFILES KAN HEUL VEEL MAKKELIJKER< NIET NU
+        
+        path_to_data = path_model + '/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
         
         
         
-        #TODO: aanpassen
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        good_files = []
+        count = 0
+        threshold = 3
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
+            else:
+                good_files.append(0)
+        
+        count = len(good_files)
+        
+        
+        tf.get_default_graph()
+        tf.disable_eager_execution()
+        
+        #n_input = 1
+        if n_input == 2:
+            x = tf.placeholder("float", [None, 2], name="x")
+        else:
+            x = tf.placeholder("float", [None, 1], name="x")
+        predictions = self.make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l * self.n_clusters
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        
+        if n_input == 1:
+            len_data = self.l
+            predict_x = self.deltaE.reshape(len_data,1)
+        else:
+            predict_x = np.empty((0,2))
+            for i in range(self.n_clusters):
+                predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
+    
+        
+        #good_files = np.ones(count)
+        
+        
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        j=0
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    #print("ik kom hier")
+                    if n_input == 1:#2: #HIER CHANGE #TODO
+                        best_model = path_model + '/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    else:
+                        best_model = path_model + '_ni_1/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions,
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    #prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(1000,)
+                    self.ZLPs_gen[j,:] = np.exp(extrapolation.reshape(len_data,))
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    j += 1
+        
+        #self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        #self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        #self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+    def calculate_general_ZLPs_I(self, path_to_models):
+        tf.reset_default_graph()
+        #TODO: redifine paths based upon new fitter saving modes
+        #TODO: rewrite to have models as atributes?
+        """
+        d_string = '07.09.2020'
+        path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
+        
+        training_data = pd.concat(li, axis=0, ignore_index=True)
+        
+        self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        good_files = []
+        count = 0
+        threshold = 3
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
+            else:
+                good_files.append(0)
+        """
+        
+        
+        tf.get_default_graph()
+        tf.disable_eager_execution()
+        #config = tf.ConfigProto()
+        #config.gpu_options.allow_growth = True
+        
+        
+        def make_model(inputs, n_outputs):
+            hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+            hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+            hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+            output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+            return output
+        
+        x = tf.placeholder("float", [None, 2], name="x")
+        predictions = make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        predict_x = self.deltaE.reshape(self.l,1)
+        
+        predict_x = np.empty((0,2))
+        for i in range(self.n_clusters):
+            predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
+        len_data = self.l*self.n_clusters
+        
+        count = 40
+        good_files = np.ones(count)
+        
+        d_string = '11.02.2021'
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        with tf.Session() as sess: #TODO: gives warning
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    best_model = 'Models_004_2/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions, #TODO: RESTARTS KERNEL!!!!!
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
+
+        
+    @staticmethod
+    def make_model(inputs, n_outputs):
+        hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+        hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+        hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+        output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+        return output
+    
+    def calc_ZLPs_gen2(self,  specimen = 4):
+        tf.reset_default_graph()
+        if specimen == 3:
+            d_string = '06.12.2020'
+            path_to_data = 'Data_oud/Results/sp3/%(date)s/'% {"date": d_string} 
+        else:
+            d_string = '07.09.2020'
+            path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
+            
+        
+        training_data = pd.concat(li, axis=0, ignore_index=True)
+        
+        
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        
+        
+        import natsort
+        
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        
+        
+        good_files = []
+        count = 0
+        threshold = 3
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
+            else:
+                good_files.append(0)
+        
+        
+        
+        
+        tf.get_default_graph
+        tf.disable_eager_execution()
+        
+        
+        
+        x = tf.placeholder("float", [None, 1], name="x")
+        predictions = self.make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        predict_x = self.deltaE.reshape(len_data,1)
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        j=0
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    if specimen ==3:
+                        best_model = 'Models_oud/Best_models/sp3/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    else:
+                        best_model = 'Models_oud/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions,
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    #prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(1000,)
+                    self.ZLPs_gen[j,:] = np.exp(extrapolation.reshape(len_data,))
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    j += 1
+        
+        self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+        #return ZLPs_gen, dE0, dE1, dE2
+    
+    def calc_ZLPs(self, i,j):
+        ### Definition for the matching procedure
+        signal = self.get_pixel_signal(i,j)
+        
+        if not hasattr(self, 'ZLPs_gen'):
+            self.calc_ZLPs_gen2("iets")
+        
         def matching( signal, ind_ZLP):
             gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
             delta = np.divide((self.dE1 - self.dE0), 3)
@@ -444,7 +773,7 @@ class Spectral_image():
         return ZLPs
         
     
-    def train_ZLPs(self, n_clusters = None, conf_interval = 0.68, clusters = None, **kwargs):
+    def train_ZLPs(self, n_clusters = None, conf_interval = 0.68, clusters = None):
         if not hasattr(self, "clustered"):
             if n_clusters is not None:
                 self.cluster(n_clusters)
@@ -454,38 +783,26 @@ class Spectral_image():
             self.cluster(n_clusters)
         
         training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters)
-        self.models = train_nn_scaled(self, training_data, **kwargs)
+        self.models = train_NN(self, training_data)
 
-    def load_ZLP_models(self, path_to_models = "models", threshold_costs = 1, name_in_path = True, plotting = False):
-        if hasattr(self, "name") and name_in_path:
-            path_to_models = self.name + "_" + path_to_models
-        
-        if not os.path.exists(path_to_models):
-            print("No path " + path_to_models + " found. Please ensure spelling and that there are models trained.")
-            return
-        
-        self.ZLP_models = []
-        
-        model = MLP(num_inputs=2, num_outputs=1)
 
-        files = np.loadtxt(path_to_models + "/costs.txt")
+    def train_ZLPs_pc(self, n_clusters = None, conf_interval = 0.68, clusters = None):
+        if not hasattr(self, "clustered"):
+            if n_clusters is not None:
+                self.cluster(n_clusters)
+            else:
+                self.cluster()
+        elif n_clusters is not None and self.n_clusters != n_clusters:
+            self.cluster(n_clusters)
         
-        if plotting:
-            plt.figure()
-            plt.title("chi^2 distribution of models")
-            plt.hist(files[files < threshold_costs*3], bins = 20)
-            plt.xlabel("chi^2")
-            plt.ylabel("number of occurence")
         
-        n_working_models = np.sum(files<threshold_costs)
+        intensities = []
+        for i in clusters:
+            intensities.append(self.clusters[i])
         
-        k=0
-        for j in range(len(files)):
-            if files[j] < threshold_costs:
-                with torch.no_grad():
-                    model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
-                    self.ZLP_models.append(copy.deepcopy(model))
-                k+=1
+        training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters)
+        self.models = train_NN_pc(self, training_data, intensities = intensities)
+
 
     #METHODS ON DIELECTRIC FUNCTIONS
     
@@ -695,7 +1012,7 @@ class Spectral_image():
             self -- the image of which the dielectic functions are calculated
             track_process -- boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
             plot -- boolean, default = False, if True, plots all calculated dielectric functions
-        OUTPUT ATRIBUTES:
+        OUTPUT:
             self.dielectric_function_im_avg = average dielectric function for each pixel
             self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
             self.S_s_avg = average surface scattering distribution for each pixel
@@ -1025,45 +1342,114 @@ def iCFT(x, Y_k):
 
 
 
-class MLP(nn.Module):
 
-    def __init__(self, num_inputs, num_outputs):
-        super().__init__()
-        # Initialize the modules we need to build the network
-        self.linear1 = nn.Linear(num_inputs, 10)
-        self.linear2 = nn.Linear(10, 15)
-        self.linear3 = nn.Linear(15, 5)
-        self.output = nn.Linear(5, num_outputs)
-        self.sigmoid = nn.Sigmoid()
-        self.relu = nn.ReLU()
 
-    def forward(self, x):
-        # Perform the calculation of the model to determine the prediction
-        x = self.linear1(x)
-        x = self.sigmoid(x)
-        x = self.linear2(x)
-        x = self.sigmoid(x)
-        x = self.linear3(x)
-        x = self.relu(x)
-        x = self.output(x)
-        return x
 
-def scale(inp, ab):
-    """
-    min_inp = inp.min()
-    max_inp = inp.max()
+
     
-    outp = inp/(max_inp-min_inp) * (max_out-min_out)
-    outp -= outp.min()
-    outp += min_out
-    
-    return outp
-    """
-    
-    return inp*ab[0] + ab[1]
-    #pass
+#%%
 
-def find_scale_var(inp, min_out = 0.1, max_out=0.9):
-    a = (max_out - min_out)/(inp.max()- inp.min())
-    b = min_out - a*inp.min()
-    return [a, b]
+
+#data = np.load("area03-eels-SI-aligned.npy")
+#energies = np.load("area03-eels-SI-aligned_energy.npy")
+    
+
+#dielectric_function_im_avg, dielectric_function_im_std = im_dielectric_function(data, energies)
+
+
+#%%
+#crossings_E, crossings_n =  crossings_im(dielectric_function_im_avg, energies)
+
+
+#%%
+
+#plt.figure()
+#plt.imshow(crossings_n, cmap='hot', interpolation='nearest')
+#plt.
+
+
+#ax = sns.heatmap(crossings_n)
+#plt.show()
+
+#%%
+#dmfile = dm.fileDM('area03-eels-SI-aligned.dm4')
+#data2 = dmfile.getDataset(0)
+"""
+im2 = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_003.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im2.plot_sum()
+for i in [5]:#[3,4,5,10]:
+    im2.cluster(n_clusters = i)
+    plt.figure()
+    plt.title("spectral image, clustered with " + str(i) + " clusters")
+    plt.xlabel("[m]")
+    plt.ylabel("[m]")
+    xticks, yticks = im2.get_ticks()
+    ax = sns.heatmap(im2.clustered, xticklabels=xticks, yticklabels=yticks)
+    plt.show()
+im2.calc_ZLPs_gen2_I()
+"""
+"""
+im.train_ZLPs(conf_interval = 0.7)
+"""
+
+"""
+im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im.plot_sum()
+
+for i in [5]:#[3,4,5,10]:
+    im.cluster(n_clusters = i)
+    plt.figure()
+    plt.title("spectral image, clustered with " + str(i) + " clusters")
+    plt.xlabel("[m]")
+    plt.ylabel("[m]")
+    xticks, yticks = im.get_ticks()
+    ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
+    plt.show()
+
+
+train_nn_scaled(im, path_to_model = "train_004", lr = 1e-3, n_epochs=300000)
+"""
+"""
+for i in range(im.n_clusters):
+    im.train_ZLPs_pc(conf_interval = 0.7, clusters=[i])
+
+
+cluster_ZLPs = np.zeros((im.n_clusters, 50, im.l))
+
+plt.figure()
+for i in range(im.n_clusters):
+    im.calc_ZLPs_gen2_I(path_model= "Models" + str(i) + '_2', d_string="16.02.2021", count = 50, n_input=1)
+    cluster_ZLPs[i,:len(im.ZLPs_gen),:] = im.ZLPs_gen
+    avg,low,high = im.calc_avg_ci(im.ZLPs_gen)
+    plt.fill_between(im.deltaE, low, high, alpha = 0.1)
+    plt.plot(im.deltaE, avg, label = "cluser " + str(i))
+plt.legend()
+"""
+
+
+"""
+im.cut_image([0,70], [95,100])
+#im.cut_image([40,41],[4,5])
+im.calc_ZLPs_gen2(specimen = 4)
+im.smooth(window_len=50)
+im.im_dielectric_function()
+im.crossings_im()
+
+#%%
+
+plt.figure()
+plt.title("number of crossings real part dielectric function")
+ax = sns.heatmap(im.crossings_n)
+plt.show()
+
+plt.figure()
+plt.title("energy of first crossings real part dielectric function")
+ax = sns.heatmap(im.crossings_E[:,:,0])
+plt.show()
+
+
+plt.figure()
+plt.title("thickness of sample")
+ax = sns.heatmap(im.thickness_avg)
+plt.show()
+"""

@@ -21,6 +21,7 @@ import torch.nn.functional as F
 import datetime as dt
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
+from image_class import Spectral_image  
 
 class MLP(nn.Module):
 
@@ -72,11 +73,11 @@ x_max = 20
 l = 1000
 predict_x_np = np.linspace(x_min, x_max, l).reshape(l,1)
 predict_x = torch.from_numpy(predict_x_np)
-path_to_models = "train_004_on_I_scaled_1"
+path_to_models = "train_004_on_I_scaled_5"
 model = MLP(num_inputs=1, num_outputs=1)
 
 files = np.loadtxt(path_to_models + "/costs.txt")
-threshold_costs = 3
+threshold_costs = 1
 
 plt.figure()
 plt.title("chi^2 dist of model")
@@ -86,7 +87,9 @@ n_working_models = np.sum(files<threshold_costs)
 
 
 
-im = im
+#im = im
+im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')
+
 
 ab_deltaE = find_scale_var(im.deltaE)
 deltaE_scaled = scale(im.deltaE, ab_deltaE)
@@ -120,7 +123,7 @@ for x in range(len(eval_x)):
     y_data[y_data<1] = 1
     I_i = np.sum(np.log(y_data))
     predict_x_np[:,1] = scale(I_i, ab_int_log_I)
-    print(predict_x_np)
+    #print(predict_x_np)
     predict_x = torch.from_numpy(predict_x_np)
     
     for j in range(len(files)):
@@ -128,7 +131,7 @@ for x in range(len(eval_x)):
             with torch.no_grad():
                 model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
                 predictions[x,k,:] = model(predict_x.float()).flatten()
-            plt.plot(im.deltaE, np.exp(predictions[x,k,:]), color = "blue")
+            plt.plot(im.deltaE, np.exp(predictions[x,k,:]), color = "blue", alpha = 0.3)
             k+=1
     plt.plot(im.deltaE, y_data, color = "black")
     plt.yscale("log")
@@ -145,7 +148,7 @@ for i in range(len(eval_x)):
     y_data[y_data<1] = 1
     I_i = np.sum(np.log(y_data))
     predict_x_np[:,1] = scale(I_i, ab_int_log_I)
-    print(predict_x_np)
+    #print(predict_x_np)
     predict_x = torch.from_numpy(predict_x_np)
     
     for j in range(len(files)):
@@ -153,7 +156,7 @@ for i in range(len(eval_x)):
             with torch.no_grad():
                 model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(i)))
                 predictions[i,k,:] = model(predict_x.float()).flatten()
-            plt.plot(im.deltaE, np.exp(predictions[i,k,:]), color = "blue")
+            plt.plot(im.deltaE, np.exp(predictions[i,k,:]), color = "blue", alpha = 0.3)
             k+=1
     plt.plot(im.deltaE, y_data, color = "black")
     plt.ylim(-500,1e4)
@@ -177,8 +180,30 @@ for i in range(len(eval_x)):
             with torch.no_grad():
                 model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(i)))
                 predictions[i,k,:] = model(predict_x.float()).flatten()
-            plt.plot(im.deltaE, np.exp(predictions[i,k,:]), color = "blue")
+            plt.plot(im.deltaE, np.exp(predictions[i,k,:]), color = "blue", alpha = 0.1)
             k+=1
     plt.plot(im.deltaE, y_data, color = "black")
     plt.ylim(-500,1e4)
     plt.xlim(0,15)
+
+for i in range(len(eval_x)):
+    k=0
+    plt.figure()
+    plt.title("results " + path_to_models)
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("intensity")
+    y_data = im.get_pixel_signal(eval_y, eval_x[i])
+    y_data[y_data<1] = 1
+    I_i = np.sum(np.log(y_data))
+    predict_x_np[:,1] = scale(I_i, ab_int_log_I)
+    print(predict_x_np)
+    predict_x = torch.from_numpy(predict_x_np)
+    
+    for j in range(len(files)):
+        if files[j] < threshold_costs:
+            with torch.no_grad():
+                model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(i)))
+                predictions[i,k,:] = model(predict_x.float()).flatten()
+            plt.plot(im.deltaE, np.exp(predictions[i,k,:]), color = "blue", alpha = 0.1)
+            k+=1
+    plt.plot(im.deltaE, y_data, color = "black")
