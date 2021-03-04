@@ -1,0 +1,226 @@
+\documentclass[12pt,a4paper]{article}
+
+%\usepackage[colorlinks=true, linkcolor=black!50!blue, urlcolor=blue, citecolor=blue, anchorcolor=blue]{hyperref}
+\usepackage[font=small,labelfont=bf,margin=0mm,labelsep=period,tableposition=top]{caption}
+\usepackage[a4paper,top=3cm,bottom=3cm,left=2.5cm,right=2.5cm,bindingoffset=0mm]{geometry}
+
+\usepackage{graphicx,ragged2e}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{epsfig,cite}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{multirow,booktabs,multirow}
+\bibliographystyle{JHEP}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\smallfrac#1#2{\hbox{$\frac{#1}{#2}$}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\ben}{\begin{enumerate}}
+\newcommand{\een}{\end{enumerate}}
+\newcommand{\la}{\left\langle}
+\newcommand{\ra}{\right\rangle}
+\newcommand{\lc}{\left[}
+  \newcommand{\tr}{\toprule}
+  \newcommand{\mr}{\midrule}
+  \newcommand{\br}{\bottomrule}
+\newcommand{\rc}{\right]}
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+\newcommand{\as}{\alpha_s}
+\newcommand{\aq}{\alpha_s\left( Q^2 \right)}
+\newcommand{\amz}{\alpha_s\left( M_Z^2 \right)}
+\newcommand{\aqq}{\alpha_s \left( Q^2_0 \right)}
+\newcommand{\aqz}{\alpha_s \left( Q^2_0 \right)}
+\def\toinf#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow\infty }}}}
+\def\tozero#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow0 }}}}
+\def\toone#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow1 }}}}
+\def\frac#1#2{{{#1}\over {#2}}}
+\def\gsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+    \raise1pt\hbox{$>$}}}       
+\def\lsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+    \raise1pt\hbox{$<$}}}       
+\newcommand{\mrexp}{\mathrm{exp}}
+\newcommand{\dat}{\mathrm{dat}}
+\newcommand{\one}{\mathrm{(1)}}
+\newcommand{\two}{\mathrm{(2)}}
+\newcommand{\art}{\mathrm{art}}
+\newcommand{\rep}{\mathrm{rep}}
+\newcommand{\net}{\mathrm{net}}
+\newcommand{\stopp}{\mathrm{stop}}
+\newcommand{\sys}{\mathrm{sys}}
+\newcommand{\stat}{\mathrm{stat}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\pdf}{\mathrm{pdf}}
+\newcommand{\tot}{\mathrm{tot}}
+\newcommand{\minn}{\mathrm{min}}
+\newcommand{\mut}{\mathrm{mut}}
+\newcommand{\partt}{\mathrm{part}}
+\newcommand{\dof}{\mathrm{dof}}
+\newcommand{\NS}{\mathrm{NS}}
+\newcommand{\cov}{\mathrm{cov}}
+\newcommand{\gen}{\mathrm{gen}}
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\parr}{\mathrm{par}}
+\newcommand{\val}{\mathrm{val}}
+\newcommand{\reff}{\mathrm{ref}}
+\newcommand{\Mll}{M_{ll}}
+\newcommand{\extra}{\mathrm{extra}}
+\newcommand{\draft}[1]{}
+% Added by MU 
+\def \a{\alpha}
+\def \b{\beta}
+\def \g{\gamma}
+\def \z{\zeta}
+\def \t{{\bf T}} % vector of theoretical predictions
+\def \c{{\bf c}} % vector of coefficients of theoretical predictions
+\def \y{{\bf y}} % vector of experimental data
+\def \s{{\bf \sigma}} % experimental covariance matrix
+% Added by JR
+\def\lapprox{\lower .7ex\hbox{$\;\stackrel{\textstyle <}{\sim}\;$}}
+\def\gapprox{\lower .7ex\hbox{$\;\stackrel{\textstyle >}{\sim}\;$}}
+\def\half{\smallfrac{1}{2}}
+\def\GeV{{\rm GeV}}
+\def\TeV{{\rm TeV}}
+\def\ap{{a'}}
+\def\vp{{v'}}
+\def\e{\epsilon}
+\def\d{{\rm d}}
+\def\calN{{\cal N}}
+\def\shat{\hat{s}}
+\def\barq{\bar{q}}
+\def\qq{q \bar q}
+\def\uu{u \bar u}
+\def\dd{d \bar d}
+\def\pp{p \bar p}
+\def\xa{x_{1}}
+\def\xb{x_{2}}
+\def\xaa{x_{1}^{0}}
+\def\xbb{x_{2}^{0}}
+\def\smx{\stackrel{x\to 0}{\longrightarrow}}
+\def\Li{{\rm Li}}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmtextrm}[1]{{\rmfamily{#1}}}
+\newcommand{\tmtexttt}[1]{{\ttfamily{#1}}}
+\usepackage{tabularx}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\begin{document}
+\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
+
+%\title[Charting Electron Energy Loss Spectroscopy with machine learning]{Charting the low-loss region in Electron Energy Loss Spectroscopy with machine learning}
+
+%\author{}
+%\address{}
+
+%\ead{s.conesaboj@tudelft.nl}
+%\vspace{10pt}
+%\begin{indented}
+%\item[]September 2020
+%\end{indented}
+
+
+\begin{flushright}
+Nikhef/2020-022\\
+\end{flushright}
+\vspace{0.3cm}
+
+\begin{center}
+  {\Large \bf Automated data processing and feature identification\\[0.3cm] in
+    EELS spectral images with machine learning}
+\vspace{1.4cm}
+
+
+author list
+
+\vspace{1.0cm}
+ 
+{\it \small
+
+$^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Delft, The
+  Netherlands\\[0.1cm]
+$^{2}$Nikhef Theory Group, Science Park 105, 1098 XG Amsterdam, The
+  Netherlands \\[0.1cm]$^{3}$Department of Physics and Astronomy, VU,
+    1081 HV Amsterdam, The Netherlands
+
+}
+
+\vspace{1.0cm}
+
+{\bf \large Abstract}
+
+\end{center}
+
+Spectral images in Electron Energy Loss Spectroscopy (EELS) are two-dimensional
+sets of spectra where each pixel corresponds a highly localised region of the analysed sample.
+%
+Here we present a novel approach to automated data processing and feature identification
+in EELS spectral images based on machine learning.
+%
+The constituent spectra are clustered into groups of pixels associated
+to sample regions with similar thickness using unsupervised learning,
+and then the zero-loss peak (ZLP) is subtracted in a model-independent manner
+by means of deep neural networks.
+%
+The resulting spectral images are  processed to determine 
+local electronic properties such as
+the band gap and the dielectric function across the sample,
+which are then correlated  with the local thickness and other
+relevant structural properties.
+%
+In addition to providing unique information on the direct correlation
+between structural and electrical properties, our approach makes possible
+the automated identification of interesting features
+in the spectra (say a narrow peak)  then determine
+how these features  (peak position and width) vary within different regions of the
+sample.
+%
+This strategy, which can be straightforwardly extended
+to higher-dimensional datasets,
+is implemented into a new release of the open source
+code {\tt EELSfitter}.
+
+
+\vspace{0.4cm}
+\noindent{\it Keywords:} {\small Transmission Electron Microscopy,
+Electron Energy Loss Spectroscopy, Neural Networks, Machine Learning, Transition
+Metal Dichalcogenides, Bandgap, Dielectric Function.}\\
+
+\noindent
+{\it $^{*}$corresponding author:} \url{s.conesaboj@tudelft.nl}
+
+\clearpage
+\tableofcontents
+
+
+\input{sec-introduction.tex}
+\input{sec-methodology.tex}
+\input{sec-results.tex}
+\input{sec-summary.tex}
+\bibliography{EELS_ML}
+%\input{EELS_ML.bbl}
+
+
+
+
+\end{document}
