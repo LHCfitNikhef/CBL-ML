@@ -1,0 +1,126 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{10}
+
+\bibitem{Terauchi:2005}
+M.~Terauchi, T.~M., K.~Tsuno, and M.~Ishida, {\it {Development of a high energy
+  resolution electron energy-loss spectroscopy microscope}},  {\em Journal of
+  Microscopy} {\bf 194} (2005) 203--209.
+
+\bibitem{Freitag:2005}
+B.~Freitag, S.~Kujawa, P.~Mul, J.~Ringnalda, and P.~Tiemeijer, {\it {Breaking
+  the spherical and chromatic aberration barrier in transmission electron
+  microscopy}},  {\em Ultramicroscopy} {\bf 102} (2005) 209--214.
+
+\bibitem{Haider:1998}
+M.~Haider, S.~Uhlemann, E.~Schwan, H.~Rose, B.~Kabius, and K.~Urban, {\it
+  {Electron microscopy image enhanced}},  {\em Nature} {\bf 392} (1998)
+  768–769.
+
+\bibitem{Geiger:1967}
+J.~Geiger, {\it {Inelastic Electron Scattering in Thin Films at Oblique
+  Incidence}},  {\em Phys. Stat. Sol.} {\bf 24} (1967) 457--460.
+
+\bibitem{Schaffer:2008}
+B.~Schaffer, K.~Riegler, G.~Kothleitner, W.~Grogger, and F.~Hofer, {\it
+  {Monochromated, spatially resolved electron energy-loss spectroscopic
+  measurements of gold nanoparticles in the plasmon range}},  {\em Micron} {\bf
+  40} (2008) 269--273.
+
+\bibitem{Erni:2005}
+R.~Erni, N.~D. Browning, Z.~Rong~Dai, and J.~P. Bradley, {\it {Analysis of
+  extraterrestrial particles using monochromated electron energy-loss
+  spectroscopy}},  {\em Micron} {\bf 35} (2005) 369–379.
+
+\bibitem{Rafferty:1998}
+B.~Rafferty and L.~Brown, {\it {Direct and indirect transitions in the region
+  of the band gap using electron-energy-loss spectroscopy}},  {\em Physical
+  Review B} {\bf 58} (1998) 10326.
+
+\bibitem{Stoger:2008}
+M.~Stöger-Pollach, {\it {Optical properties and bandgaps from low loss EELS:
+  Pitfalls and solutions}},  {\em Nano Lett.} {\bf 39} (2008) 1092–1110.
+
+\bibitem{Egerton:2009}
+R.~Egerton, {\it {Electron energy-loss spectroscopy in the TEM}},  {\em Rep.
+  Prog. Phys} {\bf 72} (2009) 1.
+
+\bibitem{Abajo:2010}
+F.~García~de Abajo, {\it {Optical excitations in electron microscopy}},  {\em
+  RevModPhys} {\bf 82} (2010) 209--256,
+  [\href{http://arxiv.org/abs/0903.1669}{{\tt arXiv:0903.1669}}].
+
+\bibitem{Park:2008}
+J.~Park, S.~Heo, et~al., {\it {Bandgap measurement of thin dielectric films
+  using monochromated STEM-EELS}},  {\em Ultramicroscopy} {\bf 109} (2008)
+  1183–1188.
+
+\bibitem{Rafferty:2000}
+B.~Rafferty, S.~Pennycook, and L.~Brown, {\it {Zero loss peak deconvolution for
+  bandgap EEL spectra}},  {\em Journal of Electron Microscopy} {\bf 49} (2000)
+  517--524.
+
+\bibitem{Egerton:1996}
+R.~Egerton, {\em {Electron Energy-Loss Spectroscopy in the Electron
+  Microscope}}.
+\newblock Plenum Press, 1996.
+
+\bibitem{Dorneich:1998}
+A.~Dorneich, R.~French, H.~Müllejans, et~al., {\it {Quantitative analysis of
+  valence electron energy-loss spectra of aluminium nitride}},  {\em Journal of
+  Microscopy} {\bf 191} (1998) 286–296.
+
+\bibitem{Benthem:2001}
+K.~van Benthem, C.~Elsässer, and R.~French, {\it {Bulk electronic structure of
+  SrTiO3: Experiment and theory}},  {\em Journal of Applied Physics} {\bf 90}
+  (2001).
+
+\bibitem{Lazar:2003}
+S.~Lazar, G.~Botton, et~al., {\it {Materials science applications of HREELS in
+  near edgestructure analysis an low-energy loss spectroscopy}},  {\em
+  Ultramicroscopy} {\bf 96} (2003) 535–546.
+
+\bibitem{Egerton:10.1016/S0304-3991(01)00155-3}
+R.~Egerton and M.~Malac, {\it {Improved background-fitting algorithms for
+  ionization edges in electron energy-loss spectra}},  {\em Ultramicroscopy}
+  {\bf 92} (2002) 47--56.
+
+\bibitem{Held:2020}
+J.~T. Held, H.~Yun, and K.~A. Mkhoyan, {\it {Simultaneous multi-region
+  background subtraction for core-level EEL spectra}},  {\em Ultramicroscopy}
+  {\bf 210} (2020) 112919.
+
+\bibitem{Granerod:2018}
+C.~S. Granerød, W.~Zhan, and Øystein Prytz, {\it {Automated approaches for
+  band gap mapping in STEM-EELS}},  {\em Ultramicroscopy} {\bf 184} (2018)
+  39--45.
+
+\bibitem{Fung:2020}
+K.~L. Fung, M.~W. Fay, S.~M. Collins, D.~M. Kepaptsoglou, S.~T. Skowron, Q.~M.
+  Ramasse, and A.~N. Khlobystov, {\it {Accurate EELS background subtraction, an
+  adaptable method in MATLAB}},  {\em Ultramicroscopy} {\bf 217} (2020) 113052.
+
+\bibitem{Ball:2008by}
+{\bf The NNPDF} Collaboration, R.~D. Ball et~al., {\it {A determination of
+  parton distributions with faithful uncertainty estimation}},  {\em Nucl.
+  Phys.} {\bf B809} (2009) 1--63, [\href{http://arxiv.org/abs/0808.1231}{{\tt
+  arXiv:0808.1231}}].
+
+\bibitem{Ball:2012cx}
+R.~D. Ball et~al., {\it {Parton distributions with LHC data}},  {\em
+  Nucl.Phys.} {\bf B867} (2013) 244,
+  [\href{http://arxiv.org/abs/1207.1303}{{\tt arXiv:1207.1303}}].
+
+\bibitem{Ball:2014uwa}
+{\bf NNPDF} Collaboration, R.~D. Ball et~al., {\it {Parton distributions for
+  the LHC Run II}},  {\em JHEP} {\bf 04} (2015) 040,
+  [\href{http://arxiv.org/abs/1410.8849}{{\tt arXiv:1410.8849}}].
+
+\bibitem{Ball:2017nwa}
+{\bf NNPDF} Collaboration, R.~D. Ball et~al., {\it {Parton distributions from
+  high-precision collider data}},  {\em Eur. Phys. J.} {\bf C77} (2017), no.~10
+  663, [\href{http://arxiv.org/abs/1706.00428}{{\tt arXiv:1706.00428}}].
+
+\bibitem{SabryaWS2}
+S.~E. van Heijst et~al., {\it {Fingerprinting 2H/3R Polytypism in WS2
+  Nanoflowers from Plasmons and Excitons to Phonons}}, . in preparation.
+
+\end{thebibliography}\endgroup
