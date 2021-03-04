@@ -463,8 +463,9 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", di
 
 
 
-def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added_dE1 = 0.3, path_to_models = "models", display_step = 1000):
+def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added_dE1 = 0.3, path_to_models = "models", display_step = 1000, bs_rep_num = 0):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
+    """
     if hasattr(image, "name"):
         path_to_models = image.name + "_" + path_to_models
     
@@ -478,11 +479,11 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
             return
         elif not ans[0] == 'y':
             path_to_models = input("Please define the new path: \n")
-    
-    if display_step is None:
-        print_progress = False
-    else:
-        print_progress = True
+    """
+    #if display_step is None:
+    print_progress = False
+    #else:
+    #    print_progress = True
         
     num_saving_per_rep = 50
     saving_step = int(n_epochs/num_saving_per_rep)
@@ -537,6 +538,7 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     
     
     for i in range(n_rep):
+        save_idx = i + n_rep*bs_rep_num
         if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
         data = np.empty((0,1))
         data_x = np.empty((0,2))
@@ -637,10 +639,10 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
                     min_model = copy.deepcopy(model)
                     #iets met copy.deepcopy(model)
                 if epoch % saving_step == 0:
-                    torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(i))
-        torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(i))
-        np.savetxt(path_to_models+ "/costs.txt", loss_test_reps[:epoch])
-
+                    torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
+        torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
+        np.savetxt(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", loss_test_reps[:epoch])
+    np.savetxt(path_to_models+ "/dE1" + str(bs_rep_num) + ".txt", dE1)
     return dE1, dE2
 
 

@@ -39,7 +39,7 @@ import torch.nn.functional as F
 
 
 from k_means_clustering import k_means
-from train_nn_torch import train_nn_scaled
+from train_nn_torch_bs import train_nn_scaled
 
 
 _logger = logging.getLogger(__name__)

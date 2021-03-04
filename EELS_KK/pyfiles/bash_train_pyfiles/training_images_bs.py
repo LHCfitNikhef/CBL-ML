@@ -8,16 +8,19 @@ Created on Fri Feb 26 10:52:45 2021
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from image_class import Spectral_image
-from train_nn_torch import train_nn_scaled, MC_reps, binned_statistics
+from image_class_bs import Spectral_image
+from train_nn_torch_bs import train_nn_scaled, MC_reps, binned_statistics
+import sys
+
+bs_rep_num = sys.argv[1]
 
 
-im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')
+im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
 
 
 
-path_to_models = 'dE1/train_004_ddE1_0_test'
-im.train_ZLPs(n_clusters = 5, n_rep = 500, n_epochs = 10000, path_to_models = path_to_models, \
+path_to_models = 'dE1/train_004_ddE1_0_test_3'
+im.train_ZLPs(n_clusters = 5, n_rep = 1, n_epochs = 10000, bs_rep_num= bs_rep_num, path_to_models = path_to_models, \
               added_dE1= 0, display_step = None)
 """    
     
