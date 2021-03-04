@@ -30,6 +30,8 @@ from copy import copy
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+np.random.seed(100)
+
 warnings.filterwarnings('ignore')
 print('done')
 
@@ -175,16 +177,14 @@ print('The values of dE1 and dE2:', np.round(dE1,2), "eV and", dE2, "eV")
 
 #%%
 
-dE1 = 1.8
-dE2 = 12
-
-print('The values of dE1 and dE2:', np.round(dE1,2), "eV and", dE2, "eV")
-
 df_window = df[(df['x_shifted'] < dE1) & (df['x_shifted'] > -.5)]
 df_window_vacuum = df_vacuum[(df_vacuum['x_shifted'] <= dE1) & (df_vacuum['x_shifted'] > -.5)]
 
 df_mean, df_vacmean = pd.DataFrame(), pd.DataFrame()
 nbins = 30
+
+test1 = df_window['x_shifted'].min()
+test2 = df_window['x_shifted'].max()
 
 df_mean['x'] = np.linspace(df_window['x_shifted'].min(),df_window['x_shifted'].max(), nbins)
 df_mean['y'], df_mean['sigma'] = binned_statistics(df_window['x_shifted'], np.log(df_window['y']), nbins)[0:2]
@@ -338,7 +338,7 @@ def function_train():
 
                 avg_cost = c
                 
-                test_cost = cost.eval({x: test_x, y: test_y, sigma: test_sigma})
+                # test_cost = cost.eval({x: test_x, y: test_y, sigma: test_sigma})
 
 
                 if epoch % display_step == 0:

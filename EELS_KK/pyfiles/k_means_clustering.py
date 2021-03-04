@@ -55,7 +55,7 @@ def reassign_values(clusters, values, cost_function = dist):
     return r
 
 
-def k_means(values, n_clusters=3, n_iterations = 30, n_times = 10):
+def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
     n_values = len(values)
     if values.ndim == 1:
         vpc = math.floor(n_values/n_clusters)
@@ -77,7 +77,7 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 10):
             clusters = relocate_clusters(clusters, values, r)
             costs = np.sum(cost_clusters(values, clusters, r))
             if cost_min > costs:
-                print(j, costs)
+                #print(j, i, n_clusters, costs)
                 cost_min = costs
                 min_clusters = clusters
                 min_r = r

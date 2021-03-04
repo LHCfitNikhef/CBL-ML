@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 22 23:13:04 2021
+
+@author: isabel
+"""
+import torch.nn as nn
+import torch.nn.functional as F
+
+"""
+Tensorflow model:
+    
+def make_model(inputs, n_outputs):
+    hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+    hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+    hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+    output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+    return output
+"""
+
+
+class Net(nn.Module):
+    def __init__(self):
+        super.__init__()
+        
+        self.fc1 = nn.Linear(2, 10)
+        self.fc2 = nn.Linear(10, 15)
+        self.fc3 = nn.Linear(15, 5)
+        self.fcout = nn.Linear(5,1)
+        
+    def forward(self, x):
+        x = F.sigmoid(self.fc1(x))
+        x = F.sigmoid(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = self.fcout(x)
+        
+        return x #DO WE NEED FUCNTION ON x ?? No right?
+    
+    
