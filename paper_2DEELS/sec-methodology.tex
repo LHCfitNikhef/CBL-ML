@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{A neural network determination of the ZLP}
+\section{Methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:methodology}
 
@@ -8,3 +8,58 @@ the zero-loss peak that arises in the low-loss region of EEL spectra by means
 of machine learning.
 
 
+
+\subsection{Clustering}
+
+Here we explain the $k$-means clustering to classify the individual
+spectra into groups.
+%
+Definition of the figure of merit, determination of the number of clusters,
+how to treat outliers within clusters.
+%
+Maybe compare with other methods for clustering? 
+
+\subsection{Neural network training}
+
+Here we explain that we use a NN with two inputs to train the spectra data,
+motivate the choice of preprocessing, validation of the training.
+
+We also explain how we evaluate the total errors and the covariance matrix,
+which is used to define the figure of merit. Show that once we include the covariance matrix
+we obtain $\chi^2/n_{\rm dat}\simeq 1$.
+
+We explain how as opposed to the previous paper now we don't need to
+generate replicas, since we have sufficient spectra per cluster to pick one at random.
+
+We need to revisit the choice of $\Delta E_{\rm I}$ and of  $\Delta E_{\rm II}$, in particular
+since we don't have vacuum anymore but some material. So we need to use
+a different, more general criteria.
+
+Diffferences in the treatment of the EELS data as compared to the previous paper,
+for example now we don't need the binning
+
+
+\subsection{Calculation of dielectic function}
+
+Here we explain how the subtracted ZLP spectra are used to evaluate the dielectric function,
+and its uncertainties.
+%
+Explain how we determine interesting properties of the dielecttic function
+which can be represented as a 2D image
+
+
+\subsection{Automated feature classification}
+
+We explain how we use ML to indentify relevant features in the spectra, say peaks, and how we can
+study how their features vary along the sample,
+%
+We can use multivariate techniques to identify anomalies in the data.
+
+
+
+
+
+\subsection{Comparison with Laurien's paper}
+
+Check that with the new code we reproduce in a reasonable
+manner the results of Laurien's paper

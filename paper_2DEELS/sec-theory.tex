@@ -1,0 +1,395 @@
+
+\section{Theory overview}
+\label{sec:theory}
+
+In this section we review the theory necessary
+to compute the local dielectric functions, thickness,
+and the deconvolution procedure, in order to make
+sure the paper is self consistent.
+
+
+
+\subsection{Deconvolution of the single scattering spectrum}
+
+In order to evaluate the local dielectric function of
+a material from its energy-loss spectrum, we need to deconvolute
+this spectrum and obtain the single scattering distribution.
+
+
+When electrons go through the sample, the intensity of electrons that has no inelastic scattering is given by the zero-loss peak: $I_{ZLP}(E)$. The intensity of the electrons that do scatter, $I_{EEL}(E)$, is than dividable in the single scatter intensity, $I_1(E)$, the double scatter intensity, $I_2(E)$, the triple scatter intensity, $I_3(E)$, etc:
+
+\begin{equation}\label{eq_I}
+    I(E) = I_{ZLP}(E) + I_{EEL}(E) = I_{ZLP}(E) + \sum_{n=0}^\infty I_n(E).
+\end{equation}
+
+
+The integrated intensity of each n-scattering spectrum $N_n$  depends on the total integrated intensity $N$, assuming independed scattering events, through the bionomal distribution:
+
+\begin{equation}\label{eq_N_n}
+    N_n =  \frac{N}{n!} \left(\frac{t}{\lambda}\right)^n \exp{[-t/\lambda]} .
+\end{equation}
+
+Here $t$ is the thickness of the sample, and $\lambda$ is the mean free path of electrons in the sample. 
+END DISREGARD
+
+Since we know the zero-loss-peak due to Lau \cite{lau}, the response function of the instrument, $R(E)$, is easily deducted by:
+
+\begin{equation}
+    R(E) = I_{ZLP}(E)/N_{ZLP},
+\end{equation}
+
+where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}(E)$. 
+
+
+Now we will show how the total recorded spectrum is build up from single-scattering distribution $S(E)$, and the above defined response function $R(E)$. 
+
+
+The spectrum recorded due to the single scattering events, $J^1(E)$, is these two distributions convoluted:
+
+\begin{equation} \label{eq_I_1}
+    I_{1}(E)=R(E)^{*} S(E) \equiv \int_{-\infty}^{\infty} R\left(E-E^{\prime}\right) S\left(E^{\prime}\right) d E^{\prime}.
+\end{equation}
+
+
+It can be easily seen, that as a double-scattering event, is a series of two single-scattering event, the double-scattering intensity is given by the self convolution of the single-scattering intensity, normalised to match eq. \eqref{eq_N_n}, and once again convoluted with the response function:
+
+\begin{equation}
+    I_{2}(E)=R(E)^{*} S(E)^{*} S(E) /\left(2 ! N_{ZLP}\right).
+\end{equation}
+
+For higher order scattering spectra, this generalises to:
+
+
+\begin{equation} \label{eq_def_I_n}
+    I_{n}(E)=R(E)\big[^{*} S(E)\big]^{n} /\left(n ! N_{ZLP}^{n-1}\right).
+\end{equation}
+
+The complete recorded spectrum, neglecting any surface plasmons, is than given by (analogous to eq. \eqref{eq_I}):
+\begin{equation} \label{eq_I_E}
+    \begin{aligned}
+        I(E) &=I_{ZLP}(E)+I^{1}(E)+I^{2}(E)+I^{3}(E)+\cdots \\
+        &=I_{ZLP}(E)^{*}\left[\delta(E)+S(E) / N_{ZLP}+S(E)^{*} S(E) /\left(2 ! N_{ZLP}^{2}\right)\right.\\
+        &\left.+S(E)^{*} S(E)^{*} S(E) /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right]\\
+        &= I_{ZLP}(E)^{*}\left[\delta(E)+ \sum_{n=1}^\infty \delta(E)\big[^{*} S(E)\big]^{n} /\left(n ! N_{ZLP}^{n}\right) \right].
+        \end{aligned}
+\end{equation}
+
+Since a convolution in energy domain translates to a multiplication in the frequency domain, it makes sense to take the Fourier transform (FT) of the above equation. Eq. \eqref{eq_I_E} than becomes, using the taylor expansion of the exponential function:
+
+\begin{equation}\label{eq_i_nu_exp}
+    \begin{aligned}
+i(\nu) &=z(\nu)\left\{1+s(\nu) / N_{ZLP}+[s(\nu)]^{2} /\left(2 ! N_{ZLP}^{2}\right)+[s(\nu)]^{3} /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right\} \\
+&=z(\nu)\sum_{n=0}^\infty\frac{s(\nu)^n}{n! N_{ZLP}^n}\\
+&=z(\nu) \exp \left[s(\nu) / N_{ZLP}\right],
+\end{aligned}
+\end{equation}
+
+where $i(\nu)$ is the FT of the intensity spectrum, $z(\nu)$ is the FT of the zero-loss peak, and $s(\nu)$ is the FT of the single-scattering distribution.
+
+
+The single scattering distribution can than be retrieved by rewriting eq. \eqref{eq_i_nu_exp}, and taking the inverse Fourier transform:
+
+\begin{equation}
+    s(\nu) = N_{ZLP} \operatorname{ln}\left(\frac{i(\nu)}{z(\nu)}\right),
+\end{equation}
+
+\begin{equation}\label{eq_S_E_FT}
+    \begin{aligned}
+    S(E) &= \mathcal{F}^{-1}\left\{s(\nu)\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{\mathcal{F}\left\{I(E)\right\}}{\mathcal{F}\left\{I_{ZLP}(E)\right\}}\right]\right\}
+    \end{aligned}.
+\end{equation}
+
+
+However, eq. \eqref{eq_S_E_FT} only works for an ``ideal" spectrum. Any noise on the spectrum will blow up, as noise normally preveals itself at higher frequencies, and $i(\nu)$ tends towards zero for high frequencies. Therefor, it is advised to calculate not $S(E)$, but $I_1(E)$, by convoluting once more with $I_{ZLP}(E)$, see eq. \eqref{eq_I_1}. \cite{egerton_book}
+
+
+
+
+\paragraph{Discussion points} What is the most official way to calculate the errors in R(E), from the errors in the ZLP? Just calculate for each ZLP and take the std of those, or can you use the error of the ZLP to calculate it at once? Because it comes back in the $N_{ZLP}$ as well.
+
+
+
+\subsubsection{Analytical analysis of possible recorded spectra}
+To be able to analyse a deconvolution program, it is usefull to create some toymodels which represent different possible $I(E)$, of which we know what the expected outcome is, so we can validate the program written.
+
+
+\paragraph{Single scattering distribution as Gaussian}
+One of the interesting approximations of a spectrum to review as toy model, is a spectrum in which the zero loss peak is a gaussian such that:
+
+\begin{equation}\label{eq_ZLP_gauss}
+I_{ZLP}(E) = \frac{N_{ZLP}}{\sqrt{2\pi}\sigma_{ZLP}} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]},
+\end{equation}
+
+and the single scattering distribution is a gaussian, given by:
+
+\begin{equation}\label{eq_S_gauss_conv}
+S(E) = \frac{A_{S}}{\sqrt{2\pi}\sigma_{S}}  \exp{[-(x-\mu_{S})/(2\sigma_{S}^2)]}.
+\end{equation}
+
+
+By combining eq. \eqref{eq_I}, \eqref{eq_gauss_conv}, and eq. \eqref{eq_def_I_n} you obtain for complete recorded spectrum $I(E)$:
+
+\begin{equation}\label{eq_I_gauss_conv}
+\begin{aligned}
+I(E) &= \sum_{n=0}^{\infty}  \frac{A_{n}}{\sqrt{2\pi}\sigma_n} \exp{\left[-\frac{(x-\mu_{n})^2}{2\sigma_{n}^2}\right]},\\
+A_{n} &= \frac{1}{n! N_{ZLP}^n}N_{ZLP} A_S^n, \\
+&= \frac{A_S^n}{n!N_{ZLP}^{n-1}}, \\
+\mu_{n} &= \mu_{ZLP} + n \mu_S,\\
+\sigma_{n} &= (\sigma_{ZLP}^2 + n \sigma_S^2)^{1/2}.
+\end{aligned}
+\end{equation}
+
+
+
+
+%\begin{equation}\label{eq_I_gauss_conv}
+%\begin{aligned}
+%I(E) &= \sum_{n=0}^{\infty}  A_{n} \exp{[-(x-\mu_{n})/(2\sigma_{n}^2)]},\\
+%A_{n} &= 
+%\begin{cases}
+%\begin{aligned}
+%N_{ZLP}, &n=0, \\ 
+%\frac{N_{ZLP}}{n! N_{ZLP}^n} \frac{\left(\sqrt{2 \pi} A_S\right)^n}{\left(\frac{1}{\sigma_{ZLP}^{2}}+\frac{n}{\sigma_S^{2}}\right)^{1/2}}, &n>0, \\
+%\end{aligned}
+%\end{cases}\\
+%\mu_{n} &= \mu_{ZLP} + n \mu_S,\\
+%\sigma_{n} &= (\sigma_{ZLP}^2 + n \sigma_S^2)^{1/2}.
+%\end{aligned}
+%\end{equation}
+
+This means that for an $I(E)$ constructed as the equation above, with our program, we hope to retrieve $S(E)$ as given by \eqref{eq_S_gauss_conv}.
+
+
+%!TEX root = MEP_intro_reprt.tex
+\subsection{Dielectric function}
+
+The dielectric function, also called permittivity, is a measure for the polarisability of a material. From the dielectric function, a multitude of other characteristics can be calculated. Since the dielectric function can be extracted from the electron energy loss spectrum through Kramer-Kronig analysis, for an image of spectra, the dielectric function can be calculated for each pixel. \cite{egerton_book}
+
+
+
+From \cite{brockt_lakner_2000}:
+
+-Cold field STEM?
+
+
+Uses deconvolution and Kramer-Kronig relations to determine optical properties of wide-gap materials, specifically III-nitrate compounds (important for optoelectronics).
+
+These properties are tested by comparing them to experimental measurements with synchrotron ellipsometry and theoretical studies.
+
+The resolution is proven by determining the optical features of single layers in a heterostructure and in individual defects within wurtize GaN.
+
+
+The low loss region of EELS is interesting, as it provides information on excitations of electron in the outer shell, which determine the optical properties of the material. Within the low loss region of the EELS, one can distinguish valence electron exitations, single electron excitations (interband transmissions?, depend on critical points in the bandstructure) and collective plasma oscillations (i.e. plasmon excitations?). 
+
+An alternative method to determine the optical features of material is through optical measurements. These offer a significantly higher energy resolution: 0.001eV-0.5eV where state of the art STEM reach just 0.5eV. The spatial resolution of optical measurements however, is significantly worse mainly due to the higher de Broglie wavelength of photons in respect to electrons \cite{iets}: order microns, whereas STEM can reach sub nanometer.
+
+
+"
+By the use of subnanometer electron probes the spatial resolution of the measurements depends on the physical localization of the scattering process itself and thus is in the range of nanometers for low energy excitations." ?? 
+
+
+In the low loss region of the EELS, the recorded energy loss function depends on the interjoint density of states between valence and conducting electrons. Peaks arise at critical areas where nesting occurs: where the Fermi surface of the valence electrons is (near) parralel to the Fermi surface of the conducting electrons. In the dielectric formulation, this energy loss function can be described as the response of the material to the passing electron probe, which is proportian to the imaginary part of the reciprocal of the dielectric function $\varepsilon$. Through deconvolution of the signal and Kramer-Kronig relations the complete dielectric function can subsequently be retrieved, see Section \ref{sect_K_K}.
+
+
+
+
+
+\subsubsection{Relations optical properties to dieelectric function}
+From \cite{brockt_lakner_2000}:
+
+
+
+
+\subsection{Calculation of the dielectric function}
+
+
+\subsection{Kramer-Kronig relations} \label{sect_K_K}
+The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
+The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
+
+\begin{equation}
+    \chi_{1}(\omega)=\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
+\end{equation}
+
+Here $\mathcal{P}$ denotes the Cauchy principal value of the integral. For causal functions, due to (anti)symmetries arrising from its causality, these can be rewritten to \cite{wikipedia_2020}:
+
+\begin{equation}\label{eq_ch1_1}
+    \chi_{1}(\omega)=\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega^{\prime} \chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega \chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime}.
+\end{equation}
+
+
+Since the single scattering spectrum of a medium can be related to the imaginary part of the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real permittivity \cite{egerton_book}. 
+
+
+
+
+\subsubsection{Spectrum analysis}
+If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_book}
+
+\begin{equation}\label{eq_S_E}
+\begin{aligned}
+I_{1}(E) & \approx S(E)=\frac{2 N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \int_{0}^{\beta} \frac{\theta d \theta}{\theta^{2}+\theta_{E}^{2}} \\
+\\
+&=\frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]
+\end{aligned}
+\end{equation}
+
+In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the single scattering spectrum, $N_{ZLP}$ the zero-loss intensity, $t$ the sample thickness, $v$ the velocity of the incoming electron, $\beta$ the collection semi angle, $\alpha$ the angular divergence of the incoming beam, and $\theta_E$ the characteristic scattering angle for energy loss $E$. In this equation $\alpha$ is assumed small in comparison with $\beta$. If this is not the case, additional angular corrections are needed. Furthermore, $\theta_E$ is given by:
+
+\begin{equation} \label{eq_th_E}
+    \theta_E = E/(\gamma m_0v^2) .
+\end{equation}
+
+
+Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, equation \eqref{eq_ch1_1} should be rewritten to \cite{Dapor2017}:
+
+\begin{equation}\label{eq_kkr_eps}
+    \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]=1-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon\left(E^{\prime}\right)}\right] \frac{E^{\prime} d E^{\prime}}{E^{\prime 2}-E^{2}}.
+\end{equation}
+
+
+
+
+\subsubsection{Step 1: rescaling intensity}
+The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
+
+\begin{equation}\label{eq_J_ac}
+    I_{1,ac}(E) = \frac{I_1(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]} =\frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}}  \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] .
+\end{equation}
+
+
+As $\theta_E$ scales linearly with $E$, see eq. \eqref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss.
+
+
+\paragraph{Discussion points} I assume $\beta$ and $v$ are known, and that we do not take a distribution for $v$? 
+
+
+\subsubsection{Step 2: extrapolating}
+Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. An often used form is $AE^{-r}$, where $r=3$ if you follow the Drude-model, or $r$ can be deducted from experimental data.
+
+
+
+\subsubsection{Step 3: normalisation and retrieving $\operatorname{Im}\left[\frac{1}{\varepsilon(E)}\right]$}
+
+Taking $E' = 0$ in \eqref{eq_kkr_eps}, one obtains:
+
+\begin{equation}
+    1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]=\frac{2}{\pi} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \frac{d E}{E}.
+\end{equation}
+
+Now dividing both sides of Eq. \eqref{eq_J_ac} by the energy, and subsequently integrating them over energy results in a comparable integral:
+
+\begin{equation}\label{eq_J_ac}
+    \int_{0}^{\infty} I_{1,ac}(E) \frac{d E}{E}=  \frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}}  \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right]   \frac{d E}{E} .
+\end{equation}
+
+Combining the two leads to:
+
+\begin{equation}
+    \frac{\int_{0}^{\infty} I_{1,ac}(E) \frac{d E}{E}}{\frac{\pi}{2}(1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right])} = \frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \equiv K ,
+\end{equation}
+in which $K$ is the proportionality constant, used to estimate the absolute thickness if the zero-loss integral and the indicent energy are known. This formula requires $\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]$ to be known, as is the case in for example metals ($\operatorname{Re}\left[\frac{1}{\varepsilon_{metal}(0)}\right]\approx 0$). If this is not the case, other options to estimate $K$ will be discussed later on.
+
+This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
+
+
+\subsubsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
+Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity. To avoid this singularity in a discrete signal, a couple of approaches are possible:
+\begin{itemize}
+    \item In the integral (for discrete signals: summation) in eq. \eqref{eq_kkr_eps}, simply exclude the $E = E'$ values.
+    \item Shift the values of $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ to values at $E''_i = (E_i + E_{i+1})$, to make sure to avoid $E'' = E'$ in the summation.
+    \item  The dielectric function in the energy domain relate to the dielectric response function $1/\varepsilon(t) -\delta(t)$ through:
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] = \mathcal{C}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = \mathcal{F}\{p(t)\},
+    \end{equation}
+    and 
+    \begin{equation}
+        \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \mathcal{S}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = i\mathcal{F}\{q(t)\},
+    \end{equation}
+    where $p(t)$ and $q(t)$ are the even and odd parts respectively of the dielectric response function, and $\mathcal{C}$ and $\mathcal{S}$ are the cosine and sine Fourier transforms respectively. Since the dielectric response function is a response function and therefor causal, it is $0$ for $t<0$. This results in:
+    \begin{equation}
+        p(t) = \operatorname{sgn}[q(t)].
+    \end{equation}
+    Combining all this means that one can also obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ from $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ by:
+    
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] =\mathcal{C}\left\{\operatorname{sgn}\left[\mathcal{S}^{-1}\left\{\operatorname{Im}\left[\frac{-1}{ \varepsilon(E)}\right]\right\}\right]\right\}.
+    \end{equation}
+\end{itemize}
+
+\subsubsection{Step 5: retrieving $\varepsilon$}
+The dielectric function  can subsequently be obtained from:
+
+\begin{equation}
+    \varepsilon(E)=\varepsilon_{1}(E)+i \varepsilon_{2}(E)=\frac{\operatorname{Re}[1 / \varepsilon(E)]+i \operatorname{Im}[-1 / \varepsilon(E)]}{\{\operatorname{Re}[1 / \varepsilon(E)]\}^{2}+\{\operatorname{Im}[-1 / \varepsilon(E)]\}^{2}}.
+\end{equation}
+
+
+%!TEX root = MEP_intro_reprt.tex
+\subsection{Dielectric function}
+
+The dielectric function, also called permittivity, is a measure for the polarisability of a material. From the dielectric function, a multitude of other characteristics can be calculated. Since the dielectric function can be extracted from the electron energy loss spectrum through Kramer-Kronig analysis, for an image of spectra, the dielectric function can be calculated for each pixel. \cite{egerton_book}
+
+
+
+From \cite{brockt_lakner_2000}:
+
+-Cold field STEM?
+
+
+Uses deconvolution and Kramer-Kronig relations to determine optical properties of wide-gap materials, specifically III-nitrate compounds (important for optoelectronics).
+
+These properties are tested by comparing them to experimental measurements with synchrotron ellipsometry and theoretical studies.
+
+The resolution is proven by determining the optical features of single layers in a heterostructure and in individual defects within wurtize GaN.
+
+
+The low loss region of EELS is interesting, as it provides information on excitations of electron in the outer shell, which determine the optical properties of the material. Within the low loss region of the EELS, one can distinguish valence electron exitations, single electron excitations (interband transmissions?, depend on critical points in the bandstructure) and collective plasma oscillations (i.e. plasmon excitations?). 
+
+An alternative method to determine the optical features of material is through optical measurements. These offer a significantly higher energy resolution: 0.001eV-0.5eV where state of the art STEM reach just 0.5eV. The spatial resolution of optical measurements however, is significantly worse mainly due to the higher de Broglie wavelength of photons in respect to electrons \cite{iets}: order microns, whereas STEM can reach sub nanometer.
+
+
+"
+By the use of subnanometer electron probes the spatial resolution of the measurements depends on the physical localization of the scattering process itself and thus is in the range of nanometers for low energy excitations." ?? 
+
+
+In the low loss region of the EELS, the recorded energy loss function depends on the interjoint density of states between valence and conducting electrons. Peaks arise at critical areas where nesting occurs: where the Fermi surface of the valence electrons is (near) parralel to the Fermi surface of the conducting electrons. In the dielectric formulation, this energy loss function can be described as the response of the material to the passing electron probe, which is proportian to the imaginary part of the reciprocal of the dielectric function $\varepsilon$. Through deconvolution of the signal and Kramer-Kronig relations the complete dielectric function can subsequently be retrieved, see Section \ref{sect_K_K}.
+
+
+
+
+
+\subsubsection{Relations optical properties to dieelectric function}
+From \cite{brockt_lakner_2000}:
+
+
+
+\subsection{Benchmarking}
+
+Here we present some benchmarking comparing our calculations of things like the
+deconvoluted spectrum, the dielectric function, and the thickness of
+the same with independent software packages, in parrticular with
+the Egerton software and with {\tt HyperSpy}. This way we validate that
+our theory calculations are kosher.
+
+\subsection{The role of surface effects}
+
+In the previous discussion we consider the calculation of the local dielectric function
+using only bulk effects.
+But surface effects might be important for some of the nanostructures that
+we are considering, so we should say something about surface effects
+in the calculation of the dielectreic function here.

@@ -1,6 +1,33 @@
-\section{ZLP parametrisation from vacuum spectra}
+\section{Results}
 \label{sec:results_vacuum}
 
 We now move to discuss the application of the strategy presented in the previous
 section to the parametrisation of ZLP spectra acquired in vacuum.
+
+Some of the plots that we need for this section are
+
+A bunch of fits (by "fit" I mean the full model say with 500 "replicas" at least) for different values of DeltaE_I
+
+A heat map plot showing the calculation bandgap across the spectral image, using the approach in Laurien paper
+
+A heat map plot for the thickness, now computed with the deconvoluted spectra just as with the sum of intensities, checking that the results of the two approaches are consistent
+
+A plot of the dielectric function (with uncertainties) for different locations in the spectral image (representative).
+
+A 2D plot demonstrating that the model interpolates in a sensible manner in the "intensity input"
+
+A heat map with the crossing of the x axis for the real (or was it the imaginary) part of the dielectric function across the image
+
+Some explicit test of the stability of the model fitting, for example comparing the results of two fits trained on different random subsets of spectra
+
+A fit that includes the full covariance matrix in the definition of the chi2, rather than only the diagonal component
+
+
+\subsection{Direct correlation of structural and electrical properties}
+
+Then at some point we can produce correlation plots, for example assessing whenever there is a correlation between thickness and change in the location of the bandgap etc. We should find measures that allow us to identify
+in an automated way once we have these kind of correlations.
+%
+We can define for example a local correlation coefficient between
+two distinct featires of the sample
 
