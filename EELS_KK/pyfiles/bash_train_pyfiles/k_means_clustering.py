@@ -66,7 +66,7 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
         clusters = values[ind_cluster].astype("float")
     
     
-    cost_min = 1E14
+    cost_min = np.inf
     old_clusters = np.copy(clusters)
     for j in range(n_times):
         ind_cluster = np.floor(np.random.rand(n_clusters)*n_values).astype(int)
@@ -74,6 +74,13 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
         for i in range(n_iterations):
             #print(clusters)
             r = reassign_values(clusters, values)
+            r_empty = np.argwhere(np.sum(r, axis = 1)==0)
+            while len(r_empty) > 0:
+                for r_inx in r_empty:
+                    change = np.random.randint(0,len(values))
+                    r[:, change] = 0
+                    r[r_empty, change] = 1
+                r_empty = np.argwhere(np.sum(r, axis = 0)==0)
             clusters = relocate_clusters(clusters, values, r)
             costs = np.sum(cost_clusters(values, clusters, r))
             if cost_min > costs:
@@ -86,6 +93,10 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
                 break
             old_clusters = np.copy(clusters)
     return min_clusters, min_r
+
+b = np.array([4, 4, 4, 4, 4, 4, 4, 4, 5, 4])
+k_means(b,5)
+
 """
 a = np.array([[1,2],[2,3],[3,4],[3,5]])
 bi = np.array([[1,0],[1,1],[2,0]])

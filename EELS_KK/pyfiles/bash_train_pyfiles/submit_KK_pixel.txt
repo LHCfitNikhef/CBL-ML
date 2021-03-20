@@ -1,0 +1,6 @@
+#!/bin/bash
+pbs_file=/data/theorie/ipostmes/cluster_programs/EELS_KK/pyfiles/bash_train_pyfiles/pbs_KK_pixel.pbs
+IMAGE = ${1?Error: no image given}
+XCOR = ${2?Error: no x coordinate given}
+YCOR = ${3?Error: no y coordinate given}
+qsub -q smefit -W group_list=smefit -l nodes=1:ppn=2 -v ARG=$IMAGE,ARG2=$XCOR,ARG3=$YCOR $pbs_file

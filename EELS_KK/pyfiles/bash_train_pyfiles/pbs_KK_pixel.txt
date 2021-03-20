@@ -1,0 +1,6 @@
+source /data/theorie/jthoeve/miniconda3/etc/profile.d/conda.sh
+conda activate eels_kk
+
+# mpiexec -n 4 python /data/theorie/ipostmes/cluster_programs/EELS_KK/pyfiles/bash_train_pyfiles/KK_MPI_per_row.py ${ARG} ${ARG2} ${ARG3}
+
+mpiexec -n 4 python /data/theorie/ipostmes/cluster_programs/EELS_KK/pyfiles/test_send_recieve_MPI.py 

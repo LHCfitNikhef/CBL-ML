@@ -28,10 +28,12 @@ import natsort
 import numpy as np
 import math
 from scipy.fftpack import next_fast_len
+from scipy.optimize import curve_fit
 import logging
 from ncempy.io import dm
 import os
 import copy
+import pickle
 
 import torch
 import torch.nn as nn
@@ -49,7 +51,8 @@ class Spectral_image():
     DIELECTRIC_FUNCTION_NAMES = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']
     EELS_NAMES = ['electron_energy_loss_spectrum','electron_energy_loss','EELS', 'EEL', 'energy_loss', 'data']
     IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
-    ZLP_NAMES = ['zeros_loss_peak', 'zero_loss', 'ZLP', 'ZLPs']
+    ZLP_NAMES = ['zeros_loss_peak', 'zero_loss', 'ZLP', 'ZLPs', 'zlp', 'zlps']
+    THICKNESS_NAMES = ['t', 'thickness', 'thick', 'thin']
     
     m_0 = 511.06 #eV, electron rest mass
     a_0 = 5.29E-11 #m, Bohr radius
@@ -57,7 +60,7 @@ class Spectral_image():
     c = 2.99792458E8 #m/s
     
     
-    def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
+    def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None, **kwargs):
         """
         INPUT:
             data = 3D-numpy array (x-axis x y-axis x energy loss-axis), spectral image data
@@ -73,7 +76,7 @@ class Spectral_image():
         self.ddeltaE = deltadeltaE
         self.determine_deltaE()
         if pixelsize is not None:
-            self.pixelsize = pixelsize
+            self.pixelsize = pixelsize*1E6
         self.calc_axes()
         if beam_energy is not None:
             self.beam_energy = beam_energy
@@ -82,24 +85,14 @@ class Spectral_image():
         if name is not None:
             self.name = name
     
+    def save_image(self, filename):
+        if filename[-4:] != '.pkl':
+            filename + '.pkl'
+        with open(filename, 'wb') as output:  # Overwrites any existing file.
+            pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
+
     
     #%%GENERAL FUNCTIONS
-    #TODO!!!
-    @property
-    def x(self):
-        """I'm the 'x' property."""
-        print("getter of x called")
-        return self._x
-
-    @x.setter
-    def x(self, value):
-        print("setter of x called")
-        self._x = value
-
-    @x.deleter
-    def x(self):
-        print("deleter of x called")
-        del self._x
     
     #%%PROPERTIES
     @property
@@ -153,10 +146,17 @@ class Spectral_image():
         ddeltaE *= cls.get_prefix(energyUnit, 'eV')
         pixelUnit = dmfile['pixelUnit'][1]
         pixelsize *= cls.get_prefix(pixelUnit, 'm')
-        image = cls(data, ddeltaE, pixelsize = pixelsize)
+        image = cls(data, ddeltaE, pixelsize = pixelsize, name=path_to_dmfile[:-4])
         return image
     
-    
+    @classmethod
+    def load_Spectral_image(cls, path_to_pickle):
+        if path_to_pickle[-4:] != '.pkl':
+            print("please provide a path to a pickle file containing a Spectrall_image class object.")
+            return
+        with open(path_to_pickle, 'rb') as input:
+            image = pickle.load(input)
+        return image
     
     
     def determine_deltaE(self):
@@ -399,6 +399,95 @@ class Spectral_image():
         
         if not hasattr(self, 'ZLP_models'):
             try:
+                self.load_ZLP_models_smefit(**kwargs)
+            except:
+                self.load_ZLP_models_smefit()
+        if not hasattr(self, 'ZLP_models'):
+            ans = input("No ZLP models found. Please specify directory or train models. \n" + 
+                        "Do you want to define path to models [p], train models [t] or quit [q]?\n")
+            if ans[0] == "q":
+                return
+            elif ans[0] == "p":
+                path_to_models = input("Please input path to models: \n")
+                try:
+                    self.load_ZLP_models(**kwargs)
+                except:
+                    self.load_ZLP_models()
+                if not hasattr(self, 'ZLP_models'):
+                    print("You had your chance. Please locate your models.")
+                    return
+            elif ans[0] == "t":
+                try:
+                    self.train_ZLPs(**kwargs)
+                except:
+                    self.train_ZLPs()
+                if "path_to_models" in kwargs:
+                    path_to_models = kwargs["path_to_models"]
+                    self.load_ZLP_models(path_to_models)
+                else:
+                    self.load_ZLP_models()
+            else:
+                print("unvalid input, not calculating ZLPs")
+                return
+        
+        
+        cluster = self.clustered[i,j]
+        
+        #TODO: aanpassen
+        def matching( signal, gen_i_ZLP, dE1):
+            dE0 = dE1 - 0.5
+            dE2 = dE1*8
+            #gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
+            delta = np.divide((dE1 - dE0), 3)
+            
+            factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - dE1)**2, delta**2))
+            factor_dm = 1 - factor_NN
+            
+            range_0 = signal[self.deltaE < dE0]
+            range_1 = gen_i_ZLP[(self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_NN + signal[(self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_dm
+            range_2 = gen_i_ZLP[(self.deltaE >= dE1) & (self.deltaE < 3 * dE2)]
+            range_3 = gen_i_ZLP[(self.deltaE >= 3 * dE2)] * 0
+            totalfile = np.concatenate((range_0, range_1, range_2, range_3), axis=0)
+            #TODO: now hardcoding no negative values!!!! CHECKKKK
+            totalfile = np.minimum(totalfile, signal)
+            return totalfile
+        
+        count = len(self.ZLP_models)
+        ZLPs = np.zeros((count, self.l)) #np.zeros((count, len_data))
+        
+        
+        if not hasattr(self, "scale_var_deltaE"):
+            self.scale_var_deltaE = find_scale_var(self.deltaE)
+        
+        if not hasattr(self, "scale_var_log_sum_I"):
+            all_spectra = self.data
+            all_spectra[all_spectra<1] = 1
+            int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
+            self.scale_var_log_sum_I = find_scale_var(int_log_I)
+            del all_spectra
+        
+        log_sum_I_pixel = np.log(np.sum(signal))
+        predict_x_np = np.zeros((self.l,2))
+        predict_x_np[:,0] = scale(self.deltaE, self.scale_var_deltaE)
+        predict_x_np[:,1] = scale(log_sum_I_pixel, self.scale_var_log_sum_I)
+
+        predict_x = torch.from_numpy(predict_x_np)
+        
+        dE1 = self.dE1[1,int(cluster)]
+        for k in range(count): 
+            model = self.ZLP_models[k]
+            with torch.no_grad():
+                predictions = np.exp(model(predict_x.float()).flatten())
+            ZLPs[k,:] = matching(signal, predictions, dE1)#matching(energies, np.exp(mean_k), data)
+            
+        return ZLPs
+    
+    def calc_gen_ZLPs(self, i,j, **kwargs):
+        ### Definition for the matching procedure
+        signal = self.get_pixel_signal(i,j)
+        
+        if not hasattr(self, 'ZLP_models'):
+            try:
                 self.load_ZLP_models(**kwargs)
             except:
                 self.load_ZLP_models()
@@ -430,27 +519,10 @@ class Spectral_image():
                 print("unvalid input, not calculating ZLPs")
                 return
         
-        self.dE0 = self.dE1-0.5
         
-        #TODO: aanpassen
-        def matching( signal, gen_i_ZLP):
-            #gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
-            delta = np.divide((self.dE1 - self.dE0), 3)
-            
-            factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<self.dE1) & (self.deltaE >= self.dE0)] - self.dE1)**2, delta**2))
-            factor_dm = 1 - factor_NN
-            
-            range_0 = signal[self.deltaE < self.dE0]
-            range_1 = gen_i_ZLP[(self.deltaE < self.dE1) & (self.deltaE >= self.dE0)] * factor_NN + signal[(self.deltaE < self.dE1) & (self.deltaE >= self.dE0)] * factor_dm
-            range_2 = gen_i_ZLP[(self.deltaE >= self.dE1) & (self.deltaE < 3 * self.dE2)]
-            range_3 = gen_i_ZLP[(self.deltaE >= 3 * self.dE2)] * 0
-            totalfile = np.concatenate((range_0, range_1, range_2, range_3), axis=0)
-            #TODO: now hardcoding no negative values!!!! CHECKKKK
-            totalfile = np.minimum(totalfile, signal)
-            return totalfile
         
         count = len(self.ZLP_models)
-        ZLPs = np.zeros((count, self.l)) #np.zeros((count, len_data))
+        predictions = np.zeros((count, self.l)) #np.zeros((count, len_data))
         
         
         if not hasattr(self, "scale_var_deltaE"):
@@ -473,10 +545,9 @@ class Spectral_image():
         for k in range(count): 
             model = self.ZLP_models[k]
             with torch.no_grad():
-                predictions = np.exp(model(predict_x.float()).flatten())
-            ZLPs[k,:] = matching(signal, predictions)#matching(energies, np.exp(mean_k), data)
+                predictions[k,:] = np.exp(model(predict_x.float()).flatten())
             
-        return ZLPs
+        return predictions
         
     
     def train_ZLPs(self, n_clusters = None, conf_interval = 0.68, clusters = None, **kwargs):
@@ -522,6 +593,69 @@ class Spectral_image():
                 with torch.no_grad():
                     model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
                     self.ZLP_models.append(copy.deepcopy(model))
+                k+=1
+    
+    @staticmethod
+    def check_cost_smefit(path_to_models, idx, threshold = 1):
+        path_to_models += (path_to_models[-1] != '/')*'/'
+        cost = np.loadtxt(path_to_models + "costs" + str(idx) + ".txt")
+        return cost<threshold
+    
+    
+    def load_ZLP_models_smefit(self, path_to_models = "models", n_rep = None, threshold_costs = 1, name_in_path = False, plotting = False, idx = None):
+        if n_rep is None and idx is None:
+            print("Please spectify either the number of replicas you wish to load (n_rep)"+\
+                  " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
+            return
+        if hasattr(self, "name") and name_in_path:
+            path_to_models = self.name + "_" + path_to_models
+        
+        if not os.path.exists(path_to_models):
+            print("No path " + os.getcwd() + path_to_models + " found. Please ensure spelling and that there are models trained.")
+            return
+        
+        self.ZLP_models = []
+        
+        path_to_models += (path_to_models[-1] != '/')*'/'
+        path_dE1 = "dE1.txt"
+        model = MLP(num_inputs=2, num_outputs=1)
+        self.dE1 = np.loadtxt(path_to_models + path_dE1)
+        if idx is not None:
+            with torch.no_grad():
+                model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(idx)))
+            self.ZLP_models.append(copy.deepcopy(model))
+            return
+        
+        
+        path_costs = "costs"
+        files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
+        path_model_rep = "nn_rep"
+        files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
+
+        
+        n_rep = min(len(files_costs), len(files_model_rep))
+        costs = np.zeros(n_rep)
+        
+        for i in range(n_rep):
+            file = files_costs[i]
+            costs[i] =  np.loadtxt(path_to_models + file)
+        
+        self.costs = costs[costs<threshold_costs]
+    
+        if plotting:
+            plt.figure()
+            plt.title("chi^2 distribution of models")
+            plt.hist(costs[costs < threshold_costs*3], bins = 20)
+            plt.xlabel("chi^2")
+            plt.ylabel("number of occurence")   
+        
+        k=0
+        for j in range(n_rep):
+            if costs[j] < threshold_costs:
+                file = files_model_rep[j]
+                with torch.no_grad():
+                    model.load_state_dict(torch.load(path_to_models + file))
+                self.ZLP_models.append(copy.deepcopy(model))
                 k+=1
 
     #METHODS ON DIELECTRIC FUNCTIONS
@@ -630,7 +764,7 @@ class Spectral_image():
         # Constants and units
         me = 511.06
     
-        e0 = 200 #  keV
+        e0 = 200 #keV
         beta =30 #mrad
     
         eaxis = self.deltaE[self.deltaE>0] #axis.axis.copy()
@@ -725,8 +859,113 @@ class Spectral_image():
         return eps, te, Srfint
 
 
+    def KK_pixel(self, i, j):
+        data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
+        ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
+        dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
+        S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
+        ts = np.zeros(ZLPs.shape[0])            
+        IEELSs = np.zeros(ZLPs.shape)
+        for k in range(ZLPs.shape[0]):
+            ZLP_k = ZLPs[k,:]
+            N_ZLP = np.sum(ZLP_k)
+            IEELS = data_ij-ZLP_k
+            IEELS = self.deconvolute(i, j, ZLP_k)
+            IEELSs[k,:] = IEELS
+            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
+        return dielectric_functions, ts, S_ss, IEELSs
+
+
+    def im_dielectric_function_bs(self, track_process = False, plot = False, save_index = None, save_path = "KK_analysis", smooth=False):
+        """
+        INPUT:
+            self -- the image of which the dielectic functions are calculated
+            track_process -- boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
+            plot -- boolean, default = False, if True, plots all calculated dielectric functions
+        OUTPUT ATRIBUTES:
+            self.dielectric_function_im_avg = average dielectric function for each pixel
+            self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
+            self.S_s_avg = average surface scattering distribution for each pixel
+            self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
+            self.thickness_avg = average thickness for each pixel
+            self.thickness_std = standard deviation thickness for each pixel
+            self.IEELS_avg = average bulk scattering distribution for each pixel
+            self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel
+        """
+        #TODO
+        #data = self.data[self.deltaE>0, :,:]
+        #energies = self.deltaE[self.deltaE>0]
+        #TODO: make check for models
+        # if not hasattr(self, 'ZLPs_gen'):
+        #     self.calc_ZLPs_gen2("iets")
+        self.dielectric_function_im_avg = (1+1j)*np.zeros(self.data[ :,:,self.deltaE>0].shape)
+        self.dielectric_function_im_std = (1+1j)*np.zeros(self.data[ :,:,self.deltaE>0].shape)
+        self.S_s_avg = (1+1j)*np.zeros(self.data[ :,:,self.deltaE>0].shape)
+        self.S_s_std = (1+1j)*np.zeros(self.data[ :,:,self.deltaE>0].shape)
+        self.thickness_avg = np.zeros(self.image_shape)
+        self.thickness_std = np.zeros(self.image_shape)
+        self.IEELS_avg = np.zeros(self.data.shape)
+        self.IEELS_std = np.zeros(self.data.shape)
+        N_ZLPs_calculated = hasattr(self, 'N_ZLPs')
+        #TODO: add N_ZLP saving
+        #if not N_ZLPs_calculated:
+        #    self.N_ZLPs = np.zeros(self.image_shape)
+        if plot:
+            fig1, ax1 = plt.subplots()
+            fig2, ax2 = plt.subplots()
+        for i in range(self.image_shape[0]):
+            for j in range(self.image_shape[1]):
+                if track_process: print("calculating dielectric function for pixel " , i,j)
+                """
+                data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
+                ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
+                dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
+                S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
+                ts = np.zeros(ZLPs.shape[0])            
+                IEELSs = np.zeros(ZLPs.shape)
+                for k in range(ZLPs.shape[0]):
+                    ZLP_k = ZLPs[k,:]
+                    N_ZLP = np.sum(ZLP_k)
+                    IEELS = data_ij-ZLP_k
+                    if smooth:
+                        IEELS = smooth_1D(IEELS)
+                    IEELS = self.deconvolute(i, j, ZLP_k)
+                    IEELSs[k,:] = IEELS
+                    if plot: 
+                        #ax1.plot(self.deltaE, IEELS)
+                        plt.figure()
+                        plt.plot(self.deltaE, IEELS)
+                    #TODO: FIX ZLP: now becomes very negative!!!!!!!
+                    #TODO: VERY IMPORTANT
+                    dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
+                    if plot: 
+                        #plt.figure()
+                        plt.plot(self.deltaE[self.deltaE>0], dielectric_functions[k,:]*2)
+                        plt.xlim(0,10)
+                        plt.ylim(-100, 400)
+                    """
+                dielectric_functions, ts, S_ss, IEELSs = self.KK_pixel(i,j)
+                #print(ts)
+                self.dielectric_function_im_avg[i,j,:] = np.average(dielectric_functions, axis = 0)
+                self.dielectric_function_im_std[i,j,:] = np.std(dielectric_functions, axis = 0)
+                self.S_s_avg[i,j,:] = np.average(S_ss, axis = 0)
+                self.S_s_std[i,j,:] = np.std(S_ss, axis = 0)
+                self.thickness_avg[i,j] = np.average(ts)
+                self.thickness_std[i,j] = np.std(ts)
+                self.IEELS_avg[i,j,:] = np.average(IEELSs, axis = 0)
+                self.IEELS_std[i,j,:] = np.std(IEELSs, axis = 0)
+        if save_index is not None:
+            save_path += (not save_path[0] == '/')*'/'
+            with open(save_path + "diel_fun_" + str(save_index) + ".npy", 'wb') as f:
+                np.save(f, self.dielectric_function_im_avg)
+            with open(save_path + "S_s_" + str(save_index) + ".npy", 'wb') as f:
+                np.save(f, self.S_s_avg)
+            with open(save_path + "thickness_" + str(save_index) + ".npy", 'wb') as f:
+                np.save(f, self.thickness_avg)
+        #return dielectric_function_im_avg, dielectric_function_im_std
+
     
-    def im_dielectric_function(self, track_process = False, plot = False):
+    def im_dielectric_function(self, track_process = False, plot = False, save_index = None):
         """
         INPUT:
             self -- the image of which the dielectic functions are calculated
@@ -846,6 +1085,25 @@ class Spectral_image():
         n = len(crossing_E)
         return crossing_E, n
     
+    def crossings_ieels(self, ieels, smooth = True, window_len = 50):#, delta = 50):
+        #l = len(die_fun)
+        die_fun_avg = np.real(self.dielectric_function_im_avg[ i, j, :])
+        #die_fun_f = np.zeros(l-2*delta)
+        #TODO: use smooth?
+        """
+        for i in range(self.l-delta):
+            die_fun_avg[i] = np.average(self.dielectric_function_im_avg[i:i+delta])
+        """
+        crossing = np.concatenate((np.array([0]),(die_fun_avg[:-1]<0) * (die_fun_avg[1:] >=0)))
+        deltaE_n = self.deltaE[self.deltaE>0]
+        #deltaE_n = deltaE_n[50:-50]
+        crossing_E = deltaE_n[crossing.astype('bool')]
+        n = len(crossing_E)
+        return crossing_E, n
+    
+    #%%
+    #TODO: add bandgap finding
+    
     def cluster(self, n_clusters = 5, n_iterations = 30, based_upon = "sum"):
         #TODO: add other based_upons
         if based_upon == "sum":
@@ -860,7 +1118,7 @@ class Spectral_image():
         self.clustered = np.zeros(self.image_shape)
         for i in range(n_clusters):
             in_cluster_i = r[arg_sort_clusters[i]]
-            self.clustered += (np.reshape(in_cluster_i, self.image_shape))*i
+            self.clustered += ((np.reshape(in_cluster_i, self.image_shape))*i).astype(int)
     
     
     #PLOTTING FUNCTIONS
@@ -898,6 +1156,45 @@ class Spectral_image():
         if ylab is not None:
             plt.ylabel(ylab)
         plt.show()
+        
+    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, **kwargs):
+        """
+        INPUT:
+            self -- spectral image 
+            title -- str, delfault = None, title of plot
+            xlab -- str, default = None, x-label
+            ylab -- str, default = None, y-label
+        OUTPUT:
+        Plots the summation over the intensity for each pixel in a heatmap.
+        """
+        #TODO: invert colours
+        if hasattr(self, 'name'):
+            name = self.name
+        else:
+            name = ''
+        plt.figure()
+        if title is None:
+            plt.title("intgrated intensity spectrum " + name)
+        else:
+            plt.title(title)
+        if hasattr(self, 'pixelsize'):
+        #    plt.xlabel(self.pixelsize)
+        #    plt.ylabel(self.pixelsize)
+            plt.xlabel("[m]")
+            plt.ylabel("[m]")
+            xticks, yticks = self.get_ticks()
+            ax = sns.heatmap(data, xticklabels=xticks, yticklabels=yticks, **kwargs)
+        else:
+            ax = sns.heatmap(data, **kwargs)
+        if xlab is not None:
+            plt.xlabel(xlab)
+        else:
+            plt.xlabel('[micron]')
+        if ylab is not None:
+            plt.ylabel(ylab)
+        else:
+            plt.ylabel('[micron]')
+        plt.show()
     
     def get_ticks(self, sig = 3, n_tick = 10):
         xlabels = np.zeros(self.x_axis.shape,dtype = object)
@@ -905,13 +1202,13 @@ class Spectral_image():
         each_n_pixels = math.floor(len(xlabels)/n_tick)
         for i in range(len(xlabels)):
             if i%each_n_pixels == 0:
-                xlabels[i] = '%s' % float('%.3g' % self.x_axis[i])
+                xlabels[i] = '%s' % float('%.2g' % self.x_axis[i])
         ylabels = np.zeros(self.y_axis.shape,dtype = object)
         ylabels[:] = ""
         each_n_pixels = math.floor(len(ylabels)/n_tick)
         for i in range(len(ylabels)):
             if i%each_n_pixels == 0:
-                ylabels[i] = '%s' % float('%.3g' % self.y_axis[i])
+                ylabels[i] = '%s' % float('%.2g' % self.y_axis[i])
         return xlabels, ylabels
                 
     
@@ -948,6 +1245,23 @@ class Spectral_image():
             if legend: 
                 plt.legend()
                 
+    
+    #GENERAL FUNCTIONS
+    def get_key(self, key):
+        if key.lower() in (string.lower() for string in self.EELS_NAMES):
+            return 'data'
+        elif key.lower() in (string.lower() for string in self.IEELS_NAMES):
+            return 'ieels'
+        elif key.lower() in (string.lower() for string in self.ZLP_NAMES):
+            return 'zlp'
+        elif key.lower() in (string.lower() for string in self.DIELECTRIC_FUNCTION_NAMES):
+            return 'eps'
+        elif key.lower() in (string.lower() for string in self.THICKNESS_NAMES):
+            return 'thickness'
+        else:
+            return key
+        
+    
     
     #STATIC METHODS
     @staticmethod
@@ -1013,6 +1327,15 @@ class Spectral_image():
         return self.data[key]
         #pass
     
+    def __getattr__(self, key):
+        key = self.get_key(key)
+        return object.__getattribute__(self, key)
+    
+    def __setattr__(self, key, value):
+        key = self.get_key(key)
+        self.__dict__[key] = value
+    	
+
     
     
     def __str__(self):
@@ -1036,7 +1359,7 @@ class Spectral_image():
         return self.l
             
 
-    
+# GENERAL DATA MODIFICATION FUNCTIONS  
 
 def CFT(x, y):
     x_0 = np.min(x)
@@ -1061,6 +1384,44 @@ def iCFT(x, Y_k):
     return f_n            
 
 
+def smooth_1D(data, window_len=50,window='hanning'):
+    """smooth the data using a window with requested size.
+
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window; should be an odd integer
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
+
+    output:
+        the smoothed signal
+
+    """
+    #TODO: add comnparison
+    window_len += (window_len+1)%2
+    s=np.r_['-1', data[window_len-1:0:-1],data,data[-2:-window_len-1:-1]]
+
+    if window == 'flat': #moving average
+        w=np.ones(window_len,'d')
+    else:
+        w=eval('np.'+window+'(window_len)')
+
+    # y=np.convolve(w/w.sum(),s,mode='valid')
+    # return y[(window_len-1):-(window_len)]
+    surplus_data = int((window_len-1)*0.5)
+    data = np.apply_along_axis(lambda m: np.convolve(m, w/w.sum(), mode='valid'), axis=0, arr=s)[surplus_data:-surplus_data]
+    return data
+
+
+
+# MODELING CLASSES AND FUNCTIONS
+def bandgap(x, amp, BG,b):
+    return amp * (x - BG)**(b)
 
 class MLP(nn.Module):
 
