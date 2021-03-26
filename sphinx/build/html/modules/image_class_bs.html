@@ -1,0 +1,716 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="k_means_clustering module" href="k_means_clustering.html" /><link rel="prev" title="calculate_dist_KK_results module" href="calculate_dist_KK_results.html" />
+
+    <meta name="generator" content="sphinx-3.5.2, furo 2021.03.20.beta30"/>
+        <title>image_class_bs module - EELSfitter 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">EELSfitter 0.0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">EELSfitter 0.0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">bash_train_pyfiles</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="KK_MPI_per_row.html">KK_MPI_per_row module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_analysis_models_bs.html">KK_analysis_models_bs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_meta.html">KK_meta module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_one_pixel.html">KK_one_pixel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_per_row.html">KK_per_row module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_pixel.html">KK_pixel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_plot_results.html">KK_plot_results module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="KK_save_results.html">KK_save_results module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculate_dist_KK_results.html">calculate_dist_KK_results module</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">image_class_bs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="k_means_clustering.html">k_means_clustering module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_results_dE.html">plot_results_dE module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="train_nn_torch_bs.html">train_nn_torch_bs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_images_bs.html">training_images_bs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="untitled7.html">untitled7 module</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="module-image_class_bs">
+<span id="image-class-bs-module"></span><h1>image_class_bs module<a class="headerlink" href="#module-image_class_bs" title="Permalink to this headline">¶</a></h1>
+<p>Created on Fri Dec 18 17:38:57 2020</p>
+<p>@author: isabel</p>
+<dl class="py function">
+<dt id="image_class_bs.CFT">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">CFT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#CFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.CFT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py class">
+<dt id="image_class_bs.MLP">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">MLP</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_outputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#MLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.MLP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="py method">
+<dt id="image_class_bs.MLP.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#MLP.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.MLP.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.MLP.training">
+<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#image_class_bs.MLP.training" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt id="image_class_bs.Spectral_image">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">Spectral_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltadeltaE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixelsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES">
+<code class="sig-name descname"><span class="pre">DIELECTRIC_FUNCTION_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['dielectric_function',</span> <span class="pre">'dielectricfunction',</span> <span class="pre">'dielec_func',</span> <span class="pre">'die_fun',</span> <span class="pre">'df',</span> <span class="pre">'epsilon']</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.EELS_NAMES">
+<code class="sig-name descname"><span class="pre">EELS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['electron_energy_loss_spectrum',</span> <span class="pre">'electron_energy_loss',</span> <span class="pre">'EELS',</span> <span class="pre">'EEL',</span> <span class="pre">'energy_loss',</span> <span class="pre">'data']</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.EELS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.IEELS_NAMES">
+<code class="sig-name descname"><span class="pre">IEELS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['inelastic_scattering_energy_loss_spectrum',</span> <span class="pre">'inelastic_scattering_energy_loss',</span> <span class="pre">'inelastic_scattering',</span> <span class="pre">'IEELS',</span> <span class="pre">'IES']</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.IEELS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.KK_pixel">
+<code class="sig-name descname"><span class="pre">KK_pixel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.KK_pixel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.KK_pixel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.THICKNESS_NAMES">
+<code class="sig-name descname"><span class="pre">THICKNESS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['t',</span> <span class="pre">'thickness',</span> <span class="pre">'thick',</span> <span class="pre">'thin']</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.THICKNESS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.ZLP_NAMES">
+<code class="sig-name descname"><span class="pre">ZLP_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['zeros_loss_peak',</span> <span class="pre">'zero_loss',</span> <span class="pre">'ZLP',</span> <span class="pre">'ZLPs',</span> <span class="pre">'zlp',</span> <span class="pre">'zlps']</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.ZLP_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.a_0">
+<code class="sig-name descname"><span class="pre">a_0</span></code><em class="property"> <span class="pre">=</span> <span class="pre">5.29e-11</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.a_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.c">
+<code class="sig-name descname"><span class="pre">c</span></code><em class="property"> <span class="pre">=</span> <span class="pre">299792458.0</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.c" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.calc_ZLPs">
+<code class="sig-name descname"><span class="pre">calc_ZLPs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_ZLPs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_ZLPs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.calc_avg_ci">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">calc_avg_ci</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">np_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_low_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_avg_ci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_avg_ci" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.calc_axes">
+<code class="sig-name descname"><span class="pre">calc_axes</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_axes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.calc_gen_ZLPs">
+<code class="sig-name descname"><span class="pre">calc_gen_ZLPs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_gen_ZLPs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_gen_ZLPs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.check_cost_smefit">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">check_cost_smefit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.check_cost_smefit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.check_cost_smefit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.cluster">
+<code class="sig-name descname"><span class="pre">cluster</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">based_upon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cluster" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.crossings">
+<code class="sig-name descname"><span class="pre">crossings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.crossings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.crossings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.crossings_ieels">
+<code class="sig-name descname"><span class="pre">crossings_ieels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ieels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.crossings_ieels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.crossings_ieels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.crossings_im">
+<code class="sig-name descname"><span class="pre">crossings_im</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.crossings_im"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.crossings_im" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self</p>
+</dd>
+<dt>OUTPUT:</dt><dd><p>self.crossings_E = numpy array (image-shape, N_c), where N_c the maximimun number of crossings of any pixel, 0 indicates no crossing
+self.crossings_n = numpy array (image-shape), number of crossings per pixel</p>
+</dd>
+</dl>
+<p>Calculates for each pixel the crossings of the real part of the dielectric function             from negative to positive.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.cut">
+<code class="sig-name descname"><span class="pre">cut</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_ex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cut" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E1</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p></li>
+<li><p><strong>E2</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.cut_image">
+<code class="sig-name descname"><span class="pre">cut_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cut_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cut_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.deconvolute">
+<code class="sig-name descname"><span class="pre">deconvolute</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ZLP</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.deconvolute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.deconvolute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.determine_deltaE">
+<code class="sig-name descname"><span class="pre">determine_deltaE</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.determine_deltaE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.determine_deltaE" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self</p>
+</dd>
+</dl>
+<p>Determines the delta energies of the spectral image, based on the delta delta energie,
+and the index on which the spectral image has on average the highest intesity, this
+is taken as the zero point for the delta energy.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_cluster_spectra">
+<code class="sig-name descname"><span class="pre">get_cluster_spectra</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.68</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">based_upon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_cluster_spectra"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_cluster_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conf_interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The ratio of spectra returned. The spectra are selected based on the
+based_upon value. The default is 0.68.</p></li>
+<li><p><strong>clusters</strong> (<em>list of ints</em><em>, </em><em>optional #TODO: finish</em>) – DESCRIPTION. The default is None.</p></li>
+<li><p><strong>save_as_attribute</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>cluster_data</strong> (<em>np.array of type object, filled with 2D numpy arrays</em>) – Each cell of the super numpy array is filled with the data of all spectra
+with in one of the requested clusters.</p></li>
+<li><p><em>Atributes</em></p></li>
+<li><p><em>———</em></p></li>
+<li><p><strong>self.cluster_data</strong> (<em>np.array of type object, filled with 2D numpy arrays</em>) – If save_as_attribute set to True, the cluster data is also saved as attribute</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_data">
+<code class="sig-name descname"><span class="pre">get_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns spectra image data in 3D-numpy array (x-axis x y-axis x energy loss-axis)</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_deltaE">
+<code class="sig-name descname"><span class="pre">get_deltaE</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_deltaE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_deltaE" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns energy loss axis in numpy array</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_key">
+<code class="sig-name descname"><span class="pre">get_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_metadata">
+<code class="sig-name descname"><span class="pre">get_metadata</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns list with values for beam_energy and collection_angle, if defined</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_pixel_signal">
+<code class="sig-name descname"><span class="pre">get_pixel_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EELS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_pixel_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_pixel_signal" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>i: int, x-coordinate for the pixel
+j: int, y-coordinate for the pixel</p>
+</dd>
+<dt>Keyword argument:</dt><dd><p>signal: str (default = ‘EELS’), what signal is requested, should comply with defined names</p>
+</dd>
+<dt>OUTPUT:</dt><dd><p>signal: 1D numpy array, array with the requested signal from the requested pixel</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_prefix">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_prefix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SIunit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>unit – str, unit of which the prefix is wanted
+SIunit – str, default = None, the SI unit of the unit of which the prefix is wanted                         (eg ‘eV’ for ‘keV’), if None, first character of unit is evaluated as prefix
+numeric – bool, default = True, if numeric the prefix is translated to the numeric value                         (e.g. 1E3 for ‘k’)</p>
+</dd>
+<dt>OUTPUT:</dt><dd><p>prefix – str or int, the character of the prefix or the numeric value of the prefix</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.get_ticks">
+<code class="sig-name descname"><span class="pre">get_ticks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_tick</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_ticks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_ticks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.h_bar">
+<code class="sig-name descname"><span class="pre">h_bar</span></code><em class="property"> <span class="pre">=</span> <span class="pre">6.582119569e-16</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.h_bar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.im_dielectric_function">
+<code class="sig-name descname"><span class="pre">im_dielectric_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.im_dielectric_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.im_dielectric_function" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self – the image of which the dielectic functions are calculated
+track_process – boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
+plot – boolean, default = False, if True, plots all calculated dielectric functions</p>
+</dd>
+<dt>OUTPUT ATRIBUTES:</dt><dd><p>self.dielectric_function_im_avg = average dielectric function for each pixel
+self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
+self.S_s_avg = average surface scattering distribution for each pixel
+self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
+self.thickness_avg = average thickness for each pixel
+self.thickness_std = standard deviation thickness for each pixel
+self.IEELS_avg = average bulk scattering distribution for each pixel
+self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.im_dielectric_function_bs">
+<code class="sig-name descname"><span class="pre">im_dielectric_function_bs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'KK_analysis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.im_dielectric_function_bs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.im_dielectric_function_bs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self – the image of which the dielectic functions are calculated
+track_process – boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
+plot – boolean, default = False, if True, plots all calculated dielectric functions</p>
+</dd>
+<dt>OUTPUT ATRIBUTES:</dt><dd><p>self.dielectric_function_im_avg = average dielectric function for each pixel
+self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
+self.S_s_avg = average surface scattering distribution for each pixel
+self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
+self.thickness_avg = average thickness for each pixel
+self.thickness_std = standard deviation thickness for each pixel
+self.IEELS_avg = average bulk scattering distribution for each pixel
+self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.image_shape">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">image_shape</span></code><a class="headerlink" href="#image_class_bs.Spectral_image.image_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>return 2D-shape of spectral image</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.kramers_kronig_hs">
+<code class="sig-name descname"><span class="pre">kramers_kronig_hs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">I_EELS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_ZLP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_S_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.kramers_kronig_hs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.kramers_kronig_hs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the complex
+dielectric function from a single scattering distribution (SSD) using
+the Kramers-Kronig relations.</p>
+<p>It uses the FFT method as in <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.  The SSD is an
+EELSSpectrum instance containing SSD low-loss EELS with no zero-loss
+peak. The internal loop is devised to approximately subtract the
+surface plasmon contribution supposing an unoxidized planar surface and
+neglecting coupling between the surfaces. This method does not account
+for retardation effects, instrumental broading and surface plasmon
+excitation in particles.</p>
+<p>Note that either refractive index or thickness are required.
+If both are None or if both are provided an exception is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zlp</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – ZLP intensity. It is optional (can be None) if <cite>t</cite> is None and <cite>n</cite>
+is not None and the thickness estimation is not required. If <cite>t</cite>
+is not None, the ZLP is required to perform the normalization and
+if <cite>t</cite> is not None, the ZLP is required to calculate the thickness.
+If the ZLP is the same for all spectra, the integral of the ZLP
+can be provided as a number. Otherwise, if the ZLP intensity is not
+the same for all spectra, it can be provided as i) a Signal1D
+of the same dimensions as the current signal containing the ZLP
+spectra for each location ii) a BaseSignal of signal dimension 0
+and navigation_dimension equal to the current signal containing the
+integrated ZLP intensity.</p></li>
+<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of the iterations for the internal loop to remove the
+surface plasmon contribution. If 1 the surface plasmon contribution
+is not estimated and subtracted (the default is 1).</p></li>
+<li><p><strong>n</strong> (<em>{None</em><em>, </em><em>float}</em>) – The medium refractive index. Used for normalization of the
+SSD to obtain the energy loss function. If given the thickness
+is estimated and returned. It is only required when <cite>t</cite> is None.</p></li>
+<li><p><strong>t</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – <dl class="simple">
+<dt>The sample thickness in nm. Used for normalization of the</dt><dd><p>to obtain the energy loss function. It is only required when</p>
+</dd>
+</dl>
+<p><cite>n</cite> is None. If the thickness is the same for all spectra it can be
+given by a number. Otherwise, it can be provided as a BaseSignal
+with signal dimension 0 and navigation_dimension equal to the
+current signal.</p>
+</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – A small number (0.1-0.5 eV) added to the energy axis in
+specific steps of the calculation the surface loss correction to
+improve stability.</p></li>
+<li><p><strong>full_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If True, return a dictionary that contains the estimated
+thickness if <cite>t</cite> is None and the estimated surface plasmon
+excitation and the spectrum corrected from surface plasmon
+excitations if <cite>iterations</cite> &gt; 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>eps</strong> (<em>DielectricFunction instance</em>) –</p>
+<p>The complex dielectric function results,</p>
+<blockquote>
+<div><div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\epsilon = \epsilon_1 + i*\epsilon_2,\]</div></div>
+</div></blockquote>
+<p>contained in an DielectricFunction instance.</p>
+</li>
+<li><p><strong>output</strong> (<em>Dictionary (optional)</em>) – A dictionary of optional outputs with the following keys:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">thickness</span></code></dt><dd><p>The estimated  thickness in nm calculated by normalization of
+the SSD (only when <cite>t</cite> is None)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">surface</span> <span class="pre">plasmon</span> <span class="pre">estimation</span></code></dt><dd><p>The estimated surface plasmon excitation (only if
+<cite>iterations</cite> &gt; 1.)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValuerError</strong> – If both <cite>n</cite> and <cite>t</cite> are undefined (None).</p></li>
+<li><p><strong>AttribureError</strong> – If the beam_energy or the collection semi-angle are not defined in
+    metadata.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method is based in Egerton’s Matlab code <a class="footnote-reference brackets" href="#id3" id="id2">1</a> with some
+minor differences:</p>
+<ul class="simple">
+<li><p>The wrap-around problem when computing the ffts is workarounded by
+padding the signal instead of substracting the reflected tail.</p></li>
+</ul>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Ray Egerton, “Electron Energy-Loss Spectroscopy in the Electron
+Microscope”, Springer-Verlag, 2011.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.l">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">l</span></code><a class="headerlink" href="#image_class_bs.Spectral_image.l" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns length of spectra, i.e. num energy loss bins</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.load_Spectral_image">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load_Spectral_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_pickle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_Spectral_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_Spectral_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.load_ZLP_models">
+<code class="sig-name descname"><span class="pre">load_ZLP_models</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_costs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_in_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_ZLP_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_ZLP_models" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.load_ZLP_models_smefit">
+<code class="sig-name descname"><span class="pre">load_ZLP_models_smefit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_costs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_in_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_ZLP_models_smefit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_ZLP_models_smefit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.load_data">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dmfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>path_to_dmfile: str, path to spectral image file (.dm3 or .dm4 extension)</p>
+</dd>
+<dt>OUTPUT:</dt><dd><p>image – Spectral_image, object of Spectral_image class containing the data of the dm-file</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.m_0">
+<code class="sig-name descname"><span class="pre">m_0</span></code><em class="property"> <span class="pre">=</span> <span class="pre">511.06</span></em><a class="headerlink" href="#image_class_bs.Spectral_image.m_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.n_clusters">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_clusters</span></code><a class="headerlink" href="#image_class_bs.Spectral_image.n_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>return number of clusters image is clustered into</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.n_spectra">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_spectra</span></code><a class="headerlink" href="#image_class_bs.Spectral_image.n_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns number of spectra in specral image</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.plot_all">
+<code class="sig-name descname"><span class="pre">plot_all</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">same_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_E</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EELS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.plot_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.plot_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.plot_heatmap">
+<code class="sig-name descname"><span class="pre">plot_heatmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.plot_heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self – spectral image
+title – str, delfault = None, title of plot
+xlab – str, default = None, x-label
+ylab – str, default = None, y-label</p>
+</dd>
+</dl>
+<p>OUTPUT:
+Plots the summation over the intensity for each pixel in a heatmap.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.plot_sum">
+<code class="sig-name descname"><span class="pre">plot_sum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.plot_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.plot_sum" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>INPUT:</dt><dd><p>self – spectral image
+title – str, delfault = None, title of plot
+xlab – str, default = None, x-label
+ylab – str, default = None, y-label</p>
+</dd>
+</dl>
+<p>OUTPUT:
+Plots the summation over the intensity for each pixel in a heatmap.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.samenvoegen">
+<code class="sig-name descname"><span class="pre">samenvoegen</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.samenvoegen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.samenvoegen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.save_image">
+<code class="sig-name descname"><span class="pre">save_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.save_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.save_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.shape">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shape</span></code><a class="headerlink" href="#image_class_bs.Spectral_image.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 3D-shape of spectral image</p>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.smooth">
+<code class="sig-name descname"><span class="pre">smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hanning'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_original</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>smooth the data using a window with requested size.</p>
+<p>This method is based on the convolution of a scaled window with the signal.
+The signal is prepared by introducing reflected copies of the signal
+(with the window size) in both ends so that transient parts are minimized
+in the begining and end part of the output signal.</p>
+<dl>
+<dt>input:</dt><dd><p>x: the input signal
+window_len: the dimension of the smoothing window; should be an odd integer
+window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bartlett’, ‘blackman’</p>
+<blockquote>
+<div><p>flat window will produce a moving average smoothing.</p>
+</div></blockquote>
+</dd>
+<dt>output:</dt><dd><p>the smoothed signal</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.train_ZLPs">
+<code class="sig-name descname"><span class="pre">train_ZLPs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.68</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.train_ZLPs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.Spectral_image.train_ZLPs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt id="image_class_bs.bandgap">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">bandgap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BG</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#bandgap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.bandgap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="image_class_bs.find_scale_var">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">find_scale_var</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#find_scale_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.find_scale_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="image_class_bs.iCFT">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">iCFT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#iCFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.iCFT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt id="image_class_bs.scale">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">scale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ab</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>min_inp = inp.min()
+max_inp = inp.max()</p>
+<p>outp = inp/(max_inp-min_inp) * (max_out-min_out)
+outp -= outp.min()
+outp += min_out</p>
+<p>return outp</p>
+</dd></dl>
+<dl class="py function">
+<dt id="image_class_bs.smooth_1D">
+<code class="sig-prename descclassname"><span class="pre">image_class_bs.</span></code><code class="sig-name descname"><span class="pre">smooth_1D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hanning'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#smooth_1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_class_bs.smooth_1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>smooth the data using a window with requested size.</p>
+<p>This method is based on the convolution of a scaled window with the signal.
+The signal is prepared by introducing reflected copies of the signal
+(with the window size) in both ends so that transient parts are minimized
+in the begining and end part of the output signal.</p>
+<dl>
+<dt>input:</dt><dd><p>x: the input signal
+window_len: the dimension of the smoothing window; should be an odd integer
+window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bartlett’, ‘blackman’</p>
+<blockquote>
+<div><p>flat window will produce a moving average smoothing.</p>
+</div></blockquote>
+</dd>
+<dt>output:</dt><dd><p>the smoothed signal</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="k_means_clustering.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">k_means_clustering module</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="calculate_dist_KK_results.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">calculate_dist_KK_results module</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, A
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/modules/image_class_bs.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>
