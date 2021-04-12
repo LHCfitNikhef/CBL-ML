@@ -35,15 +35,80 @@ def gen_ZLP_I(image, I):
 #im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
 
 im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
-im.cluster(5)
+# im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
+# im.cluster(5)
 
 #im=im
-"""
-path_to_models = 'dE1/E1_0'
+
+# path_to_models = 'dE1/E1_05'
+# path_to_models = 'models/train_lau_log'
+path_to_models = 'models/train_004_pooled_5_2'
+# path_to_models = 'models/train_004'
+ 
+im.load_ZLP_models_smefit(path_to_models=path_to_models)
+xlim = [np.min(im.dE1[1,:])/4, np.max(im.dE1[1,:])*1.5]
+
+name = " 004" # "Lau's sample, clustered on log" 
+
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+ax1.set_title("predictions for scaled intensities 0.1-0.9 of " + name)
+ax1.set_xlabel("energy loss [eV]")
+ax1.set_ylabel("intensity")
+ax2.set_title("predictions for scaled intensities 0.1-0.9 of " + name)
+ax2.set_xlabel("energy loss [eV]")
+ax2.set_ylabel("intensity")
+
+
+
+
+for I in [0.1,0.3,0.5,0.7,0.9]:
+    ZLPs = gen_ZLP_I(im, I)
+    low = np.nanpercentile(ZLPs, 16, axis=0)
+    high = np.nanpercentile(ZLPs, 84, axis=0)
+    mean = np.average(ZLPs, axis = 0)
+    mean = np.nanpercentile(ZLPs, 50, axis=0)
+    #[mean, var, low, high], edges = binned_statistics(im.deltaE, ZLPs, n_bins, ["mean", "var", "low", "high"])
+    ax1.fill_between(im.deltaE, low, high, alpha = 0.3)
+    ax2.fill_between(im.deltaE, low, high, alpha = 0.3)
+    ax1.plot(im.deltaE, mean, label = "I_scales = " + str(I))
+    ax2.plot(im.deltaE, mean, label = "I_scales = " + str(I))
+
+
     
+ax2.set_ylim(-100,1e3)
+ax2.set_xlim(xlim)# 0,2)
+ax1.legend()
+ax2.legend()
 
-im.load_ZLP_models_smefit(n_rep = 500, path_to_models=path_to_models)
+#%%
 
+fig5, ax5 = plt.subplots()
+fig6, ax6 = plt.subplots()
+ax5.set_title("predictions for spectrum pixxel[50,60] of " + name)
+ax5.set_xlabel("energy loss [eV]")
+ax5.set_ylabel("intensity")
+ax6.set_title("predictions for spectrum pixxel[50,60] of " + name)
+ax6.set_xlabel("energy loss [eV]")
+ax6.set_ylabel("intensity")
+ax6.set_ylim(-200,1.5e3)
+ax6.set_xlim(xlim)
+
+ZLPs = im.calc_ZLPs(50,60)
+low = np.nanpercentile(ZLPs, 16, axis=0)
+high = np.nanpercentile(ZLPs, 84, axis=0)
+mean = np.average(ZLPs, axis = 0)
+mean = np.nanpercentile(ZLPs, 50, axis=0)
+ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
+ax6.fill_between(im.deltaE, low, high, alpha = 0.2)
+ax5.plot(im.deltaE, mean, label = "ddE = 0")
+ax6.plot(im.deltaE, mean, label = "ddE = 0")
+
+
+
+
+"""
+#
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
 ax1.set_title("predictions for scaled intensities 0.1-0.9 at ddE1 = 0")
@@ -201,20 +266,21 @@ ax2.legend()
 ax3.legend()
 ax4.legend()
 """
-path_to_models = 'dE1/E1_05'
-im.load_ZLP_models_smefit(n_rep = 500, path_to_models=path_to_models)
+# path_to_models = 'dE1/E1_05'
+# im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
 
 fig5, ax5 = plt.subplots()
 fig6, ax6 = plt.subplots()
-ax5.set_title("ZLP matching results at pixel[50,60]")
+ax5.set_title("ZLP matching results at pixel[50,60]" + name)
 ax5.set_xlabel("energy loss [eV]")
 ax5.set_ylabel("intensity")
-ax6.set_title("ZLP matching results at pixel[50,60]")
+ax6.set_title("ZLP matching results at pixel[50,60]" + name)
 ax6.set_xlabel("energy loss [eV]")
 ax6.set_ylabel("intensity")
 ax6.set_ylim(-500,3e3)
-ax6.set_xlim(0,2)
+ax6.set_ylim(-200,1.5e3)
+ax6.set_xlim(xlim)
 
 
 ZLPs = im.calc_gen_ZLPs(50,60)

@@ -5,7 +5,7 @@ Created on Fri Feb 26 10:52:45 2021
 
 @author: isabel
 """
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from image_class_bs import Spectral_image
@@ -19,9 +19,9 @@ im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS
 
 
 
-path_to_models = 'dE1/train_004_ddE1_0_test_3'
-im.train_ZLPs(n_clusters = 5, n_rep = 1, n_epochs = 10000, bs_rep_num= bs_rep_num, path_to_models = path_to_models, \
-              added_dE1= 0, display_step = None)
+path_to_models = '/data/theorie/ipostmes/cluster_programs/EELS_KK/pyfiles/bash_train_pyfiles/models/train_004'
+im.train_ZLPs(n_clusters = 5, n_rep = 1, n_epochs = 300000, bs_rep_num= bs_rep_num, path_to_models = path_to_models, \
+              display_step = 10000)
 """    
 path_to_models = 'dE1/train_004_ddE1_0_3'
 im.train_ZLPs(n_clusters = 5, n_rep = 500, n_epochs = 100000, path_to_models = path_to_models, \

@@ -23,6 +23,8 @@ Created on Tue Nov 10 01:05:56 2020
 import pandas as pd
 import glob
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib import cm
 import seaborn as sns
 import natsort
 import numpy as np
@@ -34,7 +36,7 @@ from ncempy.io import dm
 import os
 import copy
 import pickle
-
+import warnings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -159,6 +161,29 @@ class Spectral_image():
         return image
     
     
+    def set_n(self, n, n_vac = None):
+        """
+        LET OP WELKE WAARDE n_vac is en welke n_sample
+
+        Parameters
+        ----------
+        n : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        if type(n) == float or type(n) == int:
+            self.n = np.ones(self.n_clusters)*n
+            if n_vac is not None:
+                self.n[0] = n_vac
+        elif len(n) == self.n_clusters:
+            self.n = n
+    
+    
+    
     def determine_deltaE(self):
         """
         INPUT: 
@@ -212,13 +237,28 @@ class Spectral_image():
         #TODO: add alternative signals + names
         if signal in self.EELS_NAMES:
             return np.copy(self.data[ i, j, :])
+        elif signal == "pooled":
+            return np.copy(self.pooled[i,j,:])
         elif signal in self.DIELECTRIC_FUNCTION_NAMES:
             return np.copy(self.dielectric_function_im_avg[ i, j, :])
         else:
+            print("no such signal", signal, ", returned general EELS signal.")
             return np.copy(self.data[ i, j, :])
+        
+    def get_image_signals(self, signal = 'EELS'):
+        #TODO: add alternative signals + names
+        if signal in self.EELS_NAMES:
+            return np.copy(self.data)
+        elif signal == "pooled":
+            return np.copy(self.pooled)
+        elif signal in self.DIELECTRIC_FUNCTION_NAMES:
+            return np.copy(self.dielectric_function_im_avg)
+        else:
+            print("no such signal", signal, ", returned general EELS data.")
+            return np.copy(self.data)
     
     
-    def get_cluster_spectra(self, conf_interval = 0.68, clusters = None, save_as_attribute = False, based_upon = "sum"):
+    def get_cluster_spectra(self, conf_interval = 1, clusters = None, save_as_attribute = False, based_upon = "log", signal = "EELS"):
         """
         Parameters
         ----------
@@ -242,24 +282,22 @@ class Spectral_image():
             If save_as_attribute set to True, the cluster data is also saved as attribute
 
         """
-        
+        #TODO: check clustering before everything
         if clusters is None:
             clusters = range(self.n_clusters)
-        if conf_interval >= 1:
-            ci_lim = 0
         
         integrated_I = np.sum(self.data, axis = 2)
         cluster_data = np.zeros(len(clusters), dtype = object)
         
         j=0
         for i in clusters:
-            data_cluster = self.data[self.clustered == i]
-            intensities_cluster = integrated_I[self.clustered == i]
-            arg_sort_I = np.argsort(intensities_cluster)
+            data_cluster = self.get_image_signals(signal)[self.clustered == i]
             if conf_interval < 1:
+                intensities_cluster = integrated_I[self.clustered == i]
+                arg_sort_I = np.argsort(intensities_cluster)
                 ci_lim = round((1-conf_interval)/2 *intensities_cluster.size) #TODO: ask juan: round up or down?
-            data_cluster = data_cluster[arg_sort_I][ci_lim:-ci_lim]
-            intensities_cluster = np.ones(len(intensities_cluster)-2*ci_lim)*self.clusters[i]
+                data_cluster = data_cluster[arg_sort_I][ci_lim:-ci_lim]
+            # intensities_cluster = np.ones(len(intensities_cluster)-2*ci_lim)*self.clusters[i]
             cluster_data[j] = data_cluster
             j += 1
         
@@ -345,9 +383,9 @@ class Spectral_image():
         return #y[(window_len-1):-(window_len)]
     
     
-    def deconvolute(self, i,j, ZLP):
+    def deconvolute(self, i,j, ZLP, signal = 'EELS'):
         
-        y = self.get_pixel_signal(i,j)
+        y = self.get_pixel_signal(i,j, signal)
         r = 3 #Drude model, can also use estimation from exp. data
         A = y[-1]
         n_times_extra = 2
@@ -386,6 +424,23 @@ class Spectral_image():
         
         return J1_E[:self.l]
     
+    def pool(self, n_p):
+        #TODO: add gaussian options ed??
+        if n_p%2 == 0:
+            print("Unable to pool with even number " + str(n_p) + ", continuing with n_p=" + str(n_p+1))
+            n_p += 1
+        pooled = np.zeros(self.shape)
+        n_p_border = int(math.floor(n_p/2))
+        for i in range(self.image_shape[0]):
+            for j in range(self.image_shape[1]):
+                min_x = max(0, i-n_p_border)
+                max_x = min(self.image_shape[0], i + 1 + n_p_border)
+                min_y = max(0, j-n_p_border)
+                max_y = min(self.image_shape[1], j + 1 + n_p_border)
+                pooled[i,j] = np.average(np.average(self.data[min_x:max_x,min_y:max_y,:],axis=1), axis=0)
+        self.pooled = pooled
+
+    
     #%%METHODS ON ZLP
     #CALCULATING ZLPs FROM PRETRAINDED MODELS
   
@@ -393,9 +448,9 @@ class Spectral_image():
        
 
     
-    def calc_ZLPs(self, i,j, **kwargs):
+    def calc_ZLPs(self, i,j, signal = 'EElS', **kwargs):
         ### Definition for the matching procedure
-        signal = self.get_pixel_signal(i,j)
+        signal = self.get_pixel_signal(i,j, signal)
         
         if not hasattr(self, 'ZLP_models'):
             try:
@@ -550,7 +605,7 @@ class Spectral_image():
         return predictions
         
     
-    def train_ZLPs(self, n_clusters = None, conf_interval = 0.68, clusters = None, **kwargs):
+    def train_ZLPs(self, n_clusters = None, conf_interval = 1, clusters = None, signal = 'EELS', **kwargs):
         if not hasattr(self, "clustered"):
             if n_clusters is not None:
                 self.cluster(n_clusters)
@@ -559,10 +614,10 @@ class Spectral_image():
         elif n_clusters is not None and self.n_clusters != n_clusters:
             self.cluster(n_clusters)
         
-        training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters)
+        training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters, signal = signal)
         #self.models = 
+        # train_nn_scaled(self, training_data, **kwargs)
         train_nn_scaled(self, training_data, **kwargs)
-        self.dE1, self.dE2 = train_nn_scaled(self, training_data, **kwargs)
 
     def load_ZLP_models(self, path_to_models = "models", threshold_costs = 1, name_in_path = True, plotting = False):
         if hasattr(self, "name") and name_in_path:
@@ -576,23 +631,24 @@ class Spectral_image():
         
         model = MLP(num_inputs=2, num_outputs=1)
 
-        files = np.loadtxt(path_to_models + "/costs.txt")
+        costs = np.loadtxt(path_to_models + "/costs.txt")
         
         if plotting:
             plt.figure()
             plt.title("chi^2 distribution of models")
-            plt.hist(files[files < threshold_costs*3], bins = 20)
+            plt.hist(costs[costs < threshold_costs*3], bins = 20)
             plt.xlabel("chi^2")
             plt.ylabel("number of occurence")
         
-        n_working_models = np.sum(files<threshold_costs)
+        n_working_models = np.sum(costs<threshold_costs)
         
         k=0
-        for j in range(len(files)):
-            if files[j] < threshold_costs:
+        for j in range(len(costs)):
+            if costs[j] < threshold_costs:
                 with torch.no_grad():
                     model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
-                    self.ZLP_models.append(copy.deepcopy(model))
+                    if self.check_model(model):
+                        self.ZLP_models.append(copy.deepcopy(model))
                 k+=1
     
     @staticmethod
@@ -601,12 +657,24 @@ class Spectral_image():
         cost = np.loadtxt(path_to_models + "costs" + str(idx) + ".txt")
         return cost<threshold
     
+    @staticmethod
+    def check_model(model):
+        deltaE = np.linspace(0.1,0.9, 1000)
+        predict_x_np = np.zeros((1000,2))
+        predict_x_np[:,0] = deltaE
+        predict_x_np[:,1] = 0.5
     
-    def load_ZLP_models_smefit(self, path_to_models = "models", n_rep = None, threshold_costs = 1, name_in_path = False, plotting = False, idx = None):
-        if n_rep is None and idx is None:
-            print("Please spectify either the number of replicas you wish to load (n_rep)"+\
-                  " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
-            return
+        predict_x = torch.from_numpy(predict_x_np)
+        with torch.no_grad():
+            predictions = np.exp(model(predict_x.float()).flatten().numpy())
+        
+        return (np.std(predictions)/np.average(predictions)) > 1E-3 #very small --> straight line
+    
+    def load_ZLP_models_smefit(self, path_to_models = "models", threshold_costs = 1, name_in_path = False, plotting = False, idx = None):
+        # if n_rep is None and idx is None:
+        #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
+        #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
+        #     return
         if hasattr(self, "name") and name_in_path:
             path_to_models = self.name + "_" + path_to_models
         
@@ -620,6 +688,15 @@ class Spectral_image():
         path_dE1 = "dE1.txt"
         model = MLP(num_inputs=2, num_outputs=1)
         self.dE1 = np.loadtxt(path_to_models + path_dE1)
+        
+        if hasattr(self, "clustered"):
+            if self.n_clusters != self.dE1.shape[1]:
+                print("image clustered in ", self.n_clusters, " clusters, but ZLP-models take ",  self.dE1.shape[1], " clusters, reclustering based on models.")
+                self.cluster_on_cluster_values(self.dE1[0,:])
+        else:
+            self.cluster_on_cluster_values(self.dE1[0,:])
+        
+        
         if idx is not None:
             with torch.no_grad():
                 model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(idx)))
@@ -649,16 +726,61 @@ class Spectral_image():
             plt.xlabel("chi^2")
             plt.ylabel("number of occurence")   
         
-        k=0
-        for j in range(n_rep):
+        
+        for j in range(len(files_model_rep)):
             if costs[j] < threshold_costs:
                 file = files_model_rep[j]
                 with torch.no_grad():
                     model.load_state_dict(torch.load(path_to_models + file))
-                self.ZLP_models.append(copy.deepcopy(model))
-                k+=1
+                if self.check_model(model):
+                    self.ZLP_models.append(copy.deepcopy(model))
+                
 
     #METHODS ON DIELECTRIC FUNCTIONS
+    def calc_thickness(self, I_EELS, n, N_ZLP = 1):
+        """
+        Calculates thickness from sample data, using Egreton #TODO: bron.
+        Nota bene: does not correct for surface scatterings. If you wish to correct \
+        for surface scatterings, please extract t from kramer_kronig_hs()
+
+        Parameters
+        ----------
+        I_EELS : TYPE
+            DESCRIPTION.
+        n : TYPE
+            DESCRIPTION.
+        N_ZLP: float/int
+            default = 1. Default for already normalized I_EELS spectra.
+
+        Returns
+        -------
+        None.
+
+        """
+        me = self.m_0
+        e0 = self.e0
+        beta = self.beta
+    
+        eaxis = self.deltaE[self.deltaE>0] #axis.axis.copy()
+        y = I_EELS[self.deltaE>0]
+        i0 = N_ZLP
+        
+        # Kinetic definitions
+        ke = e0 * (1 + e0 / 2. / me) / (1 + e0 / me) ** 2
+        tgt = e0 * (2 * me + e0) / (me + e0)    
+    
+        # Calculation of the ELF by normalization of the SSD
+        # We start by the "angular corrections"
+        Im = y / (np.log(1 + (beta * tgt / eaxis) ** 2)) / self.ddeltaE#axis.scale
+        
+        
+        K = np.sum(Im/eaxis)*self.ddeltaE 
+        K = (K / (np.pi / 2) / (1 - 1. / n ** 2))
+        te = (332.5 * K * ke / i0)
+        
+        return te
+
+    
     
     def kramers_kronig_hs(self, I_EELS,
                             N_ZLP=None,
@@ -766,6 +888,9 @@ class Spectral_image():
     
         e0 = 200 #keV
         beta =30 #mrad
+        
+        e0 = self.e0
+        beta = self.beta
     
         eaxis = self.deltaE[self.deltaE>0] #axis.axis.copy()
         S_E = I_EELS[self.deltaE>0]
@@ -859,20 +984,62 @@ class Spectral_image():
         return eps, te, Srfint
 
 
-    def KK_pixel(self, i, j):
-        data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
+    def KK_pixel(self, i, j, signal = 'EELS'):
+        """
+        
+        Option to include pooling, not for thickness, as this is an integral and therefor \
+        more noise robust by default.
+
+        Parameters
+        ----------
+        i : TYPE
+            DESCRIPTION.
+        j : TYPE
+            DESCRIPTION.
+        pooled : TYPE, optional
+            DESCRIPTION. The default is False.
+
+        Returns
+        -------
+        dielectric_functions : TYPE
+            DESCRIPTION.
+        ts : TYPE
+            DESCRIPTION.
+        S_ss : TYPE
+            DESCRIPTION.
+        IEELSs : TYPE
+            DESCRIPTION.
+
+        """
+        #data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
         ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
+        if signal not in self.EELS_NAMES: 
+            ZLPs_signal = self.calc_ZLPs(i,j, signal = signal)
+            ts_OG = np.zeros(ZLPs.shape[0])  
+            IEELSs_OG = np.zeros(ZLPs.shape)  
+            max_OG = np.zeros(ZLPs.shape[0]) 
         dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
         S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
         ts = np.zeros(ZLPs.shape[0])            
         IEELSs = np.zeros(ZLPs.shape)
+        max_ieels = np.zeros(ZLPs.shape[0]) 
+        n = self.n[self.clustered[i,j]]
         for k in range(ZLPs.shape[0]):
             ZLP_k = ZLPs[k,:]
             N_ZLP = np.sum(ZLP_k)
-            IEELS = data_ij-ZLP_k
             IEELS = self.deconvolute(i, j, ZLP_k)
+            if signal not in self.EELS_NAMES:
+                IEELSs_OG[k,:] = IEELS
+                ts_OG[k] = self.calc_thickness(IEELS, n, N_ZLP)
+                max_OG[k] = self.deltaE[np.argmax(IEELS)]
+                ZLP_k = ZLPs_signal[k,:]
+                N_ZLP = np.sum(ZLP_k)
+                IEELS = self.deconvolute(i, j, ZLP_k, signal = signal)
             IEELSs[k,:] = IEELS
-            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
+            max_ieels[k] = self.deltaE[np.argmax(IEELS)]
+            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
+        if signal not in self.EELS_NAMES:
+            return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
         return dielectric_functions, ts, S_ss, IEELSs
 
 
@@ -1104,12 +1271,14 @@ class Spectral_image():
     #%%
     #TODO: add bandgap finding
     
-    def cluster(self, n_clusters = 5, n_iterations = 30, based_upon = "sum"):
+    def cluster(self, n_clusters = 5, n_iterations = 30, based_upon = "log"):
         #TODO: add other based_upons
         if based_upon == "sum":
             values = np.sum(self.data, axis = 2).flatten()
-        if based_upon == "log":
+        elif based_upon == "log":
             values = np.log(np.sum(self.data, axis = 2).flatten())
+        elif based_upon == "thickness":
+            values = self.t.flatten()
         else:
             values = np.sum(self.data, axis = 2).flatten()
         clusters_unsorted, r = k_means(values, n_clusters = n_clusters, n_iterations =n_iterations)
@@ -1118,8 +1287,22 @@ class Spectral_image():
         self.clustered = np.zeros(self.image_shape)
         for i in range(n_clusters):
             in_cluster_i = r[arg_sort_clusters[i]]
-            self.clustered += ((np.reshape(in_cluster_i, self.image_shape))*i).astype(int)
+            self.clustered += ((np.reshape(in_cluster_i, self.image_shape))*i)
+        self.clustered = self.clustered.astype(int)
     
+    
+    def cluster_on_cluster_values(self, cluster_values):
+        self.clusters = cluster_values
+        
+        values = np.sum(self.data, axis = 2)
+        check_log = (np.nanpercentile(values,5)>cluster_values.max())
+        if check_log:
+            values = np.log(values)
+        valar = (values.transpose()*np.ones(np.append(self.image_shape, self.n_clusters)).transpose()).transpose()
+        self.clustered = np.argmin(np.absolute(valar - cluster_values),axis = 2)
+        if len(np.unique(self.clustered)) < self.n_clusters:
+            warnings.warn("it seems like the clustered values of dE1 are not clustered on this image/on log or sum. Please check clustering.")
+        
     
     #PLOTTING FUNCTIONS
     def plot_sum(self, title = None, xlab = None, ylab = None):
@@ -1157,7 +1340,7 @@ class Spectral_image():
             plt.ylabel(ylab)
         plt.show()
         
-    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, **kwargs):
+    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, cmap = 'coolwarm', discrete_colormap = False, sig = 2, save_as = False, **kwargs):
         """
         INPUT:
             self -- spectral image 
@@ -1177,13 +1360,24 @@ class Spectral_image():
             plt.title("intgrated intensity spectrum " + name)
         else:
             plt.title(title)
+        if discrete_colormap:
+            if 'mask' in kwargs:
+                mask = kwargs['mask']
+            else:
+                mask = np.zeros(data.shape).astype('bool') 
+            cmap = cm.get_cmap(cmap, len(np.unique(data[~mask])))
+            spacing = (np.max(data[~mask]) - np.min(data[~mask]))/(len(np.unique(data[~mask]))-1)/2
+            if not 'vmax' in kwargs:
+                kwargs['vmax'] = np.max(data[~mask])+spacing
+                # print("vmax", kwargs['vmax'])
+            if not 'vmin' in kwargs:
+                kwargs['vmin'] = np.min(data[~mask])-spacing   
+            # print("spacing", spacing, "vmax", kwargs['vmax'], "vmin", kwargs['vmin'])
         if hasattr(self, 'pixelsize'):
-        #    plt.xlabel(self.pixelsize)
-        #    plt.ylabel(self.pixelsize)
             plt.xlabel("[m]")
             plt.ylabel("[m]")
-            xticks, yticks = self.get_ticks()
-            ax = sns.heatmap(data, xticklabels=xticks, yticklabels=yticks, **kwargs)
+            xticks, yticks = self.get_ticks(sig = sig)
+            ax = sns.heatmap(data, xticklabels=xticks, yticklabels=yticks, cmap=cmap, **kwargs)
         else:
             ax = sns.heatmap(data, **kwargs)
         if xlab is not None:
@@ -1194,21 +1388,41 @@ class Spectral_image():
             plt.ylabel(ylab)
         else:
             plt.ylabel('[micron]')
+        if discrete_colormap:
+            #TODO: even space in colorbar
+            colorbar = ax.collections[0].colorbar
+            if data.dtype == int:
+                colorbar.set_ticks(np.unique(data[~mask]))
+            else:
+                cbar_ticks = []
+                for tick in np.unique(data[~mask]):
+                    # fmt = '%.' + str(sig) + 'g'
+                    # cbar_ticks.append('%s' % float(fmt % tick))
+                    cbar_ticks.append(round_scientific(tick, sig))
+                colorbar.set_ticks(cbar_ticks)
         plt.show()
+        if save_as:
+            if type(save_as) != str:
+                save_as = name
+            if 'mask' in kwargs:
+                save_as += '_masked'
+            save_as += '.pdf'
+            plt.savefig(save_as)
     
-    def get_ticks(self, sig = 3, n_tick = 10):
+    def get_ticks(self, sig = 2, n_tick = 10):
+        fmt = '%.' + str(sig) + 'g'
         xlabels = np.zeros(self.x_axis.shape,dtype = object)
         xlabels[:] = ""
         each_n_pixels = math.floor(len(xlabels)/n_tick)
         for i in range(len(xlabels)):
             if i%each_n_pixels == 0:
-                xlabels[i] = '%s' % float('%.2g' % self.x_axis[i])
+                xlabels[i] = '%s' % float(fmt % self.x_axis[i])
         ylabels = np.zeros(self.y_axis.shape,dtype = object)
         ylabels[:] = ""
         each_n_pixels = math.floor(len(ylabels)/n_tick)
         for i in range(len(ylabels)):
             if i%each_n_pixels == 0:
-                ylabels[i] = '%s' % float('%.2g' % self.y_axis[i])
+                ylabels[i] = '%s' % float(fmt % self.y_axis[i])
         return xlabels, ylabels
                 
     
@@ -1465,3 +1679,11 @@ def find_scale_var(inp, min_out = 0.1, max_out=0.9):
     a = (max_out - min_out)/(inp.max()- inp.min())
     b = min_out - a*inp.min()
     return [a, b]
+
+
+def round_scientific(value, n_sig):
+    if value == 0:
+        return 0
+    scale = int(math.floor(math.log10(abs(value))))
+    num = round(value, n_sig-scale-1)
+    return num

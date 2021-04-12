@@ -11,6 +11,8 @@ import random
 import os
 import scipy
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 import copy
@@ -484,7 +486,11 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     print_progress = False
     #else:
     #    print_progress = True
-        
+    
+
+    if not os.path.exists(path_to_models):
+        Path(path_to_models).mkdir(parents=True, exist_ok=True)
+    
     num_saving_per_rep = 50
     saving_step = int(n_epochs/num_saving_per_rep)
     
@@ -520,7 +526,8 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
     times_dE1 = 8
-    dE2 = times_dE1 *dE1 #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
+    min_dE2 = image.deltaE.max() - image.ddeltaE*image.l*0.05 #at least 5% zeros at end
+    dE2 = np.minimum(times_dE1 *dE1, min_dE2) # minimal 1eV at the end with zeros #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
     
     if print_progress: print("dE1 & dE2:", np.round(dE1,3), dE2)
     
@@ -596,7 +603,6 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
         train_x = torch.from_numpy(train_x)
         train_y = torch.from_numpy(train_y)
         train_sigma = torch.from_numpy(train_sigma)
-        
         test_x = torch.from_numpy(test_x)
         test_y = torch.from_numpy(test_y)
         test_sigma = torch.from_numpy(test_sigma)
@@ -639,11 +645,15 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
                     min_model = copy.deepcopy(model)
                     #iets met copy.deepcopy(model)
                 if epoch % saving_step == 0:
-                    torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
-        torch.save(model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
-        np.savetxt(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", loss_test_reps[:epoch])
-    np.savetxt(path_to_models+ "/dE1" + str(bs_rep_num) + ".txt", dE1)
-    return dE1, dE2
+                    torch.save(min_model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
+        torch.save(min_model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
+        with open(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", "w") as text_file:
+            text_file.write(str(min_loss_test))
+        # np.savetxt(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", min_loss_test) # loss_test_reps[:epoch])
+    if not os.path.exists(path_to_models+ "/dE1.txt"):
+        # np.savetxt(path_to_models+ "/dE1" + str(bs_rep_num) + ".txt", dE1)
+        np.savetxt(path_to_models+ "/dE1.txt", np.vstack((image.clusters, dE1)))
+    
 
 
 
