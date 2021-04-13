@@ -34,7 +34,7 @@ def gen_ZLP_I(image, I):
 
 #im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
 
-im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
+im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
 # im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
 # im.cluster(5)
 
@@ -42,7 +42,7 @@ im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
 
 # path_to_models = 'dE1/E1_05'
 # path_to_models = 'models/train_lau_log'
-path_to_models = 'models/train_004_pooled_5_2'
+path_to_models = 'models/train_003_pooled_5_3'
 # path_to_models = 'models/train_004'
  
 im.load_ZLP_models_smefit(path_to_models=path_to_models)

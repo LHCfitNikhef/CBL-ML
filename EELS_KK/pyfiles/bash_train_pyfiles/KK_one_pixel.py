@@ -107,7 +107,7 @@ E_cross[j] = E_cross_pix_n
 
 path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/models/train_004"
 path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/dE1/E1_05/"
-path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/models/train_004_pooled_5"
+path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/models/train_004_not_pooled"
 
 # path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/models/train_lau_log"
 

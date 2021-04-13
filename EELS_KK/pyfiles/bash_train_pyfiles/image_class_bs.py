@@ -41,6 +41,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import bz2
+import pickle
+import _pickle as cPickle
+
 
 from k_means_clustering import k_means
 from train_nn_torch_bs import train_nn_scaled
@@ -92,8 +96,23 @@ class Spectral_image():
             filename + '.pkl'
         with open(filename, 'wb') as output:  # Overwrites any existing file.
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
-
     
+    def save_compressed_image(self, filename):
+        self.compressed_pickle(filename, self) 
+        
+    @staticmethod
+    # Pickle a file and then compress it into a file with extension 
+    def compressed_pickle(title, data):
+        with bz2.BZ2File(title + '.pbz2', 'w') as f: 
+            cPickle.dump(data, f)
+    
+    @staticmethod
+    def decompress_pickle(file):
+        data = bz2.BZ2File(file, 'rb')
+        data = cPickle.load(data)
+        return data
+
+
     #%%GENERAL FUNCTIONS
     
     #%%PROPERTIES
@@ -122,7 +141,7 @@ class Spectral_image():
         return np.product(self.image_shape)
     
     @classmethod
-    def load_data(cls, path_to_dmfile):
+    def load_data(cls, path_to_dmfile, load_additional_data = False):
         """
         INPUT: 
             path_to_dmfile: str, path to spectral image file (.dm3 or .dm4 extension)
@@ -130,16 +149,21 @@ class Spectral_image():
             image -- Spectral_image, object of Spectral_image class containing the data of the dm-file
         """
         dmfile_tot = dm.fileDM(path_to_dmfile)
+        additional_data = []
         for i in range(dmfile_tot.numObjects - dmfile_tot.thumbnail*1):
             dmfile = dmfile_tot.getDataset(i)
             if dmfile['data'].ndim == 3:
                 dmfile = dmfile_tot.getDataset(i)
                 data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
-                break
-            elif i == dmfile_tot.numObjects - dmfile_tot.thumbnail*1 - 1:
-                print("No spectral image detected")
-                dmfile = dmfile_tot.getDataset(0)
-                data = dmfile['data']
+                if not load_additional_data:
+                    break
+            elif load_additional_data:
+                additional_data.append(dmfile_tot.getDataset(i))
+            if i == dmfile_tot.numObjects - dmfile_tot.thumbnail*1 - 1:
+                if (len(additional_data) == i) or not load_additional_data:
+                    print("No spectral image detected")
+                    dmfile = dmfile_tot.getDataset(0)
+                    data = dmfile['data']
         
         #.getDataset(0)
         ddeltaE = dmfile['pixelSize'][0]
@@ -156,8 +180,17 @@ class Spectral_image():
         if path_to_pickle[-4:] != '.pkl':
             print("please provide a path to a pickle file containing a Spectrall_image class object.")
             return
-        with open(path_to_pickle, 'rb') as input:
-            image = pickle.load(input)
+        with open(path_to_pickle, 'rb') as pickle_im:
+            image = pickle.load(pickle_im)
+        return image
+    
+    
+    @classmethod
+    def load_compressed_Spectral_image(cls, path_to_compressed_pickle):
+        if path_to_compressed_pickle[-5:] != '.pbz2':
+            print("please provide a path to a compressed .pbz2 pickle file containing a Spectrall_image class object.")
+            return
+        image = cls.decompress_pickle(path_to_compressed_pickle)
         return image
     
     
@@ -448,7 +481,7 @@ class Spectral_image():
        
 
     
-    def calc_ZLPs(self, i,j, signal = 'EElS', **kwargs):
+    def calc_ZLPs(self, i,j, signal = 'EELS', **kwargs):
         ### Definition for the matching procedure
         signal = self.get_pixel_signal(i,j, signal)
         

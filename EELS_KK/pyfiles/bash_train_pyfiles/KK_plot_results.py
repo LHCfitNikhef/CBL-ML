@@ -13,7 +13,10 @@ import matplotlib.pyplot as plt
 from image_class_bs import Spectral_image
 
 
-path_to_results = "../../KK_results/image_KK.pkl"
+# path_to_results = "../../KK_results/image_KK_lau_p_5_again.pkl"
+# im = Spectral_image.load_Spectral_image(path_to_results)
+
+path_to_results = "../../KK_results/image_KK_lau_p_5.pkl"
 im = Spectral_image.load_Spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
@@ -29,32 +32,32 @@ cmap="coolwarm"
 thicknesslimit = np.nanpercentile(im.t[im.clustered == 0],97)
 mask = (im.t[:,:,0]<thicknesslimit)
 
-save_loc = "../../plots/plots_symposium/"
+save_loc = "../../plots/plots_symposium/lau/"
 
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask)
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 120", cbar_kws={'label': '[nm]'}, vmax = 120, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "004_t_masked")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 120", cbar_kws={'label': '[nm]'}, vmax = 120, vmin =0, cmap = cmap, save_as = save_loc + "004_t")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "lau_t")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "lau_t_capped_40")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, save_as = save_loc + "lau_t_capped_40")
 
 im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.12", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.12, vmin=0, mask = mask, save_as = save_loc + "004_t_CI_masked")
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.12", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.12, vmin=0, save_as = save_loc + "004_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "lau_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "lau_t_CI")
 
 
 #%% PLOT MAX
 
-max_ieels = im.deltaE[np.argmax(im.ieels, axis = 3)]
+max_ieels = im.max_ieels # im.deltaE[np.argmax(im.ieels, axis = 3)]
 
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask)
-im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 21,24", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 21, vmax=24, save_as = save_loc + "004_max_masked")
+im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 22,26", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 22, vmax=26, save_as = save_loc + "lau_max")
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap)
 
 
-im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0], title = "relative broadness CI maximum IEELS", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, save_as = save_loc + "004_max_CI_masked")
+im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0], title = "relative broadness CI maximum IEELS, capped at max 0.5", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, vmax = 0.5, save_as = save_loc + "lau_max_CI")
 
 #%% NUM CROSSINGS
-
-im.plot_heatmap(im.n_cross[:,:,0], title = "number crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI numbers crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask)
+#TODO: mask_cros = 
+im.plot_heatmap(im.n_cross[:,:,0], title = "number crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask, discrete_colormap = True)
+im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI numbers crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask, discrete_colormap = True)
 #im.plot_heatmap(im.n_cross[:,:,2]-im.n_cross[:,:,1], title = "broadness CI numbers crossings real part dielectric function, \ncapped at max 3", cbar_kws={'label': 'nr. crossings'}, vmax=3, cmap = cmap)
 
 #%%
@@ -69,10 +72,10 @@ for i in range(im.image_shape[0]):
                 first_crossings_CI[i,j] = (im.E_cross[i,j][0,2]-im.E_cross[i,j][0,1])/im.E_cross[i,j][0,0]
         
         
-im.plot_heatmap(first_crossings[:,:,0], title = "energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask)
+im.plot_heatmap(first_crossings[:,:,0], title = "energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_cross")
 #im.plot_heatmap(first_crossings[:,:,0], title = "energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1), \ncapped at min 21, max 23.5", cbar_kws={'label':  'energy [eV]'}, vmin=21, vmax=23.5, cmap = cmap)
 
-im.plot_heatmap(first_crossings_CI, title = "relative broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask)
+im.plot_heatmap(first_crossings_CI, title = "relative broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_cross_CI")
 # im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1), \ncapped at max 3", cbar_kws={'label':  'energy [eV]'}, vmax=3, cmap = cmap)
 # im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1), \ncapped at max 0.5", cbar_kws={'label':  'energy [eV]'}, vmax=0.5, cmap = cmap)
 
@@ -91,47 +94,54 @@ im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing 
 """
 #%%
 
-im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask)
-im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at min 0.7 eV, max 2 eV", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, vmin = 0.7, vmax = 2, mask = mask)
-im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0], title = "relative broadness CI bandgap energies sample", cbar_kws={'label': ' [-]'}, cmap = cmap, mask = mask)
-# im.plot_heatmap(im.E_band[:,:,2]-im.E_band[:,:,1], title = "broadness CI bandgap energies sample, \ncapped at max 4", cbar_kws={'label': 'energy [eV]'}, vmax=4, cmap = cmap)
+im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band")
+im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at max 2.5", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_capped_max", vmax= 2.5)
+im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at min 2.5", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_capped_min", vmin= 2.5)
 
 
-im.plot_heatmap(im.b[:,:,0], title = "b-value (exponent in bandgap equation) sample", cbar_kws={'label': '[-] (??)'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) sample, \ncapped at max 1", cbar_kws={'label': '[-] '}, vmax=1, cmap = cmap, mask = mask)
+# im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at min 0.7 eV, max 2 eV", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, vmin = 0.7, vmax = 2, mask = mask)
+im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0], title = "relative broadness CI bandgap energies sample", cbar_kws={'label': ' [-]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_CI")
+im.plot_heatmap(im.E_band[:,:,2]-im.E_band[:,:,1], title = "relative broadness CI bandgap energies sample, \ncapped at max 2", cbar_kws={'label': 'energy [eV]'}, vmax=2, cmap = cmap, save_as = save_loc + "E_band_CI_capped", mask = mask)
+
+
+# im.plot_heatmap(im.b[:,:,0], title = "b-value (exponent in bandgap equation) sample", cbar_kws={'label': '[-] (??)'}, cmap = cmap, mask = mask)
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) sample, \ncapped at max 1", cbar_kws={'label': '[-] '}, vmax=1, cmap = cmap, mask = mask)
 
 #%%
 losse_figure = False
-row = 70
+column = 70
 plt.figure()
-plt.plot(im.x_axis, im.t[row,:,0], label = str(row))
-plt.fill_between(im.x_axis, im.t[row,:,2], im.t[row,:,1], alpha = 0.3)
-plt.title("thickness over row " + str(row))
+plt.plot(im.y_axis, im.t[:,column,0], label = str(column))
+plt.fill_between(im.y_axis, im.t[:,column,2], im.t[:,column,1], alpha = 0.3)
+plt.title("thickness over column " + str(column))
 plt.ylabel("thickness [nm]")
 plt.xlabel("[nm]")
 
-row = 20
+column = 20
 if losse_figure: plt.figure()
-plt.plot(im.x_axis, im.t[row,:,0], label = str(row))
-plt.fill_between(im.x_axis, im.t[row,:,2], im.t[row,:,1], alpha = 0.3)
-plt.title("thickness over row " + str(row))
+plt.plot(im.y_axis, im.t[:,column,0], label = str(column))
+plt.fill_between(im.y_axis, im.t[:,column,2], im.t[:,column,1], alpha = 0.3)
+plt.title("thickness over column " + str(column))
 plt.ylabel("thickness [nm]")
 plt.xlabel("[nm]")
 
-row = 120
+column = 120
 if losse_figure: plt.figure()
-plt.plot(im.x_axis, im.t[row,:,0], label = str(row))
-plt.fill_between(im.x_axis, im.t[row,:,2], im.t[row,:,1], alpha = 0.3)
-plt.title("thickness over row " + str(row))
+plt.plot(im.y_axis, im.t[:,column,0], label = str(column))
+plt.fill_between(im.y_axis, im.t[:,column,2], im.t[:,column,1], alpha = 0.3)
+plt.title("thickness over column " + str(column))
 plt.ylabel("thickness [nm]")
 plt.xlabel("[nm]")
 
 
 if not losse_figure: 
     plt.legend()
-    plt.title("thickness over different rows")
+    plt.title("thickness over different columns")
 
+plt.savefig(save_loc + "thickness_over three_columns.pdf")
+
+"""
 #%% Adjust mask to pooling
 
 mask = mask[1:-2,1:-2]
@@ -232,7 +242,7 @@ im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadne
 im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) \nsample (1.6), capped at max 5", cbar_kws={'label': 'CI/median'}, vmax=5, cmap = cmap, mask = mask)
 im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/im.b[:,:,0], title = "relative broadness CI b-value (exponent in bandgap equation) \nsample (1.6), capped at max 2", cbar_kws={'label': 'CI/median'}, vmax=2, cmap = cmap, mask = mask)
 
-
+"""
 
 
 #%%

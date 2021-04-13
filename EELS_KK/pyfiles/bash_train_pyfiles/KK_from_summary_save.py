@@ -33,20 +33,22 @@ im.load_ZLP_models_smefit(path_to_models)
 
 
 path_to_save_sum = path_to_save + "summary/"
-im.ieels = np.load(path_to_save_sum+"ieels.npy")
+# im.ieels = np.load(path_to_save_sum+"ieels.npy")
 im.eps = np.load(path_to_save_sum+"eps.npy")
 im.t = np.load(path_to_save_sum+"t.npy")
 im.E_cross = np.load(path_to_save_sum+"E_cross.npy", allow_pickle=True)
 im.n_cross = np.load(path_to_save_sum+"n_cross.npy")
 im.E_band = np.load(path_to_save_sum+"E_band.npy")
-im.b = np.load(path_to_save_sum+"b_band.npy")
-
+# im.b = np.load(path_to_save_sum+"b_band.npy")
+im.max_ieels = np.load(path_to_save_sum+"max_ieels.npy")
+im.ieels_p = np.load(path_to_save_sum+"ieels_p.npy")
 
 
 #TODO: check exsits --> other path
-path_to_save_im = path_to_save + "image_KK.pkl"
+path_to_save_im = path_to_save + "image_KK" #".pkl"
 i = 2
 while os.path.exists(path_to_save_im):
-    path_to_save_im = path_to_save + "image_KK_" + str(i) + ".pkl" 
+    path_to_save_im = path_to_save + "image_KK_" + str(i) #+ ".pkl" 
     i += 1
-im.save_image(path_to_save_im)
+#im.save_image(path_to_save_im)
+im.save_compressed_image(path_to_save_im)
