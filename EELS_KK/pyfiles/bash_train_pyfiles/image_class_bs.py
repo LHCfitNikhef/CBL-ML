@@ -160,7 +160,7 @@ class Spectral_image():
             elif load_additional_data:
                 additional_data.append(dmfile_tot.getDataset(i))
             if i == dmfile_tot.numObjects - dmfile_tot.thumbnail*1 - 1:
-                if (len(additional_data) == i) or not load_additional_data:
+                if (len(additional_data) == i + 1) or not load_additional_data:
                     print("No spectral image detected")
                     dmfile = dmfile_tot.getDataset(0)
                     data = dmfile['data']
@@ -173,6 +173,8 @@ class Spectral_image():
         pixelUnit = dmfile['pixelUnit'][1]
         pixelsize *= cls.get_prefix(pixelUnit, 'm')
         image = cls(data, ddeltaE, pixelsize = pixelsize, name=path_to_dmfile[:-4])
+        if load_additional_data:
+            image.additional_data = additional_data
         return image
     
     @classmethod
@@ -232,9 +234,11 @@ class Spectral_image():
         #return deltaE
     
     
-    def calc_axes(self):
-        self.y_axis = np.linspace(0, self.image_shape[0]-1, self.image_shape[0])
-        self.x_axis = np.linspace(0, self.image_shape[1]-1, self.image_shape[1])
+    def calc_axes(self, image_shape = None):
+        if image_shape is None:
+            image_shape = self.image_shape
+        self.y_axis = np.linspace(0, image_shape[0]-1, image_shape[0])
+        self.x_axis = np.linspace(0, image_shape[1]-1, image_shape[1])
         if hasattr(self, 'pixelsize'):
             self.y_axis *= self.pixelsize[0]
             self.x_axis *= self.pixelsize[1] 
@@ -1373,7 +1377,7 @@ class Spectral_image():
             plt.ylabel(ylab)
         plt.show()
         
-    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, cmap = 'coolwarm', discrete_colormap = False, sig = 2, save_as = False, **kwargs):
+    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, cmap = 'coolwarm', discrete_colormap = False, sig = 2, save_as = False, color_bin_size = None, **kwargs):
         """
         INPUT:
             self -- spectral image 
@@ -1398,13 +1402,31 @@ class Spectral_image():
                 mask = kwargs['mask']
             else:
                 mask = np.zeros(data.shape).astype('bool') 
-            cmap = cm.get_cmap(cmap, len(np.unique(data[~mask])))
-            spacing = (np.max(data[~mask]) - np.min(data[~mask]))/(len(np.unique(data[~mask]))-1)/2
+            
+            
+            unique_data_points = np.unique(data[~mask])
+            
+            if 'vmax' in kwargs:
+                if len(unique_data_points[unique_data_points > kwargs['vmax']]) > 0:
+                    unique_data_points = unique_data_points[unique_data_points <= kwargs['vmax']]
+                    unique_data_points = np.append(unique_data_points, kwargs['vmax'])
+            if  'vmin' in kwargs:
+                if len(unique_data_points[unique_data_points < kwargs['vmin']]) > 0:
+                    unique_data_points = unique_data_points[unique_data_points >= kwargs['vmin']]
+                    unique_data_points = np.append(kwargs['vmin'], unique_data_points)
+            
+            if color_bin_size is None:
+                color_bin_size = np.nanpercentile(unique_data_points[1:]-unique_data_points[:-1],30)
+            n_colors = int((np.max(unique_data_points) - np.min(unique_data_points))/color_bin_size +1)
+            cmap = cm.get_cmap(cmap, n_colors)
+            spacing = color_bin_size/2
+            
             if not 'vmax' in kwargs:
                 kwargs['vmax'] = np.max(data[~mask])+spacing
                 # print("vmax", kwargs['vmax'])
             if not 'vmin' in kwargs:
-                kwargs['vmin'] = np.min(data[~mask])-spacing   
+                kwargs['vmin'] = np.min(data[~mask])-spacing 
+            
             # print("spacing", spacing, "vmax", kwargs['vmax'], "vmin", kwargs['vmin'])
         if hasattr(self, 'pixelsize'):
             plt.xlabel("[m]")

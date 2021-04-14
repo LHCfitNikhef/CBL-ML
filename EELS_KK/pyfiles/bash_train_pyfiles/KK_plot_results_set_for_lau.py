@@ -65,8 +65,11 @@ im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI num
 #im.plot_heatmap(im.n_cross[:,:,2]-im.n_cross[:,:,1], title = "broadness CI numbers crossings real part dielectric function, \ncapped at max 3", cbar_kws={'label': 'nr. crossings'}, vmax=3, cmap = cmap)
 
 mask_cross = (mask | (im.n_cross[:,:,2] == 0))
-im.plot_heatmap(im.n_cross[:,:,0], title = "number crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True)
-im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI numbers crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True)
+im.plot_heatmap(im.n_cross[:,:,0], title = "number crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True, sig = 3)
+im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI numbers crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True, sig =3)
+
+im.plot_heatmap(im.n_cross[:,:,0], title = "number crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True, sig = 3)
+im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "broadness CI numbers crossings real part dielectric function", cbar_kws={'label': 'nr. crossings'}, cmap = cmap, mask = mask_cross, discrete_colormap = True, sig =3)
 
 
 #%%
@@ -89,11 +92,14 @@ im.plot_heatmap(first_crossings_CI, title = "relative broadness CI energy first 
 # im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1), \ncapped at max 0.5", cbar_kws={'label':  'energy [eV]'}, vmax=0.5, cmap = cmap)
 
 
-size_E_bins = np.nanpercentile(first_crossings_CI[~mask_cross],50)/2
-size_E_bins = np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_cross],50)/2
+mask_cross_CI = (mask_cross | (first_crossings_CI > 1))
+
+size_E_bins = np.nanpercentile(first_crossings_CI[~mask_cross_CI],50)/2
+size_E_bins = np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_cross_CI],50)/2
 E_round  = np.round(first_crossings[:,:,0]/size_E_bins) * size_E_bins
 
-im.plot_heatmap(E_round, title = "discretized energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask_cross, discrete_colormap = True, save_as = save_loc + "E_cross_discr")
+im.plot_heatmap(E_round, title = "discretized energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.1)", cbar_kws={'label': 'energy [eV]'}, cmap = cmap, mask = mask_cross_CI, discrete_colormap = True, save_as = save_loc + "E_cross_discr")
+
 
 
 
@@ -128,7 +134,7 @@ size_E_bins = np.nanpercentile((im.E_band[:,:,2]-im.E_band[:,:,1])[~mask_E_band]
 E_round  = np.round(im.E_band[:,:,0]/size_E_bins) * size_E_bins
 
 im.plot_heatmap(E_round, title = "discretized bandgap energies sample", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask_E_band, save_as = save_loc + "E_band_discr", color_bin_size = size_E_bins, discrete_colormap = True, sig=3)
-im.plot_heatmap(E_round, title = "discretized bandgap energies sample, capped at 3", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, vmax = 3.06, mask = mask_E_band, save_as = save_loc + "E_band_discr_capped", color_bin_size = size_E_bins, discrete_colormap = True, sig=3)
+im.plot_heatmap(E_round, title = "discretized bandgap energies sample, capped at 3", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, vmax = 3.16, mask = mask_E_band, save_as = save_loc + "E_band_discr_capped", color_bin_size = size_E_bins, discrete_colormap = True, sig=3)
 
 
 
