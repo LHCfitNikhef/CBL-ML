@@ -11,6 +11,8 @@ import sys
 import os
 import pickle
 from image_class_bs import Spectral_image
+import warnings
+import traceback
 
 path_to_models = sys.argv[1]
 path_to_save = sys.argv[2]
@@ -54,7 +56,9 @@ for i in range(im.image_shape[0]):
         A_im[i,:,:] = row_dict["A"]
         max_ieels_im[i,:,:] = row_dict["max_ieels"]
         os.remove(path_dict)
-    except:
+    except Exception as e:
+        traceback.print_tb(e.__traceback__)
+        warnings.warn(str(type(e).__name__) + ": " + str(e))
         pass
 im.ieels = ieels_im
 im.ieels_p = ieels_p_im

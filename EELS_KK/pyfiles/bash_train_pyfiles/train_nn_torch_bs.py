@@ -482,10 +482,11 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
         elif not ans[0] == 'y':
             path_to_models = input("Please define the new path: \n")
     """
-    #if display_step is None:
-    print_progress = False
-    #else:
-    #    print_progress = True
+    if display_step is None:
+        print_progress = False
+        display_step = 1E6
+    else:
+        print_progress = True
     
 
     if not os.path.exists(path_to_models):

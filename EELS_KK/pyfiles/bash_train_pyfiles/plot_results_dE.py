@@ -42,7 +42,7 @@ im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
 
 # path_to_models = 'dE1/E1_05'
 # path_to_models = 'models/train_lau_log'
-path_to_models = 'models/train_003_pooled_5_3'
+path_to_models = 'models/train_004_pooled_5_3'
 # path_to_models = 'models/train_004'
  
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
@@ -62,7 +62,7 @@ ax2.set_ylabel("intensity")
 
 
 
-for I in [0.1,0.3,0.5,0.7,0.9]:
+for I in [0.2,0.3,0.5,0.7,0.8]:
     ZLPs = gen_ZLP_I(im, I)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)

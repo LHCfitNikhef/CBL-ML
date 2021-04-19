@@ -59,6 +59,9 @@ class Spectral_image():
     IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
     ZLP_NAMES = ['zeros_loss_peak', 'zero_loss', 'ZLP', 'ZLPs', 'zlp', 'zlps']
     THICKNESS_NAMES = ['t', 'thickness', 'thick', 'thin']
+    POOLED_ADDITION = ['pooled', 'pool', 'p', '_pooled', '_pool', '_p']
+    
+    
     
     m_0 = 511.06 #eV, electron rest mass
     a_0 = 5.29E-11 #m, Bohr radius
@@ -1377,7 +1380,7 @@ class Spectral_image():
             plt.ylabel(ylab)
         plt.show()
         
-    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, cmap = 'coolwarm', discrete_colormap = False, sig = 2, save_as = False, color_bin_size = None, **kwargs):
+    def plot_heatmap(self, data, title = None, xlab = None, ylab = None, cmap = 'coolwarm', discrete_colormap = False, sig = 2, save_as = False, color_bin_size = None, equal_axis = True, **kwargs):
         """
         INPUT:
             self -- spectral image 
@@ -1428,6 +1431,8 @@ class Spectral_image():
                 kwargs['vmin'] = np.min(data[~mask])-spacing 
             
             # print("spacing", spacing, "vmax", kwargs['vmax'], "vmin", kwargs['vmin'])
+        if equal_axis:
+            plt.axis('equal')
         if hasattr(self, 'pixelsize'):
             plt.xlabel("[m]")
             plt.ylabel("[m]")
