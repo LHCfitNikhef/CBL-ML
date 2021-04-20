@@ -27,13 +27,16 @@ The **EELSfitter collaboration** is currently composed by the following members:
 - 
 
 Former members of the EELSfitter project include:
+
 -
+
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
+   overview/features.rst
    modules/modules.rst
 
 Indices and tables

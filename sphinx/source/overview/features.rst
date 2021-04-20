@@ -1,0 +1,6 @@
+Features
+========
+
+EELSfitter is a powerful python package for substracting the Zero-Loss peak by means of machine learning and performing further analysis based on the Kramers-Kronig relations. The features included in the package are as follows:
+
+* Substraction of the Zero-Loss peak.
