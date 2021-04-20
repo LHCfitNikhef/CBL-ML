@@ -24,3 +24,9 @@
 .spyproject/config/backups/vcs.ini.bak
 .spyproject/config/backups/encoding.ini.bak
 .spyproject/config/backups/codestyle.ini.bak
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/CBL-ML.iml
