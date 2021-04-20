@@ -63,7 +63,7 @@ class Spectral_image():
     
     
     
-    m_0 = 600#511.06 #eV, electron rest mass
+    m_0 = 511.06 #eV, electron rest mass
     a_0 = 5.29E-11 #m, Bohr radius
     h_bar = 6.582119569E-16 #eV/s
     c = 2.99792458E8 #m/s
