@@ -1,200 +1,223 @@
-<!doctype html>
-<html class="no-js">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="training_images_bs module" href="training_images_bs.html" /><link rel="prev" title="plot_results_dE module" href="plot_results_dE.html" />
 
-    <meta name="generator" content="sphinx-3.5.2, furo 2021.03.20.beta30"/>
-        <title>train_nn_torch_bs module - EELSfitter 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
-    <link rel="stylesheet" href="../_static/pygments.css">
-    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>train_nn_torch_bs module &mdash; EELSfitter 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
     
 
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
 
-<style>
-  :root {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-    }
-  }
+<body class="wy-body-for-nav">
 
-  /* For allowing end-user-specific overrides */
-  .override-light {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  .override-dark {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
-  <body dir="">
+   
+  <div class="wy-grid-for-nav">
     
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="svg-toc" viewBox="0 0 24 24">
-    <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z"/>
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
-    </svg>
-  </symbol>
-  <symbol id="svg-menu" viewBox="0 0 24 24">
-    <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-menu">
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
-    <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-chevron-right">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </symbol>
-</svg>
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation"></label>
-<label class="overlay toc-overlay" for="__toc"></label>
+          
+            <a href="../index.html" class="icon icon-home"> EELSfitter
+          
 
+          
+          </a>
 
+          
+            
+            
+          
 
-<div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="../index.html"><div class="brand">EELSfitter 0.0.1 documentation</div></a>
-    </div>
-    <div class="header-right">
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
-  
-  
-  <span class="sidebar-brand-text">EELSfitter 0.0.1 documentation</span>
-  
-</a><form class="sidebar-search-container" method="get" action="../search.html">
-  <input class="sidebar-search" placeholder=Search name="q">
-  <input type="hidden" name="check_keywords" value="yes">
-  <input type="hidden" name="area" value="default">
-</form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">bash_train_pyfiles</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="KK_MPI_per_row.html">KK_MPI_per_row module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_analysis_models_bs.html">KK_analysis_models_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_meta.html">KK_meta module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_one_pixel.html">KK_one_pixel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_per_row.html">KK_per_row module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_pixel.html">KK_pixel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_plot_results.html">KK_plot_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="KK_save_results.html">KK_save_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculate_dist_KK_results.html">calculate_dist_KK_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="image_class_bs.html">image_class_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="k_means_clustering.html">k_means_clustering module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_results_dE.html">plot_results_dE module</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">train_nn_torch_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="training_images_bs.html">training_images_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="untitled7.html">untitled7 module</a></li>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/datasets.html">Datasets</a></li>
 </ul>
-</li>
+<p class="caption"><span class="caption-text">Theory</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../theory/kk_analysis.html">Kramer-Kronig Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../implementation/training_strategies.html">Training Strategies</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Results</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../results/EELS_10.html">EELS 1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/EELS_20.html">EELS 2.0</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Code</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 </ul>
 
-</div>
-</div>
+            
+          
+        </div>
       </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
       
-    </div>
-  </aside>
-  <main class="main">
-    <div class="content">
-      <article role="main">
-        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-        </label>
-        <div class="section" id="module-train_nn_torch_bs">
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">EELSfitter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>train_nn_torch_bs module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/train_nn_torch_bs.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-train_nn_torch_bs">
 <span id="train-nn-torch-bs-module"></span><h1>train_nn_torch_bs module<a class="headerlink" href="#module-train_nn_torch_bs" title="Permalink to this headline">¶</a></h1>
 <p>Created on Wed Feb 24 22:24:31 2021</p>
-<p>@author: isabel</p>
+<p>&#64;author: isabel</p>
 <dl class="py function">
 <dt id="train_nn_torch_bs.CI_high">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">CI_high</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.68</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#CI_high"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.CI_high" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">CI_high</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="o">=</span><span class="default_value">0.68</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#CI_high"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.CI_high" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.CI_low">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">CI_low</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.68</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#CI_low"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.CI_low" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">CI_low</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="o">=</span><span class="default_value">0.68</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#CI_low"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.CI_low" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.MC_reps">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">MC_reps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_avg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_std</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rep</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MC_reps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.MC_reps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">MC_reps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_avg</span></em>, <em class="sig-param"><span class="n">data_std</span></em>, <em class="sig-param"><span class="n">n_rep</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MC_reps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.MC_reps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py class">
 <dt id="train_nn_torch_bs.MLP">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">MLP</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_outputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.MLP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">MLP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_inputs</span></em>, <em class="sig-param"><span class="n">num_outputs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.MLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
 <dt id="train_nn_torch_bs.MLP.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MLP.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.MLP.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#MLP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.MLP.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt id="train_nn_torch_bs.MLP.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><a class="headerlink" href="#train_nn_torch_bs.MLP.training" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#train_nn_torch_bs.MLP.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.binned_statistics">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">binned_statistics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#binned_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.binned_statistics" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">binned_statistics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">nbins</span></em>, <em class="sig-param"><span class="n">stats</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#binned_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.binned_statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the mean, variance and number of counts within the bins described by ewd</p>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.derivative_clusters">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">derivative_clusters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#derivative_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.derivative_clusters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">derivative_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">clusters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#derivative_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.derivative_clusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.determine_dE1_new">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">determine_dE1_new</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy_dx_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_smooth_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_with_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#determine_dE1_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.determine_dE1_new" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">determine_dE1_new</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx_clusters</span></em>, <em class="sig-param"><span class="n">y_smooth_clusters</span></em>, <em class="sig-param"><span class="n">check_with_user</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#determine_dE1_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.determine_dE1_new" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.ewd">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">ewd</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#ewd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.ewd" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">ewd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">nbins</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#ewd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.ewd" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>INPUT:</dt><dd><p>x:
 y:
@@ -207,29 +230,35 @@ cuts2:</p>
 </dl>
 <p>Apply Equal Width Discretization (EWD) to x and y data to determine variances</p>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.find_dE1">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">find_dE1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy_dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_smooth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#find_dE1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.find_dE1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">find_dE1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx</span></em>, <em class="sig-param"><span class="n">y_smooth</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#find_dE1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.find_dE1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.find_scale_var">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">find_scale_var</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#find_scale_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.find_scale_var" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">find_scale_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em>, <em class="sig-param"><span class="n">min_out</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">max_out</span><span class="o">=</span><span class="default_value">0.9</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#find_scale_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.find_scale_var" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.get_mean">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">get_mean</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#get_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.get_mean" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">get_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#get_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.get_mean" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.get_median">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">get_median</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#get_median"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.get_median" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">get_median</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">nbins</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#get_median"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.get_median" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.loss_fn">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">loss_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#loss_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.loss_fn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">loss_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">error</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#loss_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.loss_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.scale">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">scale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ab</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em>, <em class="sig-param"><span class="n">ab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>min_inp = inp.min()
 max_inp = inp.max()</p>
 <p>outp = inp/(max_inp-min_inp) * (max_out-min_out)
@@ -237,9 +266,10 @@ outp -= outp.min()
 outp += min_out</p>
 <p>return outp</p>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.smooth">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hanning'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_original</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.smooth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">smooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">window_len</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">window</span><span class="o">=</span><span class="default_value">'hanning'</span></em>, <em class="sig-param"><span class="n">keep_original</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#smooth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.smooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>smooth the data using a window with requested size.</p>
 <p>This method is based on the convolution of a scaled window with the signal.
 The signal is prepared by introducing reflected copies of the signal
@@ -257,86 +287,79 @@ window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bar
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.smooth_clusters">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">smooth_clusters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#smooth_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.smooth_clusters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">smooth_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">clusters</span></em>, <em class="sig-param"><span class="n">window_len</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#smooth_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.smooth_clusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.split_test_train">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">split_test_train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#split_test_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.split_test_train" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">split_test_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">0.2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#split_test_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.split_test_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.train_nn">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">train_nn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#train_nn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.train_nn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">train_nn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#train_nn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.train_nn" title="Permalink to this definition">¶</a></dt>
 <dd><p>training also on intensity, so only one model per image, instead of one model per cluster</p>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.train_nn_scaled">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">train_nn_scaled</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_rep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">added_dE1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bs_rep_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#train_nn_scaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.train_nn_scaled" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">train_nn_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">spectra</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">added_dE1</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">bs_rep_num</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#train_nn_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.train_nn_scaled" title="Permalink to this definition">¶</a></dt>
 <dd><p>training also on intensity, so only one model per image, instead of one model per cluster</p>
 </dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.user_check">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">user_check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dE12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#user_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.user_check" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">user_check</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dE12</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#user_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.user_check" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt id="train_nn_torch_bs.weight_reset">
-<code class="sig-prename descclassname"><span class="pre">train_nn_torch_bs.</span></code><code class="sig-name descname"><span class="pre">weight_reset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#weight_reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#train_nn_torch_bs.weight_reset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">train_nn_torch_bs.</code><code class="sig-name descname">weight_reset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/train_nn_torch_bs.html#weight_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train_nn_torch_bs.weight_reset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
 </div>
 
-      </article>
-      <footer>
-        
-        <div class="related-pages">
-          <a class="next-page" href="training_images_bs.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">training_images_bs module</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="plot_results_dE.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">plot_results_dE module</div>
-                
-              </div>
-            </a>
-        </div>
 
-        <div class="related-information">
-              Copyright &#169; 2021, A
-            |
-            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
-              and
-              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
-            |
-            <a class="muted-link" href="../_sources/modules/train_nn_torch_bs.rst.txt"
-               rel="nofollow">
-              Show Source
-            </a>
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, A
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
-        
-      </footer>
-    </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
-  </main>
-</div>
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>
