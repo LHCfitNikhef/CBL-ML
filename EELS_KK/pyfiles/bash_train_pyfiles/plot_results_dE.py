@@ -32,23 +32,25 @@ def gen_ZLP_I(image, I):
         
     return ZLPs
 
-#im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
-
-im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
-# im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
+im = Spectral_image.load_data('E:/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4')
 # im.cluster(5)
 
 #im=im
 
+<<<<<<< Updated upstream
 # path_to_models = 'dE1/E1_05'
 # path_to_models = 'models/train_lau_log'
 path_to_models = 'models/train_004_pooled_5_3'
 # path_to_models = 'models/train_004'
+=======
+path_to_models = 'E:/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_05'
+
+>>>>>>> Stashed changes
  
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 xlim = [np.min(im.dE1[1,:])/4, np.max(im.dE1[1,:])*1.5]
 
-name = " 004" # "Lau's sample, clustered on log" 
+name = " 004"
 
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
@@ -94,7 +96,7 @@ ax6.set_ylabel("intensity")
 ax6.set_ylim(-200,1.5e3)
 ax6.set_xlim(xlim)
 
-ZLPs = im.calc_ZLPs(50,60)
+ZLPs = im.calc_ZLPs(20,20)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -283,7 +285,7 @@ ax6.set_ylim(-200,1.5e3)
 ax6.set_xlim(xlim)
 
 
-ZLPs = im.calc_gen_ZLPs(50,60)
+ZLPs = im.calc_gen_ZLPs(20,20)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -293,11 +295,11 @@ ax6.fill_between(im.deltaE, low, high, alpha = 0.2)
 ax5.plot(im.deltaE, mean, label = "gen")
 ax6.plot(im.deltaE, mean, label = "gen")
 
-signal = im.get_pixel_signal(50,60)
+signal = im.get_pixel_signal(20,20)
 #ax5.plot(im.deltaE, signal, label = "signal")
 #ax6.plot(im.deltaE, signal, label = "signal")
 #"""
-ZLPs = im.calc_ZLPs(50,60)
+ZLPs = im.calc_ZLPs(20,20)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -307,7 +309,7 @@ ax6.fill_between(im.deltaE, low, high, alpha = 0.2)
 ax5.plot(im.deltaE, mean, label = "matched")
 ax6.plot(im.deltaE, mean, label = "matched")
 
-ZLPs = im.calc_ZLPs(50,60)
+ZLPs = im.calc_ZLPs(20,20)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)

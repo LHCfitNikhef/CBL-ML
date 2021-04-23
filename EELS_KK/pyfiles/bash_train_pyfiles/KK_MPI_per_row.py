@@ -16,6 +16,19 @@ from k_means_clustering import k_means
 from image_class_bs import Spectral_image, smooth_1D
 
 def median(data):
+    """
+
+    Parameters
+    ----------
+    data : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
     return np.nanpercentile(data, 50, axis = 0)
 
 def low(data):

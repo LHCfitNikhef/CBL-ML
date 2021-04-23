@@ -12,3 +12,15 @@
 *.cb2
 .*.lb
 
+.spyproject/config/workspace.ini
+.spyproject/config/vcs.ini
+.spyproject/config/encoding.ini
+.spyproject/config/defaults/defaults-workspace-0.2.0.ini
+.spyproject/config/defaults/defaults-vcs-0.2.0.ini
+.spyproject/config/defaults/defaults-encoding-0.2.0.ini
+.spyproject/config/defaults/defaults-codestyle-0.2.0.ini
+.spyproject/config/codestyle.ini
+.spyproject/config/backups/workspace.ini.bak
+.spyproject/config/backups/vcs.ini.bak
+.spyproject/config/backups/encoding.ini.bak
+.spyproject/config/backups/codestyle.ini.bak
