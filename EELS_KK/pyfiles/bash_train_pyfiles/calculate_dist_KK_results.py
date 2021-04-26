@@ -29,9 +29,9 @@ files_eps = [filename for filename in os.listdir(path_to_KK) if filename.startsw
 #im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
 #
 
-#im = Spectral_image.load_data('/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
+im = Spectral_image.load_data('/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
 #im.cluster(5)
-im= im
+#im= im
 
 t = np.zeros(np.append(len(files_t),im.image_shape))
 eps = (1+1j)*np.zeros(np.append(np.append(len(files_eps),im.image_shape),len(im.deltaE[im.deltaE>0])))
