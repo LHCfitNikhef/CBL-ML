@@ -31,3 +31,4 @@
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/CBL-ML.iml
 .idea/other.xml
+*.pyc
