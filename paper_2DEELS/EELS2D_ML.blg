@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: EELS2D_ML.aux
+The style file: JHEP.bst
+Database file #1: EELS_ML.bib
+Warning--I didn't find a database entry for "lau"
+Warning--I didn't find a database entry for "egerton_book"
+Warning--I didn't find a database entry for "brockt_lakner_2000"
+Warning--I didn't find a database entry for "iets"
+Warning--I didn't find a database entry for "wikipedia_2020"
+Warning--I didn't find a database entry for "Dapor2017"
+You've used 25 entries,
+            2195 wiz_defined-function locations,
+            695 strings with 7512 characters,
+and the built_in function-call counts, 8269 in all, are:
+= -- 854
+> -- 261
+< -- 0
++ -- 97
+- -- 72
+* -- 518
+:= -- 1117
+add.period$ -- 27
+call.type$ -- 25
+change.case$ -- 24
+chr.to.int$ -- 0
+cite$ -- 25
+duplicate$ -- 503
+empty$ -- 752
+format.name$ -- 72
+if$ -- 2176
+int.to.chr$ -- 0
+int.to.str$ -- 25
+missing$ -- 97
+newline$ -- 79
+num.names$ -- 25
+pop$ -- 112
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 392
+stack$ -- 0
+substring$ -- 418
+swap$ -- 258
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 56
+width$ -- 27
+write$ -- 256
+(There were 6 warnings)

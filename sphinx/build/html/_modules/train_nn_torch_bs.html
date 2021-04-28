@@ -1,160 +1,183 @@
-<!doctype html>
-<html class="no-js">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
-    <meta name="generator" content="sphinx-3.5.2, furo 2021.03.20.beta30"/>
-        <title>train_nn_torch_bs - EELSfitter 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/styles/furo.css?digest=978e1795dfe158b585dda6a8417f6411828bf3ed">
-    <link rel="stylesheet" href="../_static/pygments.css">
-    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>train_nn_torch_bs &mdash; EELSfitter 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
     
 
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
 
-<style>
-  :root {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-    }
-  }
+<body class="wy-body-for-nav">
 
-  /* For allowing end-user-specific overrides */
-  .override-light {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
-  
-  }
-  .override-dark {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-</style><link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
-  <body dir="">
+   
+  <div class="wy-grid-for-nav">
     
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="svg-toc" viewBox="0 0 24 24">
-    <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z"/>
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
-    </svg>
-  </symbol>
-  <symbol id="svg-menu" viewBox="0 0 24 24">
-    <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-menu">
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
-    <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="feather feather-chevron-right">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </symbol>
-</svg>
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation"></label>
-<label class="overlay toc-overlay" for="__toc"></label>
+          
+            <a href="../index.html" class="icon icon-home"> EELSfitter
+          
 
+          
+          </a>
 
+          
+            
+            
+          
 
-<div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="../index.html"><div class="brand">EELSfitter 0.0.1 documentation</div></a>
-    </div>
-    <div class="header-right">
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
-  
-  
-  <span class="sidebar-brand-text">EELSfitter 0.0.1 documentation</span>
-  
-</a><form class="sidebar-search-container" method="get" action="../search.html">
-  <input class="sidebar-search" placeholder=Search name="q">
-  <input type="hidden" name="check_keywords" value="yes">
-  <input type="hidden" name="area" value="default">
-</form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption"><span class="caption-text">Contents:</span></p>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview:</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../modules/modules.html">bash_train_pyfiles</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_MPI_per_row.html">KK_MPI_per_row module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_analysis_models_bs.html">KK_analysis_models_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_meta.html">KK_meta module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_one_pixel.html">KK_one_pixel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_per_row.html">KK_per_row module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_pixel.html">KK_pixel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_plot_results.html">KK_plot_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/KK_save_results.html">KK_save_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/calculate_dist_KK_results.html">calculate_dist_KK_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/image_class_bs.html">image_class_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/k_means_clustering.html">k_means_clustering module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/plot_results_dE.html">plot_results_dE module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/train_nn_torch_bs.html">train_nn_torch_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/training_images_bs.html">training_images_bs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/untitled7.html">untitled7 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/datasets.html">Datasets</a></li>
 </ul>
-</li>
+<p class="caption"><span class="caption-text">Theory</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../theory/kk_analysis.html">Kramer-Kronig Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Implementation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../implementation/training_strategies.html">Training Strategies</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Results</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../results/EELS_10.html">EELS 1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/EELS_20.html">EELS 2.0</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Code</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules.html">API</a></li>
 </ul>
 
-</div>
-</div>
+            
+          
+        </div>
       </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
       
-    </div>
-  </aside>
-  <main class="main">
-    <div class="content">
-      <article role="main">
-        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-        </label>
-        <h1>Source code for train_nn_torch_bs</h1><div class="highlight"><pre>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">EELSfitter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>train_nn_torch_bs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for train_nn_torch_bs</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">"""</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Created on Wed Feb 24 22:24:31 2021</span>
 
 <span class="sd">@author: isabel</span>
-<span class="sd">"""</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="c1">#TRAINING NN IN PYTORCH</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="c1">#matplotlib.use(&#39;Agg&#39;)</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -191,7 +214,7 @@
 
 
 <div class="viewcode-block" id="scale"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.scale">[docs]</a><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">ab</span><span class="p">):</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    min_inp = inp.min()</span>
 <span class="sd">    max_inp = inp.max()</span>
 <span class="sd">    </span>
@@ -200,7 +223,7 @@
 <span class="sd">    outp += min_out</span>
 <span class="sd">    </span>
 <span class="sd">    return outp</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">inp</span><span class="o">*</span><span class="n">ab</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ab</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
     <span class="c1">#pass</span>
@@ -231,7 +254,7 @@
 
 
 <span class="k">def</span> <span class="nf">binned_statistics</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">stats</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">"""Find the mean, variance and number of counts within the bins described by ewd"""</span>
+    <span class="sd">&quot;&quot;&quot;Find the mean, variance and number of counts within the bins described by ewd&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">edges</span> <span class="o">=</span> <span class="kc">None</span>
@@ -244,25 +267,25 @@
     <span class="c1">#df_train, </span>
     <span class="n">cuts1</span><span class="p">,</span> <span class="n">cuts2</span> <span class="o">=</span> <span class="n">ewd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="s2">"mean"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="n">mean</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;mean&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=&#39;mean&#39;, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"var"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="c1">#var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;var&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="c1">#var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic=&#39;std&#39;, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=&#39;std&#39;, bins=cuts2)</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_low</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)</span>
         <span class="n">high</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_high</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)            </span>
         <span class="n">var</span> <span class="o">=</span> <span class="n">high</span><span class="o">-</span><span class="n">low</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"count"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">'count'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;count&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=&#39;count&#39;, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"low"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;low&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_low</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">low</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"high"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;high&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">high</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_high</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"mean2"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;mean2&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">mean2</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">get_mean</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=get_mean, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean2</span><span class="p">)</span>
     
@@ -276,8 +299,8 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="smooth"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.smooth">[docs]</a><span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">'hanning'</span><span class="p">,</span> <span class="n">keep_original</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="sd">"""smooth the data using a window with requested size.</span>
+<div class="viewcode-block" id="smooth"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.smooth">[docs]</a><span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;hanning&#39;</span><span class="p">,</span> <span class="n">keep_original</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;smooth the data using a window with requested size.</span>
 <span class="sd">    </span>
 <span class="sd">    This method is based on the convolution of a scaled window with the signal.</span>
 <span class="sd">    The signal is prepared by introducing reflected copies of the signal </span>
@@ -287,25 +310,25 @@
 <span class="sd">    input:</span>
 <span class="sd">        x: the input signal </span>
 <span class="sd">        window_len: the dimension of the smoothing window; should be an odd integer</span>
-<span class="sd">        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'</span>
+<span class="sd">        window: the type of window from &#39;flat&#39;, &#39;hanning&#39;, &#39;hamming&#39;, &#39;bartlett&#39;, &#39;blackman&#39;</span>
 <span class="sd">            flat window will produce a moving average smoothing.</span>
 
 <span class="sd">    output:</span>
 <span class="sd">        the smoothed signal</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">#TODO: add comnparison</span>
     <span class="n">window_len</span> <span class="o">+=</span> <span class="p">(</span><span class="n">window_len</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span>
-    <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="s1">'-1'</span><span class="p">,</span> <span class="n">data</span><span class="p">[:,</span><span class="n">window_len</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="p">[:,</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="n">window_len</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="s1">&#39;-1&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[:,</span><span class="n">window_len</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="p">[:,</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="n">window_len</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
-    <span class="k">if</span> <span class="n">window</span> <span class="o">==</span> <span class="s1">'flat'</span><span class="p">:</span> <span class="c1">#moving average</span>
-        <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">window_len</span><span class="p">,</span><span class="s1">'d'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window</span> <span class="o">==</span> <span class="s1">&#39;flat&#39;</span><span class="p">:</span> <span class="c1">#moving average</span>
+        <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">window_len</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">w</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="s1">'np.'</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="s1">'(window_len)'</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;np.&#39;</span><span class="o">+</span><span class="n">window</span><span class="o">+</span><span class="s1">&#39;(window_len)&#39;</span><span class="p">)</span>
     
-    <span class="c1">#y=np.convolve(w/w.sum(),s,mode='valid')</span>
+    <span class="c1">#y=np.convolve(w/w.sum(),s,mode=&#39;valid&#39;)</span>
     <span class="n">surplus_data</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">window_len</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="n">w</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'valid'</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">s</span><span class="p">)[:,</span><span class="n">surplus_data</span><span class="p">:</span><span class="o">-</span><span class="n">surplus_data</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="n">w</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">s</span><span class="p">)[:,</span><span class="n">surplus_data</span><span class="p">:</span><span class="o">-</span><span class="n">surplus_data</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="smooth_clusters"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.smooth_clusters">[docs]</a><span class="k">def</span> <span class="nf">smooth_clusters</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">window_len</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -328,7 +351,7 @@
     
     <span class="n">crossing</span> <span class="o">=</span> <span class="p">(</span><span class="n">dy_dx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">crossing</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"shouldn't get here"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shouldn&#39;t get here&quot;</span><span class="p">)</span>
         <span class="n">up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">dy_dx</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_smooth</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_smooth</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">crossing</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_smooth</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_smooth</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span>
@@ -346,10 +369,10 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">check_with_user</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dE1_clusters</span>
     
-    <span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">'axes.prop_cycle'</span><span class="p">]</span><span class="o">.</span><span class="n">by_key</span><span class="p">()[</span><span class="s1">'color'</span><span class="p">]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.prop_cycle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">by_key</span><span class="p">()[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
     
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_smooth_clusters</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"thats too many clusters to effectively plot, man"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;thats too many clusters to effectively plot, man&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dE1_clusters</span>
         <span class="c1">#TODO: be kinder</span>
     <span class="n">der_deltaE</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">deltaE</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -360,16 +383,16 @@
         <span class="n">ci_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">dy_dx_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>  <span class="mi">16</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">ci_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">dy_dx_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>  <span class="mi">84</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">der_deltaE</span><span class="p">,</span><span class="n">ci_low</span><span class="p">,</span> <span class="n">ci_high</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mf">3E3</span><span class="p">,</span> <span class="mf">2E3</span><span class="p">,</span> <span class="n">ls</span> <span class="o">=</span> <span class="s1">'dotted'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mf">3E3</span><span class="p">,</span> <span class="mf">2E3</span><span class="p">,</span> <span class="n">ls</span> <span class="o">=</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lab</span> <span class="o">=</span> <span class="s2">"vacuum"</span>
+            <span class="n">lab</span> <span class="o">=</span> <span class="s2">&quot;vacuum&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lab</span> <span class="o">=</span> <span class="s2">"sample cl."</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">lab</span> <span class="o">=</span> <span class="s2">&quot;sample cl.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">der_deltaE</span><span class="p">,</span> <span class="n">dx_dy_i_avg</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lab</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">der_deltaE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">der_deltaE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'black'</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"derivatives of EELS per cluster, and range of first </span><span class="se">\n</span><span class="s2">positive derivative of EELSs per cluster"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"energy loss [eV]"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"dy/dx"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">der_deltaE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">der_deltaE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;derivatives of EELS per cluster, and range of first </span><span class="se">\n</span><span class="s2">positive derivative of EELSs per cluster&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;energy loss [eV]&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;dy/dx&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">3e3</span><span class="p">,</span><span class="mf">2e3</span><span class="p">)</span>
@@ -382,68 +405,68 @@
         <span class="c1">#dx_dy_i_min = np.min(dy_dx_clusters[i], axis = 0)</span>
         <span class="c1">#plt.fill_between(image.deltaE, dx_dy_i_avg-dx_dy_i_std, dx_dy_i_avg+dx_dy_i_std, color = colors[i], alpha = 0.2)</span>
         <span class="c1">#plt.axvspand(dE1_i_avg-dE1_i_std, dE1_i_avg+dE1_i_std, color = colors[i], alpha=0.1)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ls</span> <span class="o">=</span> <span class="s1">'dotted'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">lab</span> <span class="o">=</span> <span class="s2">"sample cl."</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ls</span> <span class="o">=</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">lab</span> <span class="o">=</span> <span class="s2">&quot;sample cl.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">der_deltaE</span><span class="p">,</span> <span class="n">dx_dy_i_avg</span><span class="o">/</span><span class="n">dy_dx_avg</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lab</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">der_deltaE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">der_deltaE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'black'</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"ratio between derivatives of EELS per cluster and the  </span><span class="se">\n</span><span class="s2">derivative of vacuum cluster, and average of first positive </span><span class="se">\n</span><span class="s2">derivative of EELSs per cluster"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"energy loss [eV]"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"ratio dy/dx sample and dy/dx vacuum"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">der_deltaE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">der_deltaE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;ratio between derivatives of EELS per cluster and the  </span><span class="se">\n</span><span class="s2">derivative of vacuum cluster, and average of first positive </span><span class="se">\n</span><span class="s2">derivative of EELSs per cluster&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;energy loss [eV]&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;ratio dy/dx sample and dy/dx vacuum&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dE1_clusters</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"please review the two auxillary plots on the derivatives of the EEL spectra. </span><span class="se">\n</span><span class="s2">"</span><span class="o">+</span>\
-          <span class="s2">"dE1 is the point before which the influence of the sample on the spectra is negligiable."</span><span class="p">)</span> <span class="c1">#TODO: check spelling</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;please review the two auxillary plots on the derivatives of the EEL spectra. </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>\
+          <span class="s2">&quot;dE1 is the point before which the influence of the sample on the spectra is negligiable.&quot;</span><span class="p">)</span> <span class="c1">#TODO: check spelling</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_smooth_clusters</span><span class="p">)):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">"sample cluster "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_check</span><span class="p">(</span><span class="s2">"dE1 of "</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;sample cluster &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_check</span><span class="p">(</span><span class="s2">&quot;dE1 of &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">dE1_clusters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">dE1_clusters</span></div>
 
 
 <div class="viewcode-block" id="user_check"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.user_check">[docs]</a><span class="k">def</span> <span class="nf">user_check</span><span class="p">(</span><span class="n">dE12</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="c1">#TODO: opschonen?</span>
-    <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Are you happy with a "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">" of "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"? [y/n/wanted "</span><span class="o">+</span><span class="n">dE12</span><span class="o">+</span><span class="s2">"] </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">"y"</span><span class="p">,</span> <span class="s2">"n"</span><span class="p">,</span><span class="s2">"0"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">]:</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Please respond with either 'yes', 'no', or your wanted "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">", otherwise assumed yes: </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">"y"</span><span class="p">,</span> <span class="s2">"n"</span><span class="p">,</span><span class="s2">"0"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Stupid, assumed yes, using "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">" of "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Are you happy with a &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;? [y/n/wanted &quot;</span><span class="o">+</span><span class="n">dE12</span><span class="o">+</span><span class="s2">&quot;] </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">,</span><span class="s2">&quot;9&quot;</span><span class="p">]:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please respond with either &#39;yes&#39;, &#39;no&#39;, or your wanted &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot;, otherwise assumed yes: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">,</span><span class="s2">&quot;9&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stupid, assumed yes, using &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">value</span>
-    <span class="k">elif</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'y'</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Perfect, using "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">" of "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Perfect, using &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">value</span>
-    <span class="k">elif</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'n'</span><span class="p">:</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Please input your desired "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">": </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">"0"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">]:</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Last chance, input your desired "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">": </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">"0"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">,</span><span class="s2">"2"</span><span class="p">,</span><span class="s2">"3"</span><span class="p">,</span><span class="s2">"4"</span><span class="p">,</span><span class="s2">"5"</span><span class="p">,</span><span class="s2">"6"</span><span class="p">,</span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Stupid, using old "</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">" of "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please input your desired &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot;: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">,</span><span class="s2">&quot;9&quot;</span><span class="p">]:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Last chance, input your desired &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot;: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="s2">&quot;5&quot;</span><span class="p">,</span><span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="s2">&quot;7&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">,</span><span class="s2">&quot;9&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stupid, using old &quot;</span> <span class="o">+</span> <span class="n">dE12</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">value</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ans</span><span class="p">))</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"input was invalid number, using original "</span> <span class="o">+</span> <span class="n">dE12</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input was invalid number, using original &quot;</span> <span class="o">+</span> <span class="n">dE12</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">value</span></div>
 
 
 
-<div class="viewcode-block" id="train_nn"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.train_nn">[docs]</a><span class="k">def</span> <span class="nf">train_nn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">n_rep</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">path_to_models</span> <span class="o">=</span> <span class="s2">"models"</span><span class="p">,</span> <span class="n">display_step</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">):</span>
-    <span class="sd">"""training also on intensity, so only one model per image, instead of one model per cluster"""</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">):</span>
-        <span class="n">path_to_model</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="n">path_to_model</span>
+<div class="viewcode-block" id="train_nn"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.train_nn">[docs]</a><span class="k">def</span> <span class="nf">train_nn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">n_rep</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">path_to_models</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="n">display_step</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;training also on intensity, so only one model per image, instead of one model per cluster&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+        <span class="n">path_to_model</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">path_to_model</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_model</span><span class="p">):</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">path_to_model</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"The directory "</span> <span class="o">+</span> <span class="n">path_to_model</span> <span class="o">+</span> <span class="s2">" already exists, if there are trained models "</span> <span class="o">+</span>
-                    <span class="s2">"in this folder, they will be overwritten. Do you want to continue? </span><span class="se">\n</span><span class="s2">"</span><span class="o">+</span>
-                    <span class="s2">"yes [y], no [n], define new path[dp]</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'n'</span><span class="p">:</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;The directory &quot;</span> <span class="o">+</span> <span class="n">path_to_model</span> <span class="o">+</span> <span class="s2">&quot; already exists, if there are trained models &quot;</span> <span class="o">+</span>
+                    <span class="s2">&quot;in this folder, they will be overwritten. Do you want to continue? </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                    <span class="s2">&quot;yes [y], no [n], define new path[dp]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'y'</span><span class="p">:</span>
-            <span class="n">path_to_model</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Please define the new path: </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+            <span class="n">path_to_model</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please define the new path: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="n">spectra</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_cluster_spectra</span><span class="p">()</span>
     
@@ -487,10 +510,10 @@
     <span class="n">times_dE1</span> <span class="o">=</span> <span class="mi">8</span>
     <span class="n">dE2</span> <span class="o">=</span> <span class="n">times_dE1</span> <span class="o">*</span><span class="n">dE1</span> <span class="c1">#determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"dE1 &amp; dE2:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dE1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dE2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dE1 &amp; dE2:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dE1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dE2</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"Started training on replica number </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", at time "</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started training on replica number </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;, at time &quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">data_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">data_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
@@ -528,14 +551,14 @@
         <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weight_reset</span><span class="p">)</span>
         <span class="c1">#optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)</span>
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">6e-3</span><span class="p">)</span>
-        <span class="sd">"""</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py</span>
 <span class="sd">        full_y = full_y_reps[:, i].reshape(N_full, 1)</span>
 <span class="sd">        train_x, train_y,train_sigma = full_x, full_y, full_sigma</span>
 <span class="sd">        train_x = train_x.reshape(N_full, 1)</span>
 <span class="sd">        train_y = train_y.reshape(N_full, 1)</span>
 <span class="sd">        train_sigma = train_sigma.reshape(N_full, 1)</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#full_y = full_y_reps[:, i].reshape(N_full,1)</span>
         <span class="c1">#train_x, test_x, train_y, test_y, train_sigma, test_sigma = \</span>
         <span class="c1">#    train_test_split(full_x, full_y, full_sigma, test_size=.2)</span>
@@ -577,20 +600,20 @@
             <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
             <span class="c1">#if epoch % display_step == 0:</span>
-            <span class="c1">#    print('Rep {}, Epoch {}, Training loss {}'.format(i, epoch, loss_train))</span>
+            <span class="c1">#    print(&#39;Rep {}, Epoch {}, Training loss {}&#39;.format(i, epoch, loss_train))</span>
             
             <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
                 <span class="n">output_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_x</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
                 <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">output_test</span><span class="p">,</span> <span class="n">test_y</span><span class="p">,</span> <span class="n">test_sigma</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">display_step</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">print_progress</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">'Rep </span><span class="si">{}</span><span class="s1">, Epoch </span><span class="si">{}</span><span class="s1">, Training loss </span><span class="si">{}</span><span class="s1">, Testing loss </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loss_train</span><span class="p">,</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rep </span><span class="si">{}</span><span class="s1">, Epoch </span><span class="si">{}</span><span class="s1">, Training loss </span><span class="si">{}</span><span class="s1">, Testing loss </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loss_train</span><span class="p">,</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
                 <span class="k">if</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_loss_test</span><span class="p">:</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_model</span> <span class="o">+</span> <span class="s2">"/nn_rep"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_model</span> <span class="o">+</span> <span class="s2">&quot;/nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
                     <span class="n">loss_test_reps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">min_loss_test</span> <span class="o">=</span> <span class="n">loss_test_reps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="c1">#iets met copy.deepcopy(model)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_model</span><span class="o">+</span> <span class="s2">"/costs.txt"</span><span class="p">,</span> <span class="n">loss_test_reps</span><span class="p">)</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_model</span><span class="o">+</span> <span class="s2">&quot;/costs.txt&quot;</span><span class="p">,</span> <span class="n">loss_test_reps</span><span class="p">)</span></div>
     
     
     
@@ -607,28 +630,33 @@
 
 
 
-<div class="viewcode-block" id="train_nn_scaled"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.train_nn_scaled">[docs]</a><span class="k">def</span> <span class="nf">train_nn_scaled</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">spectra</span><span class="p">,</span> <span class="n">n_rep</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span><span class="n">added_dE1</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">path_to_models</span> <span class="o">=</span> <span class="s2">"models"</span><span class="p">,</span> <span class="n">display_step</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">bs_rep_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="sd">"""training also on intensity, so only one model per image, instead of one model per cluster"""</span>
-    <span class="sd">"""</span>
-<span class="sd">    if hasattr(image, "name"):</span>
-<span class="sd">        path_to_models = image.name + "_" + path_to_models</span>
+<div class="viewcode-block" id="train_nn_scaled"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.train_nn_scaled">[docs]</a><span class="k">def</span> <span class="nf">train_nn_scaled</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">spectra</span><span class="p">,</span> <span class="n">n_rep</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">30000</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span><span class="n">added_dE1</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">path_to_models</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="n">display_step</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">bs_rep_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;training also on intensity, so only one model per image, instead of one model per cluster&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    if hasattr(image, &quot;name&quot;):</span>
+<span class="sd">        path_to_models = image.name + &quot;_&quot; + path_to_models</span>
 <span class="sd">    </span>
 <span class="sd">    if not os.path.exists(path_to_models):</span>
 <span class="sd">        Path(path_to_models).mkdir(parents=True, exist_ok=True)</span>
 <span class="sd">    else:</span>
-<span class="sd">        ans = input("The directory " + path_to_models + " already exists, if there are trained models " +</span>
-<span class="sd">                    "in this folder, they will be overwritten. Do you want to continue? \n"+</span>
-<span class="sd">                    "yes [y], no [n], define new path[dp]\n")</span>
-<span class="sd">        if ans[0] == 'n':</span>
+<span class="sd">        ans = input(&quot;The directory &quot; + path_to_models + &quot; already exists, if there are trained models &quot; +</span>
+<span class="sd">                    &quot;in this folder, they will be overwritten. Do you want to continue? \n&quot;+</span>
+<span class="sd">                    &quot;yes [y], no [n], define new path[dp]\n&quot;)</span>
+<span class="sd">        if ans[0] == &#39;n&#39;:</span>
 <span class="sd">            return</span>
-<span class="sd">        elif not ans[0] == 'y':</span>
-<span class="sd">            path_to_models = input("Please define the new path: \n")</span>
-<span class="sd">    """</span>
-    <span class="c1">#if display_step is None:</span>
-    <span class="n">print_progress</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="c1">#else:</span>
-    <span class="c1">#    print_progress = True</span>
-        
+<span class="sd">        elif not ans[0] == &#39;y&#39;:</span>
+<span class="sd">            path_to_models = input(&quot;Please define the new path: \n&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">display_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">print_progress</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">display_step</span> <span class="o">=</span> <span class="mf">1E6</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">print_progress</span> <span class="o">=</span> <span class="kc">True</span>
+    
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">):</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
     <span class="n">num_saving_per_rep</span> <span class="o">=</span> <span class="mi">50</span>
     <span class="n">saving_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_epochs</span><span class="o">/</span><span class="n">num_saving_per_rep</span><span class="p">)</span>
     
@@ -664,9 +692,10 @@
     
     <span class="c1">#TODO: instead of the binned statistics, just use xth value to dischart -&gt; neh says Juan    </span>
     <span class="n">times_dE1</span> <span class="o">=</span> <span class="mi">8</span>
-    <span class="n">dE2</span> <span class="o">=</span> <span class="n">times_dE1</span> <span class="o">*</span><span class="n">dE1</span> <span class="c1">#determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)</span>
+    <span class="n">min_dE2</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">deltaE</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">image</span><span class="o">.</span><span class="n">ddeltaE</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">l</span><span class="o">*</span><span class="mf">0.05</span> <span class="c1">#at least 5% zeros at end</span>
+    <span class="n">dE2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">times_dE1</span> <span class="o">*</span><span class="n">dE1</span><span class="p">,</span> <span class="n">min_dE2</span><span class="p">)</span> <span class="c1"># minimal 1eV at the end with zeros #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)</span>
     
-    <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"dE1 &amp; dE2:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dE1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dE2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dE1 &amp; dE2:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">dE1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dE2</span><span class="p">)</span>
     
     
     <span class="n">ab_deltaE</span> <span class="o">=</span> <span class="n">find_scale_var</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">deltaE</span><span class="p">)</span>
@@ -683,7 +712,7 @@
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
         <span class="n">save_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n_rep</span><span class="o">*</span><span class="n">bs_rep_num</span>
-        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"Started training on replica number </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", at time "</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started training on replica number </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;, at time &quot;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">data_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">data_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
@@ -715,14 +744,14 @@
         <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weight_reset</span><span class="p">)</span>
         <span class="c1">#optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)</span>
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
-        <span class="sd">"""</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py</span>
 <span class="sd">        full_y = full_y_reps[:, i].reshape(N_full, 1)</span>
 <span class="sd">        train_x, train_y,train_sigma = full_x, full_y, full_sigma</span>
 <span class="sd">        train_x = train_x.reshape(N_full, 1)</span>
 <span class="sd">        train_y = train_y.reshape(N_full, 1)</span>
 <span class="sd">        train_sigma = train_sigma.reshape(N_full, 1)</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         
         
         <span class="n">train_x</span><span class="p">,</span> <span class="n">test_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">test_y</span><span class="p">,</span> <span class="n">train_sigma</span><span class="p">,</span> <span class="n">test_sigma</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data_x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_sigma</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
@@ -740,7 +769,6 @@
         <span class="n">train_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">train_x</span><span class="p">)</span>
         <span class="n">train_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">train_y</span><span class="p">)</span>
         <span class="n">train_sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">train_sigma</span><span class="p">)</span>
-        
         <span class="n">test_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">test_x</span><span class="p">)</span>
         <span class="n">test_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">test_y</span><span class="p">)</span>
         <span class="n">test_sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">test_sigma</span><span class="p">)</span>
@@ -769,13 +797,13 @@
                 <span class="n">output_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_x</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
                 <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">output_test</span><span class="p">,</span> <span class="n">test_y</span><span class="p">,</span> <span class="n">test_sigma</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">display_step</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">print_progress</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">'Rep </span><span class="si">{}</span><span class="s1">, Epoch </span><span class="si">{}</span><span class="s1">, Training loss </span><span class="si">{}</span><span class="s1">, Testing loss </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_train</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">3</span><span class="p">)))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rep </span><span class="si">{}</span><span class="s1">, Epoch </span><span class="si">{}</span><span class="s1">, Training loss </span><span class="si">{}</span><span class="s1">, Testing loss </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_train</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">3</span><span class="p">)))</span>
                     <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">display_step</span><span class="p">],</span><span class="mi">3</span><span class="p">):</span>
                         <span class="n">n_stagnant</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">n_stagnant</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">if</span> <span class="n">n_stagnant</span> <span class="o">&gt;=</span> <span class="n">n_stagnant_max</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"detected stagnant training, breaking"</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">print_progress</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;detected stagnant training, breaking&quot;</span><span class="p">)</span>
                         <span class="k">break</span>
                 <span class="k">if</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_loss_test</span><span class="p">:</span>
                     <span class="n">loss_test_reps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_test</span><span class="p">[</span><span class="n">epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -783,11 +811,15 @@
                     <span class="n">min_model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
                     <span class="c1">#iets met copy.deepcopy(model)</span>
                 <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">saving_step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">"/nn_rep"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
-        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">"/nn_rep"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">"/costs"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".txt"</span><span class="p">,</span> <span class="n">loss_test_reps</span><span class="p">[:</span><span class="n">epoch</span><span class="p">])</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">"/dE1"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".txt"</span><span class="p">,</span> <span class="n">dE1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dE1</span><span class="p">,</span> <span class="n">dE2</span></div>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;/nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;/nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/costs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
+            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">min_loss_test</span><span class="p">))</span>
+        <span class="c1"># np.savetxt(path_to_models+ &quot;/costs&quot; + str(bs_rep_num) + &quot;.txt&quot;, min_loss_test) # loss_test_reps[:epoch])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/dE1.txt&quot;</span><span class="p">):</span>
+        <span class="c1"># np.savetxt(path_to_models+ &quot;/dE1&quot; + str(bs_rep_num) + &quot;.txt&quot;, dE1)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/dE1.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">clusters</span><span class="p">,</span> <span class="n">dE1</span><span class="p">)))</span></div>
+    
 
 
 
@@ -797,7 +829,7 @@
 
 <span class="c1">#OLD</span>
 <div class="viewcode-block" id="binned_statistics"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.binned_statistics">[docs]</a><span class="k">def</span> <span class="nf">binned_statistics</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">stats</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">"""Find the mean, variance and number of counts within the bins described by ewd"""</span>
+    <span class="sd">&quot;&quot;&quot;Find the mean, variance and number of counts within the bins described by ewd&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">edges</span> <span class="o">=</span> <span class="kc">None</span>
@@ -810,32 +842,32 @@
     <span class="c1">#df_train, </span>
     <span class="n">cuts1</span><span class="p">,</span> <span class="n">cuts2</span> <span class="o">=</span> <span class="n">ewd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="s2">"mean"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="n">mean</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;mean&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=&#39;mean&#39;, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"var"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="c1">#var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;var&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="c1">#var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic=&#39;std&#39;, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=&#39;std&#39;, bins=cuts2)</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_low</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)</span>
         <span class="n">high</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_high</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)            </span>
         <span class="n">var</span> <span class="o">=</span> <span class="n">high</span><span class="o">-</span><span class="n">low</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"count"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">'count'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)</span>
+    <span class="k">if</span> <span class="s2">&quot;count&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=&#39;count&#39;, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"low"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;low&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_low</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">low</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"high"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;high&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">high</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">CI_high</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">"mean2"</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;mean2&quot;</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
         <span class="n">mean2</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="n">get_mean</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=get_mean, bins=cuts2)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean2</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">edges</span></div>
 
 <div class="viewcode-block" id="ewd"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.ewd">[docs]</a><span class="k">def</span> <span class="nf">ewd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">nbins</span><span class="p">):</span>  
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    INPUT:</span>
 <span class="sd">        x: </span>
 <span class="sd">        y:</span>
@@ -847,8 +879,8 @@
 <span class="sd">        cuts2:</span>
 <span class="sd">    </span>
 <span class="sd">    Apply Equal Width Discretization (EWD) to x and y data to determine variances</span>
-<span class="sd">    """</span>
-    <span class="c1">#TODO: I think everything that was here isn't needed?? since x is already sorted, and a 1D array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#TODO: I think everything that was here isn&#39;t needed?? since x is already sorted, and a 1D array</span>
     <span class="c1">#df_train = np.array(np.c_[x,y])</span>
     <span class="n">cuts1</span><span class="p">,</span> <span class="n">cuts2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
@@ -880,7 +912,7 @@
 <div class="viewcode-block" id="get_median"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.get_median">[docs]</a><span class="k">def</span> <span class="nf">get_median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">nbins</span><span class="p">):</span>
     <span class="c1">#df_train, </span>
     <span class="n">cuts1</span><span class="p">,</span> <span class="n">cuts2</span> <span class="o">=</span> <span class="n">ewd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">nbins</span><span class="p">)</span>
-    <span class="n">median</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">'median'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic='median', bins=cuts2)</span>
+    <span class="n">median</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">binnum</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts2</span><span class="p">)</span><span class="c1">#df_train[:,0], df_train[:,1], statistic=&#39;median&#39;, bins=cuts2)</span>
     <span class="k">return</span> <span class="n">median</span></div>
 
 <div class="viewcode-block" id="get_mean"><a class="viewcode-back" href="../modules/train_nn_torch_bs.html#train_nn_torch_bs.get_mean">[docs]</a><span class="k">def</span> <span class="nf">get_mean</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -897,38 +929,47 @@
 
 
 
-<span class="c1">#train_nn(im, path_to_models = "train_004_on_I_2")</span>
-<span class="c1">#train_nn_scaled(im, path_to_models = "train_004_on_I_scaled_5", lr = 1e6, n_epochs=300000)</span>
+<span class="c1">#train_nn(im, path_to_models = &quot;train_004_on_I_2&quot;)</span>
+<span class="c1">#train_nn_scaled(im, path_to_models = &quot;train_004_on_I_scaled_5&quot;, lr = 1e6, n_epochs=300000)</span>
 </pre></div>
-      </article>
-      <footer>
-        
-        <div class="related-pages">
-          
-          
-        </div>
 
-        <div class="related-information">
-              Copyright &#169; 2021, A
-            |
-            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
-              and
-              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, A
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
-        
-      </footer>
-    </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
-  </main>
-</div>
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>

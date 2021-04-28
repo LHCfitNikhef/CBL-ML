@@ -3,40 +3,47 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the EELSfitter documentation!
-========================================
+Welcome to EELSfitter website!
+=======================================
 
+EELSfiter is an open-source Python-based framework developed for the analysis and interpretation of Electron Energy Loss Spectroscopy (EELS) measurements in Transmission Electron Microscopy (TEM). EELSfitter is based on the machine learning techniques developed by the NNPDF Collaboration in the context of applications in high energy physics, in particular feed-forward neural networks for unbiased regression in multidimensional problems.
 
-EELSfitter is a Python package capable of providing an in-depth analysis of spectral images obtained with Electron Energy Loss Spectroscopy using a machine-learning framework. One of the key goals of EELSfitter is to give the EELS scientist a reliable way to substract the Zero-Loss Peak (ZLP) and analyse the physics in the ultra low-loss energy region. For further in-depth analysis after substraction of the ZLP, EELSfitter provides additional tools based on the Kramers-Kronig relations.
+.. toctree::
+   :maxdepth: 1
+   :caption: Overview:
+   :hidden:
 
-Project description 
-~~~~~~~~~~~~~~~~~~~
+   overview/features
+   overview/datasets
 
-The EELSfitter framework has been used in the following **scientific publications**:
+.. toctree::
+   :maxdepth: 1
+   :caption: Theory
+   :hidden:
 
-
-Team description
-~~~~~~~~~~~~~~~~
-
-The **EELSfitter collaboration** is currently composed by the following members:
-
-- 
-- 
-- 
-- 
-- 
-
-Former members of the EELSfitter project include:
-
--
-
+   theory/kk_analysis
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   
-   overview/features.rst
+   :maxdepth: 1
+   :caption: Implementation
+   :hidden:
+
+   implementation/training_strategies
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Results
+   :hidden:
+
+   results/EELS_10
+   results/EELS_20
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Code
+   :hidden:
+
    modules/modules.rst
 
 Indices and tables

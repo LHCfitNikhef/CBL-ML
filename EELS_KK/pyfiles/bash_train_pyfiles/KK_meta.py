@@ -11,6 +11,8 @@ import os
 
 from image_class_bs import Spectral_image
 
+if
+
 path_to_models = sys.argv[1]
 path_to_save = sys.argv[2]
 smooth = sys.argv[3]
