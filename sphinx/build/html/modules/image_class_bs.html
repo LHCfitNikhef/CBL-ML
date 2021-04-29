@@ -79,7 +79,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Overview:</span></p>
+              <p class="caption"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../overview/features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../overview/datasets.html">Datasets</a></li>
@@ -99,7 +99,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Code</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Documentation</a></li>
 </ul>
 
             
@@ -193,9 +193,55 @@
 <dt id="image_class_bs.Spectral_image">
 <em class="property">class </em><code class="sig-prename descclassname">image_class_bs.</code><code class="sig-name descname">Spectral_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">deltadeltaE</span></em>, <em class="sig-param"><span class="n">pixelsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">beam_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Example NumPy style docstrings.</p>
+<p>This module demonstrates documentation as specified by the <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">NumPy
+Documentation HOWTO</a>. Docstrings may extend over multiple lines. Sections
+are created with a section header followed by an underline of equal length.</p>
+<p class="rubric">Example</p>
+<p>Examples can be given using either the <code class="docutils literal notranslate"><span class="pre">Example</span></code> or <code class="docutils literal notranslate"><span class="pre">Examples</span></code>
+sections. Sections support any reStructuredText formatting, including
+literal blocks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python example_numpy.py
+</pre></div>
+</div>
+<p>Section breaks are created with two blank lines. Section breaks are also
+implicitly created anytime a new section starts. Section bodies <em>may</em> be
+indented:</p>
+<p class="rubric">Notes</p>
+<p>This is an example of an indented section. It’s like any other section,
+but the body is indented to help it stand out from surrounding text.</p>
+<p>If a section is indented, then a section break is created by
+resuming unindented text.</p>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.module_level_variable1">
+<code class="sig-name descname">module_level_variable1</code><a class="headerlink" href="#image_class_bs.Spectral_image.module_level_variable1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module level variables may be documented in either the <code class="docutils literal notranslate"><span class="pre">Attributes</span></code>
+section of the module docstring, or in an inline docstring immediately
+following the variable.</p>
+<p>Either form is acceptable, but the two should not be mixed. Choose
+one convention to document module level variables and be consistent
+with it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES">
-<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><em class="property"> = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']</em><a class="headerlink" href="#image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><a class="headerlink" href="#image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of dielectric function names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id0">
+<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><em class="property"> = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']</em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -547,7 +593,7 @@ If both are None or if both are provided an exception is raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>zlp</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – ZLP intensity. It is optional (can be None) if <cite>t</cite> is None and <cite>n</cite>
+<li><p><strong>zlp</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><em>number</em><em>, </em><em>Signal1D</em>) – ZLP intensity. It is optional (can be None) if <cite>t</cite> is None and <cite>n</cite>
 is not None and the thickness estimation is not required. If <cite>t</cite>
 is not None, the ZLP is required to perform the normalization and
 if <cite>t</cite> is not None, the ZLP is required to calculate the thickness.
@@ -561,18 +607,15 @@ integrated ZLP intensity.</p></li>
 <li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of the iterations for the internal loop to remove the
 surface plasmon contribution. If 1 the surface plasmon contribution
 is not estimated and subtracted (the default is 1).</p></li>
-<li><p><strong>n</strong> (<em>{None</em><em>, </em><em>float}</em>) – The medium refractive index. Used for normalization of the
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The medium refractive index. Used for normalization of the
 SSD to obtain the energy loss function. If given the thickness
 is estimated and returned. It is only required when <cite>t</cite> is None.</p></li>
-<li><p><strong>t</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – <dl class="simple">
-<dt>The sample thickness in nm. Used for normalization of the</dt><dd><p>to obtain the energy loss function. It is only required when</p>
-</dd>
-</dl>
-<p><cite>n</cite> is None. If the thickness is the same for all spectra it can be
+<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><em>number</em><em>, </em><em>Signal1D</em>) – The sample thickness in nm. Used for normalization of the
+to obtain the energy loss function. It is only required when
+<cite>n</cite> is None. If the thickness is the same for all spectra it can be
 given by a number. Otherwise, it can be provided as a BaseSignal
 with signal dimension 0 and navigation_dimension equal to the
-current signal.</p>
-</p></li>
+current signal.</p></li>
 <li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – A small number (0.1-0.5 eV) added to the energy axis in
 specific steps of the calculation the surface loss correction to
 improve stability.</p></li>

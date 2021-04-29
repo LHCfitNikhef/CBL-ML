@@ -54,6 +54,53 @@ _logger = logging.getLogger(__name__)
 
 
 class Spectral_image():
+    """Example NumPy style docstrings.
+
+            This module demonstrates documentation as specified by the `NumPy
+            Documentation HOWTO`_. Docstrings may extend over multiple lines. Sections
+            are created with a section header followed by an underline of equal length.
+
+            Example
+            -------
+            Examples can be given using either the ``Example`` or ``Examples``
+            sections. Sections support any reStructuredText formatting, including
+            literal blocks::
+
+                $ python example_numpy.py
+
+
+            Section breaks are created with two blank lines. Section breaks are also
+            implicitly created anytime a new section starts. Section bodies *may* be
+            indented:
+
+            Notes
+            -----
+                This is an example of an indented section. It's like any other section,
+                but the body is indented to help it stand out from surrounding text.
+
+            If a section is indented, then a section break is created by
+            resuming unindented text.
+
+            Attributes
+            ----------
+            module_level_variable1 : int
+                Module level variables may be documented in either the ``Attributes``
+                section of the module docstring, or in an inline docstring immediately
+                following the variable.
+
+                Either form is acceptable, but the two should not be mixed. Choose
+                one convention to document module level variables and be consistent
+                with it.
+
+            DIELECTRIC_FUNCTION_NAMES: list
+                list of dielectric function names
+
+
+            .. _NumPy Documentation HOWTO:
+               https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
+
+            """
+
     DIELECTRIC_FUNCTION_NAMES = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']
     EELS_NAMES = ['electron_energy_loss_spectrum','electron_energy_loss','EELS', 'EEL', 'energy_loss', 'data']
     IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
@@ -80,7 +127,7 @@ class Spectral_image():
             collection_angle = float (default: None), collection angle of STEM [rad]
             name = str (default: None), name if given along is used in title of plots
         """
-        
+
         self.data = data
         self.ddeltaE = deltadeltaE
         self.determine_deltaE()
@@ -845,7 +892,7 @@ class Spectral_image():
     
         Parameters
         ----------
-        zlp: {None, number, Signal1D}
+        zlp: None, number, Signal1D
             ZLP intensity. It is optional (can be None) if `t` is None and `n`
             is not None and the thickness estimation is not required. If `t`
             is not None, the ZLP is required to perform the normalization and
@@ -861,13 +908,13 @@ class Spectral_image():
             Number of the iterations for the internal loop to remove the
             surface plasmon contribution. If 1 the surface plasmon contribution
             is not estimated and subtracted (the default is 1).
-        n: {None, float}
+        n: None, float
             The medium refractive index. Used for normalization of the
             SSD to obtain the energy loss function. If given the thickness
             is estimated and returned. It is only required when `t` is None.
-        t: {None, number, Signal1D}
+        t: None, number, Signal1D
             The sample thickness in nm. Used for normalization of the
-             to obtain the energy loss function. It is only required when
+            to obtain the energy loss function. It is only required when
             `n` is None. If the thickness is the same for all spectra it can be
             given by a number. Otherwise, it can be provided as a BaseSignal
             with signal dimension 0 and navigation_dimension equal to the
@@ -1709,6 +1756,7 @@ class MLP(nn.Module):
         self.sigmoid = nn.Sigmoid()
         self.relu = nn.ReLU()
 
+
     def forward(self, x):
         # Perform the calculation of the model to determine the prediction
         x = self.linear1(x)
@@ -1719,6 +1767,9 @@ class MLP(nn.Module):
         x = self.relu(x)
         x = self.output(x)
         return x
+
+
+
 
 def scale(inp, ab):
     """

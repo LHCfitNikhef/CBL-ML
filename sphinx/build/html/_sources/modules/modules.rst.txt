@@ -1,10 +1,33 @@
-API
-===
+Documentation
+=============
 
-.. autosummary::
-   :toctree: _autosummary
-   :template: module.rst
+.. note::
+   This is a note, pay attention!
 
-   image_class_bs
-   k_means_clustering
-   train_nn_torch_bs
+.. tip::
+   This is a tip! You should follow it.
+
+
+The ``SpectralImage`` class
+************************
+
+.. autoclass:: image_class_bs.Spectral_image
+    :members:
+    :show-inheritance:
+
+The ``Training`` module
+************************
+
+.. automodule:: train_nn_torch_bs
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+The ``Clustering`` module
+************************
+
+.. automodule:: k_means_clustering
+    :members:
+    :undoc-members:
+    :show-inheritance:

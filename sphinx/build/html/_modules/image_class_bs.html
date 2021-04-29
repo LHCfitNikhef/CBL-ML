@@ -79,7 +79,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Overview:</span></p>
+              <p class="caption"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../overview/features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../overview/datasets.html">Datasets</a></li>
@@ -99,7 +99,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Code</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../modules/modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/modules.html">Documentation</a></li>
 </ul>
 
             
@@ -218,7 +218,54 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Spectral_image"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image">[docs]</a><span class="k">class</span> <span class="nc">Spectral_image</span><span class="p">():</span>
+<div class="viewcode-block" id="Spectral_image"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image">[docs]</a><span class="k">class</span> <span class="nc">Spectral_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Example NumPy style docstrings.</span>
+
+<span class="sd">            This module demonstrates documentation as specified by the `NumPy</span>
+<span class="sd">            Documentation HOWTO`_. Docstrings may extend over multiple lines. Sections</span>
+<span class="sd">            are created with a section header followed by an underline of equal length.</span>
+
+<span class="sd">            Example</span>
+<span class="sd">            -------</span>
+<span class="sd">            Examples can be given using either the ``Example`` or ``Examples``</span>
+<span class="sd">            sections. Sections support any reStructuredText formatting, including</span>
+<span class="sd">            literal blocks::</span>
+
+<span class="sd">                $ python example_numpy.py</span>
+
+
+<span class="sd">            Section breaks are created with two blank lines. Section breaks are also</span>
+<span class="sd">            implicitly created anytime a new section starts. Section bodies *may* be</span>
+<span class="sd">            indented:</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">                This is an example of an indented section. It&#39;s like any other section,</span>
+<span class="sd">                but the body is indented to help it stand out from surrounding text.</span>
+
+<span class="sd">            If a section is indented, then a section break is created by</span>
+<span class="sd">            resuming unindented text.</span>
+
+<span class="sd">            Attributes</span>
+<span class="sd">            ----------</span>
+<span class="sd">            module_level_variable1 : int</span>
+<span class="sd">                Module level variables may be documented in either the ``Attributes``</span>
+<span class="sd">                section of the module docstring, or in an inline docstring immediately</span>
+<span class="sd">                following the variable.</span>
+
+<span class="sd">                Either form is acceptable, but the two should not be mixed. Choose</span>
+<span class="sd">                one convention to document module level variables and be consistent</span>
+<span class="sd">                with it.</span>
+
+<span class="sd">            DIELECTRIC_FUNCTION_NAMES: list</span>
+<span class="sd">                list of dielectric function names</span>
+
+
+<span class="sd">            .. _NumPy Documentation HOWTO:</span>
+<span class="sd">               https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
     <span class="n">DIELECTRIC_FUNCTION_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dielectric_function&#39;</span><span class="p">,</span> <span class="s1">&#39;dielectricfunction&#39;</span><span class="p">,</span> <span class="s1">&#39;dielec_func&#39;</span><span class="p">,</span> <span class="s1">&#39;die_fun&#39;</span><span class="p">,</span> <span class="s1">&#39;df&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">]</span>
     <span class="n">EELS_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;electron_energy_loss_spectrum&#39;</span><span class="p">,</span><span class="s1">&#39;electron_energy_loss&#39;</span><span class="p">,</span><span class="s1">&#39;EELS&#39;</span><span class="p">,</span> <span class="s1">&#39;EEL&#39;</span><span class="p">,</span> <span class="s1">&#39;energy_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">]</span>
     <span class="n">IEELS_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;inelastic_scattering_energy_loss_spectrum&#39;</span><span class="p">,</span> <span class="s1">&#39;inelastic_scattering_energy_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;inelastic_scattering&#39;</span><span class="p">,</span> <span class="s1">&#39;IEELS&#39;</span><span class="p">,</span> <span class="s1">&#39;IES&#39;</span><span class="p">]</span>
@@ -245,7 +292,7 @@
 <span class="sd">            collection_angle = float (default: None), collection angle of STEM [rad]</span>
 <span class="sd">            name = str (default: None), name if given along is used in title of plots</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ddeltaE</span> <span class="o">=</span> <span class="n">deltadeltaE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">determine_deltaE</span><span class="p">()</span>
@@ -308,7 +355,7 @@
         <span class="sd">&quot;&quot;&quot;returns number of spectra in specral image&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Spectral_image.load_data"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.load_data">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Spectral_image.load_data"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.load_data">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_to_dmfile</span><span class="p">,</span> <span class="n">load_additional_data</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT: </span>
@@ -364,7 +411,7 @@
         <span class="k">return</span> <span class="n">image</span></div>
     
     
-<div class="viewcode-block" id="Spectral_image.set_n"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.set_n">[docs]</a>    <span class="k">def</span> <span class="nf">set_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n_vac</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.set_n"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.set_n">[docs]</a>    <span class="k">def</span> <span class="nf">set_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n_vac</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        LET OP WELKE WAARDE n_vac is en welke n_sample</span>
 
@@ -387,7 +434,7 @@
     
     
     
-<div class="viewcode-block" id="Spectral_image.determine_deltaE"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.determine_deltaE">[docs]</a>    <span class="k">def</span> <span class="nf">determine_deltaE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.determine_deltaE"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.determine_deltaE">[docs]</a>    <span class="k">def</span> <span class="nf">determine_deltaE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT: </span>
 <span class="sd">            self</span>
@@ -412,15 +459,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">x_axis</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixelsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> </div>
     
     <span class="c1">#%%RETRIEVING FUNCTIONS</span>
-<div class="viewcode-block" id="Spectral_image.get_data"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#TODO: add smooth possibility</span>
+<div class="viewcode-block" id="Spectral_image.get_data"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#TODO: add smooth possibility</span>
         <span class="sd">&quot;&quot;&quot;returns spectra image data in 3D-numpy array (x-axis x y-axis x energy loss-axis)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
     
-<div class="viewcode-block" id="Spectral_image.get_deltaE"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_deltaE">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltaE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.get_deltaE"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_deltaE">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltaE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns energy loss axis in numpy array&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaE</span></div>
     
-<div class="viewcode-block" id="Spectral_image.get_metadata"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.get_metadata"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;returns list with values for beam_energy and collection_angle, if defined&quot;&quot;&quot;</span>
         <span class="n">meta_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -429,7 +476,7 @@
             <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection_angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_angle</span>
         <span class="k">return</span> <span class="n">meta_data</span></div>
     
-<div class="viewcode-block" id="Spectral_image.get_pixel_signal"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_pixel_signal">[docs]</a>    <span class="k">def</span> <span class="nf">get_pixel_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s1">&#39;EELS&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.get_pixel_signal"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_pixel_signal">[docs]</a>    <span class="k">def</span> <span class="nf">get_pixel_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s1">&#39;EELS&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>
 <span class="sd">            i: int, x-coordinate for the pixel</span>
@@ -463,7 +510,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
     
     
-<div class="viewcode-block" id="Spectral_image.get_cluster_spectra"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_cluster_spectra">[docs]</a>    <span class="k">def</span> <span class="nf">get_cluster_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_interval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">clusters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_as_attribute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">based_upon</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s2">&quot;EELS&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.get_cluster_spectra"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_cluster_spectra">[docs]</a>    <span class="k">def</span> <span class="nf">get_cluster_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_interval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">clusters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_as_attribute</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">based_upon</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s2">&quot;EELS&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -514,7 +561,7 @@
     
     <span class="c1">#%%METHODS ON SIGNAL</span>
     
-<div class="viewcode-block" id="Spectral_image.cut"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.cut">[docs]</a>    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">E2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">in_ex</span> <span class="o">=</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.cut"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.cut">[docs]</a>    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">E2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">in_ex</span> <span class="o">=</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -550,7 +597,7 @@
 <div class="viewcode-block" id="Spectral_image.samenvoegen"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.samenvoegen">[docs]</a>    <span class="k">def</span> <span class="nf">samenvoegen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
     
-<div class="viewcode-block" id="Spectral_image.smooth"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.smooth">[docs]</a>    <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;hanning&#39;</span><span class="p">,</span> <span class="n">keep_original</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.smooth"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.smooth">[docs]</a>    <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;hanning&#39;</span><span class="p">,</span> <span class="n">keep_original</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;smooth the data using a window with requested size.</span>
 <span class="sd">        </span>
 <span class="sd">        This method is based on the convolution of a scaled window with the signal.</span>
@@ -942,7 +989,7 @@
                 
 
     <span class="c1">#METHODS ON DIELECTRIC FUNCTIONS</span>
-<div class="viewcode-block" id="Spectral_image.calc_thickness"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.calc_thickness">[docs]</a>    <span class="k">def</span> <span class="nf">calc_thickness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">I_EELS</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">N_ZLP</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.calc_thickness"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.calc_thickness">[docs]</a>    <span class="k">def</span> <span class="nf">calc_thickness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">I_EELS</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">N_ZLP</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates thickness from sample data, using Egreton #TODO: bron.</span>
 <span class="sd">        Nota bene: does not correct for surface scatterings. If you wish to correct \</span>
@@ -987,7 +1034,7 @@
 
     
     
-<div class="viewcode-block" id="Spectral_image.kramers_kronig_hs"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.kramers_kronig_hs">[docs]</a>    <span class="k">def</span> <span class="nf">kramers_kronig_hs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">I_EELS</span><span class="p">,</span>
+<div class="viewcode-block" id="Spectral_image.kramers_kronig_hs"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.kramers_kronig_hs">[docs]</a>    <span class="k">def</span> <span class="nf">kramers_kronig_hs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">I_EELS</span><span class="p">,</span>
                             <span class="n">N_ZLP</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                             <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1010,7 +1057,7 @@
 <span class="sd">    </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        zlp: {None, number, Signal1D}</span>
+<span class="sd">        zlp: None, number, Signal1D</span>
 <span class="sd">            ZLP intensity. It is optional (can be None) if `t` is None and `n`</span>
 <span class="sd">            is not None and the thickness estimation is not required. If `t`</span>
 <span class="sd">            is not None, the ZLP is required to perform the normalization and</span>
@@ -1026,13 +1073,13 @@
 <span class="sd">            Number of the iterations for the internal loop to remove the</span>
 <span class="sd">            surface plasmon contribution. If 1 the surface plasmon contribution</span>
 <span class="sd">            is not estimated and subtracted (the default is 1).</span>
-<span class="sd">        n: {None, float}</span>
+<span class="sd">        n: None, float</span>
 <span class="sd">            The medium refractive index. Used for normalization of the</span>
 <span class="sd">            SSD to obtain the energy loss function. If given the thickness</span>
 <span class="sd">            is estimated and returned. It is only required when `t` is None.</span>
-<span class="sd">        t: {None, number, Signal1D}</span>
+<span class="sd">        t: None, number, Signal1D</span>
 <span class="sd">            The sample thickness in nm. Used for normalization of the</span>
-<span class="sd">             to obtain the energy loss function. It is only required when</span>
+<span class="sd">            to obtain the energy loss function. It is only required when</span>
 <span class="sd">            `n` is None. If the thickness is the same for all spectra it can be</span>
 <span class="sd">            given by a number. Otherwise, it can be provided as a BaseSignal</span>
 <span class="sd">            with signal dimension 0 and navigation_dimension equal to the</span>
@@ -1189,7 +1236,7 @@
         <span class="k">return</span> <span class="n">eps</span><span class="p">,</span> <span class="n">te</span><span class="p">,</span> <span class="n">Srfint</span></div>
 
 
-<div class="viewcode-block" id="Spectral_image.KK_pixel"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.KK_pixel">[docs]</a>    <span class="k">def</span> <span class="nf">KK_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s1">&#39;EELS&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.KK_pixel"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.KK_pixel">[docs]</a>    <span class="k">def</span> <span class="nf">KK_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">signal</span> <span class="o">=</span> <span class="s1">&#39;EELS&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        Option to include pooling, not for thickness, as this is an integral and therefor \</span>
@@ -1248,7 +1295,7 @@
         <span class="k">return</span> <span class="n">dielectric_functions</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">S_ss</span><span class="p">,</span> <span class="n">IEELSs</span></div>
 
 
-<div class="viewcode-block" id="Spectral_image.im_dielectric_function_bs"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.im_dielectric_function_bs">[docs]</a>    <span class="k">def</span> <span class="nf">im_dielectric_function_bs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_process</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">plot</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;KK_analysis&quot;</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.im_dielectric_function_bs"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.im_dielectric_function_bs">[docs]</a>    <span class="k">def</span> <span class="nf">im_dielectric_function_bs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_process</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">plot</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;KK_analysis&quot;</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>
 <span class="sd">            self -- the image of which the dielectic functions are calculated</span>
@@ -1337,7 +1384,7 @@
         <span class="c1">#return dielectric_function_im_avg, dielectric_function_im_std</span>
 
     
-<div class="viewcode-block" id="Spectral_image.im_dielectric_function"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.im_dielectric_function">[docs]</a>    <span class="k">def</span> <span class="nf">im_dielectric_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_process</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">plot</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.im_dielectric_function"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.im_dielectric_function">[docs]</a>    <span class="k">def</span> <span class="nf">im_dielectric_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_process</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">plot</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>
 <span class="sd">            self -- the image of which the dielectic functions are calculated</span>
@@ -1412,7 +1459,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">IEELS_std</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">IEELSs</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></div>
         <span class="c1">#return dielectric_function_im_avg, dielectric_function_im_std</span>
     
-<div class="viewcode-block" id="Spectral_image.crossings_im"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.crossings_im">[docs]</a>    <span class="k">def</span> <span class="nf">crossings_im</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><span class="c1">#,  delta = 50):</span>
+<div class="viewcode-block" id="Spectral_image.crossings_im"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.crossings_im">[docs]</a>    <span class="k">def</span> <span class="nf">crossings_im</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><span class="c1">#,  delta = 50):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT: </span>
 <span class="sd">            self</span>
@@ -1510,7 +1557,7 @@
         
     
     <span class="c1">#PLOTTING FUNCTIONS</span>
-<div class="viewcode-block" id="Spectral_image.plot_sum"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.plot_sum">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">xlab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.plot_sum"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.plot_sum">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">xlab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>
 <span class="sd">            self -- spectral image </span>
@@ -1545,7 +1592,7 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
         
-<div class="viewcode-block" id="Spectral_image.plot_heatmap"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.plot_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">xlab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">discrete_colormap</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">save_as</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color_bin_size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">equal_axis</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Spectral_image.plot_heatmap"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.plot_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">xlab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylab</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">discrete_colormap</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">save_as</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color_bin_size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">equal_axis</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>
 <span class="sd">            self -- spectral image </span>
@@ -1703,7 +1750,7 @@
     
     
     <span class="c1">#STATIC METHODS</span>
-<div class="viewcode-block" id="Spectral_image.get_prefix"><a class="viewcode-back" href="../modules/image_class_bs.html#image_class_bs.Spectral_image.get_prefix">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Spectral_image.get_prefix"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image.get_prefix">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_prefix</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">SIunit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">numeric</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        INPUT:</span>

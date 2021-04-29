@@ -10,7 +10,7 @@ EELSfiter is an open-source Python-based framework developed for the analysis an
 
 .. toctree::
    :maxdepth: 1
-   :caption: Overview:
+   :caption: Overview
    :hidden:
 
    overview/features
@@ -40,7 +40,7 @@ EELSfiter is an open-source Python-based framework developed for the analysis an
    results/EELS_20
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Code
    :hidden:
 
