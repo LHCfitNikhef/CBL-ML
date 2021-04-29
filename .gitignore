@@ -12,6 +12,9 @@
 *.cb2
 .*.lb
 
+#pyc files
+*.pyc
+
 .spyproject/config/workspace.ini
 .spyproject/config/vcs.ini
 .spyproject/config/encoding.ini
