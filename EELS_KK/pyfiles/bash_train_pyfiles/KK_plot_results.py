@@ -13,10 +13,8 @@ import matplotlib.pyplot as plt
 from image_class_bs import Spectral_image
 
 
-# path_to_results = "../../KK_results/image_KK_lau_p_5_again.pkl"
-# im = Spectral_image.load_Spectral_image(path_to_results)
-
-path_to_results = "E:/PhD/data/MLdata/results/dE_n10-inse_SI-005/image_KK.pkl"
+#path_to_results = "E:/PhD/data/MLdata/results/dE_n10-inse_SI-003/image_KK.pkl"
+path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_n10-inse_SI-003/image_KK.pkl"
 im = Spectral_image.load_Spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
@@ -27,17 +25,29 @@ im = im
 cmap="YlGnBu"
 cmap="coolwarm"
 
+fig1, ax1 = plt.subplots()
+ax1.set_title("pooled signal pixel[30,20]")
+ax1.set_xlabel("energy loss [eV]")
+ax1.set_ylabel("intensity")
+#ax1.set_ylim(-200,1.5e3)
+#ax1.set_xlim(0,500)
+#ax1.fill_between(im.ieels_p[30,20,0,:], im.ieels_p[30,20,1,:], im.ieels_p[30,20,2,:], alpha = 0.2)
+ax1.plot(im.ieels_p[30,20,0,:], label = "median")
+
+ax1.legend()
+
+
 
 #%%
 thicknesslimit = np.nanpercentile(im.t[im.clustered == 0],0)
 mask = (im.t[:,:,0]<thicknesslimit)
 
-save_loc = "E:/PhD/data/MLdata/plots/dE_n10-inse_SI-005/"
+# save_loc = "E:/PhD/data/MLdata/plots/dE_n10-inse_SI-005/"
 
 #im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "lau_t")
 #im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "lau_t_capped_40")
 #im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, save_as = save_loc + "lau_t_capped_40")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, vmin = 0, vmax = 50, cmap = cmap, mask = mask)
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, vmin = 0, vmax = 180, cmap = cmap, mask = mask)
 
 #im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
 #im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "lau_t_CI")

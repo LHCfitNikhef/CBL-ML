@@ -37,16 +37,9 @@ im = Spectral_image.load_data('E:/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B
 
 #im=im
 
-<<<<<<< Updated upstream
-# path_to_models = 'dE1/E1_05'
-# path_to_models = 'models/train_lau_log'
-path_to_models = 'models/train_004_pooled_5_3'
-# path_to_models = 'models/train_004'
-=======
 path_to_models = 'E:/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_05'
 
->>>>>>> Stashed changes
- 
+
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 xlim = [np.min(im.dE1[1,:])/4, np.max(im.dE1[1,:])*1.5]
 
