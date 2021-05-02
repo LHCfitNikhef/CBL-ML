@@ -1,21 +1,33 @@
-bash_train_pyfiles
-==================
+Documentation
+=============
 
-.. toctree::
-   :maxdepth: 4
+.. note::
+   This is a note, pay attention!
 
-   KK_MPI_per_row
-   KK_analysis_models_bs
-   KK_meta
-   KK_one_pixel
-   KK_per_row
-   KK_pixel
-   KK_plot_results
-   KK_save_results
-   calculate_dist_KK_results
-   image_class_bs
-   k_means_clustering
-   plot_results_dE
-   train_nn_torch_bs
-   training_images_bs
-   untitled7
+.. tip::
+   This is a tip! You should follow it.
+
+
+The ``SpectralImage`` class
+************************
+
+.. autoclass:: image_class_bs.Spectral_image
+    :members:
+    :show-inheritance:
+
+The ``Training`` module
+************************
+
+.. automodule:: train_nn_torch_bs
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+The ``Clustering`` module
+************************
+
+.. automodule:: k_means_clustering
+    :members:
+    :undoc-members:
+    :show-inheritance:
