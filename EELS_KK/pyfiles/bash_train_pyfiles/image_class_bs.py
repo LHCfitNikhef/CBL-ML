@@ -54,6 +54,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Spectral_image():
+    #SIGNAL NAMES
     DIELECTRIC_FUNCTION_NAMES = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']
     EELS_NAMES = ['electron_energy_loss_spectrum','electron_energy_loss','EELS', 'EEL', 'energy_loss', 'data']
     IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
@@ -61,6 +62,9 @@ class Spectral_image():
     THICKNESS_NAMES = ['t', 'thickness', 'thick', 'thin']
     POOLED_ADDITION = ['pooled', 'pool', 'p', '_pooled', '_pool', '_p']
     
+    #META DATA NAMES
+    COLLECTION_ANGLE_NAMES = ["collection_angle", "col_angle", "beta"]
+    BEAM_ENERGY_NAMES = ["beam_energy", "beam_E", "E_beam", "E0", "E_0"]
     
     
     m_0 = 511.06 #eV, electron rest mass
@@ -1403,6 +1407,8 @@ class Spectral_image():
         if discrete_colormap:
             if 'mask' in kwargs:
                 mask = kwargs['mask']
+                if mask.all():
+                    raise ValueError("Mask all True: no values to plot.")
             else:
                 mask = np.zeros(data.shape).astype('bool') 
             
@@ -1419,7 +1425,10 @@ class Spectral_image():
                     unique_data_points = np.append(kwargs['vmin'], unique_data_points)
             
             if color_bin_size is None:
-                color_bin_size = np.nanpercentile(unique_data_points[1:]-unique_data_points[:-1],30)
+                if len(unique_data_points) == 1:
+                    color_bin_size = 1
+                else:
+                    color_bin_size = np.nanpercentile(unique_data_points[1:]-unique_data_points[:-1],30)
             n_colors = int((np.max(unique_data_points) - np.min(unique_data_points))/color_bin_size +1)
             cmap = cm.get_cmap(cmap, n_colors)
             spacing = color_bin_size/2

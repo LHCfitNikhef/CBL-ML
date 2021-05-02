@@ -34,7 +34,7 @@ def gen_ZLP_I(image, I):
 
 #im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4')
 
-im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
+im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
 # im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
 # im.cluster(5)
 
@@ -43,12 +43,31 @@ im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
 # path_to_models = 'dE1/E1_05'
 # path_to_models = 'models/train_lau_log'
 path_to_models = 'models/train_004_pooled_5_3'
-# path_to_models = 'models/train_004'
- 
+path_to_models = 'models/train_004'
+path_to_models = 'models/train_004_not_pooled_2'
+# path_to_models = 'models/train_004_not_pooled_CI_68'
+# path_to_models = 'models/train_004_not_pooled_CI_68_dE1_03'
+
+# path_to_models = 'models/train_004__pooled_5_CI_68_dE1_04_epochs_1e6'
+# path_to_models = 'models/train_004_not_pooled_CI_68_dE1_03_epochs_1e6'
+
+# path_to_models = 'models/train_004_pooled_5_CI_68_dE1_min_04_epochs_1e6'
+# path_to_models = 'models/train_004__pooled_5_CI_68_dE1_03_epochs_1e6'
+# # path_to_models = 'models/train_004_pooled_5_CI_68_dE1_0_epochs_1e6'
+# path_to_models = 'models/train_004_pooled_5_CI_68_dE1_03_cl0_not_epochs_1e6'
+# path_to_models = 'models/train_004_pooled_5_CI_68_dE1_03_cl0_not_epochs_1e6_scale_on_pooled'
+# path_to_models = 'models/train_004_pooled_5_CI_68_dE1_03_cl0_not_epochs_1e6_scale_on_pooled_clu_10'
+
+
+
+
+
+
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 xlim = [np.min(im.dE1[1,:])/4, np.max(im.dE1[1,:])*1.5]
+xlim = [0.25,2.6]
 
-name = " 004" # "Lau's sample, clustered on log" 
+name = " 004\n" + path_to_models # "Lau's sample, clustered on log" 
 
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
@@ -62,7 +81,7 @@ ax2.set_ylabel("intensity")
 
 
 
-for I in [0.2,0.3,0.5,0.7,0.8]:
+for I in [0.3,0.4,0.5,0.6]:#[0.1,0.3,0.5,0.7,0.9]:
     ZLPs = gen_ZLP_I(im, I)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
