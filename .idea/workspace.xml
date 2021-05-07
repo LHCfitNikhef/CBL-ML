@@ -1,7 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="542fa55d-c3ee-44a1-bc5e-06f4185b6961" name="Default Changelist" comment="linked sphinx doc to master branch" />
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch">
+      <change beforePath="$PROJECT_DIR$/.idea/CBL-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CBL-ML.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.buildinfo" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/conf.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/environment.pickle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/index.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_MPI_per_row.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_analysis_models_bs.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_compare_to_hs.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_from_summary_save.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_meta.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_one_pixel.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_per_row.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_pixel.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_plot_results.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_plot_results_set_for_lau.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/KK_save_results.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/calculate_dist_KK_results.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/image_class_bs.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/k_means_clustering.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/modules.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/plot_additional_data.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/plot_results_dE.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/train_nn_torch_bs.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/training_images_bs.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/modules/untitled7.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/.doctrees/overview/features.doctree" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_modules/image_class_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_modules/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_modules/k_means_clustering.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_modules/train_nn_torch_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/conf.py.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/index.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_MPI_per_row.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_analysis_models_bs.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_compare_to_hs.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_from_summary_save.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_meta.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_one_pixel.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_per_row.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_pixel.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_plot_results.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_plot_results_set_for_lau.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/KK_save_results.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/calculate_dist_KK_results.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/image_class_bs.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/k_means_clustering.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/modules.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/plot_additional_data.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/plot_results_dE.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/train_nn_torch_bs.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/training_images_bs.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/modules/untitled7.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_sources/overview/features.rst.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/basic.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/doctools.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/documentation_options.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/file.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/jquery-3.5.1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/jquery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/language_data.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/minus.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/plus.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/pygments.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/pygments_dark.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/scripts/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/scripts/main.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/searchtools.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/styles/furo-extensions.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/styles/furo-extensions.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/styles/furo.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/styles/furo.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/underscore-1.12.0.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/_static/underscore.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/conf.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/KK_MPI_per_row.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/KK_MPI_per_row.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/KK_analysis_models_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/KK_analysis_models_bs.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/genindex.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/KK_MPI_per_row.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/conf.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/conf.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/KK_MPI_per_row.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/KK_MPI_per_row.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/KK_analysis_models_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/KK_analysis_models_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_MPI_per_row.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_analysis_models_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_compare_to_hs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_from_summary_save.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_meta.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_one_pixel.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_per_row.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_pixel.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_plot_results.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_plot_results_set_for_lau.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/KK_save_results.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/calculate_dist_KK_results.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/image_class_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/k_means_clustering.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/modules.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/plot_additional_data.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/plot_results_dE.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/train_nn_torch_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/training_images_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/modules/untitled7.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/objects.inv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/overview/features.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/py-modindex.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/search.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/searchindex.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,7 +170,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="542fa55d-c3ee-44a1-bc5e-06f4185b6961" name="Default Changelist" comment="" />
+      <changelist id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch" />
       <created>1618917481712</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -56,6 +182,7 @@
       <workItem from="1619774372221" duration="797000" />
       <workItem from="1619775200534" duration="276000" />
       <workItem from="1619775568481" duration="320000" />
+      <workItem from="1619959278836" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>

@@ -112,6 +112,8 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable", None),
     "pytorch": ("https://pytorch.org/docs/stable/", None),
     "pandas": ("https://pandas.pydata.org/docs/", None),
+    "seaborn": ("https://seaborn.pydata.org/", None),
+    "matplotlib": ("https://matplotlib.org/", None),
 }
 
 # -- Options for todo extension ----------------------------------------------
