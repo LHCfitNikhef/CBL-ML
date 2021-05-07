@@ -488,6 +488,9 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     else:
         print_progress = True
     
+    
+    # TODO: something like: os.path.join(*path_to_models.split('/'))
+    path_to_models += (path_to_models[-1] == '/')*'/'
 
     if not os.path.exists(path_to_models):
         Path(path_to_models).mkdir(parents=True, exist_ok=True)
@@ -526,7 +529,7 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     #image.dE1 = dE1
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
-    times_dE1 = 8
+    times_dE1 = 3
     min_dE2 = image.deltaE.max() - image.ddeltaE*image.l*0.05 #at least 5% zeros at end
     dE2 = np.minimum(times_dE1 *dE1, min_dE2) # minimal 1eV at the end with zeros #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
     
@@ -537,13 +540,25 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     deltaE_scaled = scale(image.deltaE,ab_deltaE)
     
     
-    all_spectra = image.data
-    all_spectra[all_spectra<1] = 1
-    int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
+    # all_spectra = image.data
+    # all_spectra[all_spectra<1] = 1
+    # int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
+    
+    all_spectra  = np.empty((0,image.l))
+    
+    for i in range(len(spectra)):
+        all_spectra = np.append(all_spectra, spectra[i],axis=0)
+    
+    int_log_I = np.log(np.sum(all_spectra, axis=1)).flatten()
     ab_int_log_I = find_scale_var(int_log_I)
     del all_spectra
     
+    if not os.path.exists(path_to_models + "scale_var.txt"):
+        np.savetxt(path_to_models+ "scale_var.txt", ab_int_log_I)
     
+    if not os.path.exists(path_to_models+ "dE1.txt"):
+        # np.savetxt(path_to_models+ "/dE1" + str(bs_rep_num) + ".txt", dE1)
+        np.savetxt(path_to_models+ "dE1.txt", np.vstack((image.clusters, dE1)))
     
     for i in range(n_rep):
         save_idx = i + n_rep*bs_rep_num
@@ -646,14 +661,14 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
                     min_model = copy.deepcopy(model)
                     #iets met copy.deepcopy(model)
                 if epoch % saving_step == 0:
-                    torch.save(min_model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
-        torch.save(min_model.state_dict(), path_to_models + "/nn_rep" + str(save_idx))
-        with open(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", "w") as text_file:
+                    torch.save(min_model.state_dict(), path_to_models + "nn_rep" + str(save_idx))
+                    with open(path_to_models+ "costs" + str(bs_rep_num) + ".txt", "w") as text_file:
+                        text_file.write(str(min_loss_test))
+        torch.save(min_model.state_dict(), path_to_models + "nn_rep" + str(save_idx))
+        with open(path_to_models+ "costs" + str(bs_rep_num) + ".txt", "w") as text_file:
             text_file.write(str(min_loss_test))
-        # np.savetxt(path_to_models+ "/costs" + str(bs_rep_num) + ".txt", min_loss_test) # loss_test_reps[:epoch])
-    if not os.path.exists(path_to_models+ "/dE1.txt"):
-        # np.savetxt(path_to_models+ "/dE1" + str(bs_rep_num) + ".txt", dE1)
-        np.savetxt(path_to_models+ "/dE1.txt", np.vstack((image.clusters, dE1)))
+        # np.savetxt(path_to_models+ "costs" + str(bs_rep_num) + ".txt", min_loss_test) # loss_test_reps[:epoch])
+    
     
 
 

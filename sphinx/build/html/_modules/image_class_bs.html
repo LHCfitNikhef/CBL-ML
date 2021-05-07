@@ -217,6 +217,7 @@
 
 
 <div class="viewcode-block" id="Spectral_image"><a class="viewcode-back" href="../modules/modules.html#image_class_bs.Spectral_image">[docs]</a><span class="k">class</span> <span class="nc">Spectral_image</span><span class="p">():</span>
+
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak</span>
 <span class="sd">            subtracted.</span>
@@ -249,7 +250,10 @@
 <span class="sd">                average bulk scattering distribution for each pixel</span>
 <span class="sd">            IEELS_std</span>
 <span class="sd">                standard deviation of the bulk scattering distribution at each energy for each pixel</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1">#SIGNAL NAMES</span>
 
     <span class="n">DIELECTRIC_FUNCTION_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dielectric_function&#39;</span><span class="p">,</span> <span class="s1">&#39;dielectricfunction&#39;</span><span class="p">,</span> <span class="s1">&#39;dielec_func&#39;</span><span class="p">,</span> <span class="s1">&#39;die_fun&#39;</span><span class="p">,</span> <span class="s1">&#39;df&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">]</span>
     <span class="n">EELS_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;electron_energy_loss_spectrum&#39;</span><span class="p">,</span> <span class="s1">&#39;electron_energy_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;EELS&#39;</span><span class="p">,</span> <span class="s1">&#39;EEL&#39;</span><span class="p">,</span> <span class="s1">&#39;energy_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">]</span>
@@ -259,6 +263,10 @@
     <span class="n">THICKNESS_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="s1">&#39;thick&#39;</span><span class="p">,</span> <span class="s1">&#39;thin&#39;</span><span class="p">]</span>
     <span class="n">POOLED_ADDITION</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pooled&#39;</span><span class="p">,</span> <span class="s1">&#39;pool&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;_pooled&#39;</span><span class="p">,</span> <span class="s1">&#39;_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;_p&#39;</span><span class="p">]</span>
 
+    <span class="c1"># META DATA NAMES</span>
+    <span class="n">COLLECTION_ANGLE_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;collection_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;col_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">]</span>
+    <span class="n">BEAM_ENERGY_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;beam_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;beam_E&quot;</span><span class="p">,</span> <span class="s2">&quot;E_beam&quot;</span><span class="p">,</span> <span class="s2">&quot;E0&quot;</span><span class="p">,</span> <span class="s2">&quot;E_0&quot;</span><span class="p">]</span>
+
     <span class="n">m_0</span> <span class="o">=</span> <span class="mf">511.06</span>  <span class="c1"># eV, electron rest mass</span>
     <span class="n">a_0</span> <span class="o">=</span> <span class="mf">5.29E-11</span>  <span class="c1"># m, Bohr radius</span>
     <span class="n">h_bar</span> <span class="o">=</span> <span class="mf">6.582119569E-16</span>  <span class="c1"># eV/s</span>
@@ -267,8 +275,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">deltadeltaE</span><span class="p">,</span> <span class="n">pixelsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beam_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collection_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">dielectric_function_im_avg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dielectric_function_im_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">S_s_avg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">S_s_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">thickness_avg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thickness_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">IEELS_avg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">IEELS_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Constructor method</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Constructor method&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ddeltaE</span> <span class="o">=</span> <span class="n">deltadeltaE</span>
@@ -1577,6 +1584,8 @@
         <span class="k">if</span> <span class="n">discrete_colormap</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;mask&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mask all True: no values to plot.&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
 
@@ -1592,8 +1601,11 @@
                     <span class="n">unique_data_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;vmin&#39;</span><span class="p">],</span> <span class="n">unique_data_points</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">color_bin_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">color_bin_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">unique_data_points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">30</span><span class="p">)</span>
-            <span class="n">n_colors</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">))</span> <span class="o">/</span> <span class="n">color_bin_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">color_bin_size</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">color_bin_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">-</span><span class="n">unique_data_points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">n_colors</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">unique_data_points</span><span class="p">))</span><span class="o">/</span><span class="n">color_bin_size</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">)</span>
             <span class="n">spacing</span> <span class="o">=</span> <span class="n">color_bin_size</span> <span class="o">/</span> <span class="mi">2</span>
 

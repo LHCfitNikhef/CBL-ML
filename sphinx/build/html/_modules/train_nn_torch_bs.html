@@ -653,6 +653,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">print_progress</span> <span class="o">=</span> <span class="kc">True</span>
     
+    
+    <span class="c1"># TODO: something like: os.path.join(*path_to_models.split(&#39;/&#39;))</span>
+    <span class="n">path_to_models</span> <span class="o">+=</span> <span class="p">(</span><span class="n">path_to_models</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39;/&#39;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">):</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -691,7 +694,7 @@
     <span class="c1">#image.dE1 = dE1</span>
     
     <span class="c1">#TODO: instead of the binned statistics, just use xth value to dischart -&gt; neh says Juan    </span>
-    <span class="n">times_dE1</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">times_dE1</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">min_dE2</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">deltaE</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">image</span><span class="o">.</span><span class="n">ddeltaE</span><span class="o">*</span><span class="n">image</span><span class="o">.</span><span class="n">l</span><span class="o">*</span><span class="mf">0.05</span> <span class="c1">#at least 5% zeros at end</span>
     <span class="n">dE2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">times_dE1</span> <span class="o">*</span><span class="n">dE1</span><span class="p">,</span> <span class="n">min_dE2</span><span class="p">)</span> <span class="c1"># minimal 1eV at the end with zeros #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)</span>
     
@@ -702,13 +705,25 @@
     <span class="n">deltaE_scaled</span> <span class="o">=</span> <span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">deltaE</span><span class="p">,</span><span class="n">ab_deltaE</span><span class="p">)</span>
     
     
-    <span class="n">all_spectra</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">all_spectra</span><span class="p">[</span><span class="n">all_spectra</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">int_log_I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">all_spectra</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="c1"># all_spectra = image.data</span>
+    <span class="c1"># all_spectra[all_spectra&lt;1] = 1</span>
+    <span class="c1"># int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()</span>
+    
+    <span class="n">all_spectra</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="n">image</span><span class="o">.</span><span class="n">l</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">)):</span>
+        <span class="n">all_spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_spectra</span><span class="p">,</span> <span class="n">spectra</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">int_log_I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">all_spectra</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
     <span class="n">ab_int_log_I</span> <span class="o">=</span> <span class="n">find_scale_var</span><span class="p">(</span><span class="n">int_log_I</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">all_spectra</span>
     
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;scale_var.txt&quot;</span><span class="p">):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;scale_var.txt&quot;</span><span class="p">,</span> <span class="n">ab_int_log_I</span><span class="p">)</span>
     
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;dE1.txt&quot;</span><span class="p">):</span>
+        <span class="c1"># np.savetxt(path_to_models+ &quot;/dE1&quot; + str(bs_rep_num) + &quot;.txt&quot;, dE1)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;dE1.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">clusters</span><span class="p">,</span> <span class="n">dE1</span><span class="p">)))</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rep</span><span class="p">):</span>
         <span class="n">save_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n_rep</span><span class="o">*</span><span class="n">bs_rep_num</span>
@@ -811,14 +826,14 @@
                     <span class="n">min_model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
                     <span class="c1">#iets met copy.deepcopy(model)</span>
                 <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">saving_step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;/nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
-        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;/nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/costs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
-            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">min_loss_test</span><span class="p">))</span>
-        <span class="c1"># np.savetxt(path_to_models+ &quot;/costs&quot; + str(bs_rep_num) + &quot;.txt&quot;, min_loss_test) # loss_test_reps[:epoch])</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/dE1.txt&quot;</span><span class="p">):</span>
-        <span class="c1"># np.savetxt(path_to_models+ &quot;/dE1&quot; + str(bs_rep_num) + &quot;.txt&quot;, dE1)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;/dE1.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">clusters</span><span class="p">,</span> <span class="n">dE1</span><span class="p">)))</span></div>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;costs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
+                        <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">min_loss_test</span><span class="p">))</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">min_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">path_to_models</span> <span class="o">+</span> <span class="s2">&quot;nn_rep&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">save_idx</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_models</span><span class="o">+</span> <span class="s2">&quot;costs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bs_rep_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
+            <span class="n">text_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">min_loss_test</span><span class="p">))</span></div>
+        <span class="c1"># np.savetxt(path_to_models+ &quot;costs&quot; + str(bs_rep_num) + &quot;.txt&quot;, min_loss_test) # loss_test_reps[:epoch])</span>
+    
     
 
 

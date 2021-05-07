@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 from image_class_bs import Spectral_image
 
 
-# path_to_results = "../../KK_results/image_KK_lau_p_5_again.pkl"
+# path_to_results = "../../KK_results/image_KK_003_p_5_again.pkl"
 # im = Spectral_image.load_Spectral_image(path_to_results)
 
-path_to_results = "../../KK_results/image_KK_lau_p_5.pkl"
+path_to_results = "../../KK_results/image_KK_003_p_5_own_zlps.pkl"
 im = Spectral_image.load_Spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
@@ -32,15 +32,15 @@ cmap="coolwarm"
 thicknesslimit = np.nanpercentile(im.t[im.clustered == 0],97)
 mask = (im.t[:,:,0]<thicknesslimit)
 
-save_loc = "../../plots/plots_symposium/lau/"
+save_loc = "../../plots/plots_symposium/003/"
 
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "lau_t")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "lau_t_capped_40")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, save_as = save_loc + "lau_t_capped_40")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "003_t")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "003_t_capped_40")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, save_as = save_loc + "003_t_capped_40")
 
 im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "lau_t_CI")
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "lau_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "003_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "003_t_CI")
 
 
 #%% PLOT MAX
@@ -48,11 +48,11 @@ im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0], title = "relative broadne
 max_ieels = im.max_ieels # im.deltaE[np.argmax(im.ieels, axis = 3)]
 
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask)
-im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 22,26", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 22, vmax=26, save_as = save_loc + "lau_max")
+im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 22,26", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 22, vmax=26, save_as = save_loc + "003_max")
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap)
 
 
-im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0], title = "relative broadness CI maximum IEELS, capped at max 0.5", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, vmax = 0.5, save_as = save_loc + "lau_max_CI")
+im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0], title = "relative broadness CI maximum IEELS, capped at max 0.5", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, vmax = 0.5, save_as = save_loc + "003_max_CI")
 
 #%% NUM CROSSINGS
 #TODO

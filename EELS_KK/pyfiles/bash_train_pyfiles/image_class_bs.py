@@ -52,6 +52,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Spectral_image():
+
     """
             This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak
             subtracted.
@@ -84,7 +85,10 @@ class Spectral_image():
                 average bulk scattering distribution for each pixel
             IEELS_std
                 standard deviation of the bulk scattering distribution at each energy for each pixel
-            """
+    """
+
+
+    #SIGNAL NAMES
 
     DIELECTRIC_FUNCTION_NAMES = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']
     EELS_NAMES = ['electron_energy_loss_spectrum', 'electron_energy_loss', 'EELS', 'EEL', 'energy_loss', 'data']
@@ -94,6 +98,10 @@ class Spectral_image():
     THICKNESS_NAMES = ['t', 'thickness', 'thick', 'thin']
     POOLED_ADDITION = ['pooled', 'pool', 'p', '_pooled', '_pool', '_p']
 
+    # META DATA NAMES
+    COLLECTION_ANGLE_NAMES = ["collection_angle", "col_angle", "beta"]
+    BEAM_ENERGY_NAMES = ["beam_energy", "beam_E", "E_beam", "E0", "E_0"]
+
     m_0 = 511.06  # eV, electron rest mass
     a_0 = 5.29E-11  # m, Bohr radius
     h_bar = 6.582119569E-16  # eV/s
@@ -102,8 +110,7 @@ class Spectral_image():
     def __init__(self, data, deltadeltaE, pixelsize=None, beam_energy=None, collection_angle=None, name=None,
                  dielectric_function_im_avg=None, dielectric_function_im_std=None,S_s_avg=None, S_s_std=None,
                  thickness_avg=None,thickness_std=None, IEELS_avg=None, IEELS_std=None, **kwargs):
-        """Constructor method
-        """
+        """Constructor method"""
 
         self.data = data
         self.ddeltaE = deltadeltaE
@@ -1412,6 +1419,8 @@ class Spectral_image():
         if discrete_colormap:
             if 'mask' in kwargs:
                 mask = kwargs['mask']
+                if mask.all():
+                    raise ValueError("Mask all True: no values to plot.")
             else:
                 mask = np.zeros(data.shape).astype('bool')
 
@@ -1427,8 +1436,11 @@ class Spectral_image():
                     unique_data_points = np.append(kwargs['vmin'], unique_data_points)
 
             if color_bin_size is None:
-                color_bin_size = np.nanpercentile(unique_data_points[1:] - unique_data_points[:-1], 30)
-            n_colors = int((np.max(unique_data_points) - np.min(unique_data_points)) / color_bin_size + 1)
+                if len(unique_data_points) == 1:
+                    color_bin_size = 1
+                else:
+                    color_bin_size = np.nanpercentile(unique_data_points[1:]-unique_data_points[:-1],30)
+            n_colors = int((np.max(unique_data_points) - np.min(unique_data_points))/color_bin_size +1)
             cmap = cm.get_cmap(cmap, n_colors)
             spacing = color_bin_size / 2
 
