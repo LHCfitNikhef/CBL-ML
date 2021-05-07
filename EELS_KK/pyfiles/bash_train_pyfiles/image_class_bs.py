@@ -1,24 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 18 17:38:57 2020
-
-@author: isabel
-"""
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Dec 17 23:12:19 2020
-
-@author: isabel
-"""
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 10 01:05:56 2020
-
-@author: isabel
-"""
 
 import pandas as pd
 import glob
