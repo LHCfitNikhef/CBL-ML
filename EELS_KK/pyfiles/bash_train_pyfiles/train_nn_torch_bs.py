@@ -490,7 +490,7 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     
     
     # TODO: something like: os.path.join(*path_to_models.split('/'))
-    path_to_models += (path_to_models[-1] == '/')*'/'
+    path_to_models += (path_to_models[-1] != '/')*'/'
 
     if not os.path.exists(path_to_models):
         Path(path_to_models).mkdir(parents=True, exist_ok=True)
@@ -514,7 +514,7 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
         #data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
     
     
-    #new??? #TODO
+    #new??? #TODO: verplaats dit naar determine_dE1
     wl1 = round(image.l/20)
     wl2 = wl1*2
     units_per_bin = 4
@@ -525,7 +525,7 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
     #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
     
     
-    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
+    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) * added_dE1 #dE1s, dy_dx)
     #image.dE1 = dE1
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    

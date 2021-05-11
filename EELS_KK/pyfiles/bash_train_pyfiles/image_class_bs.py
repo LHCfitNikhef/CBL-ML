@@ -492,7 +492,7 @@ class Spectral_image():
        
 
     
-    def calc_ZLPs(self, i,j, signal = 'EELS', **kwargs):
+    def calc_ZLPs2(self, i,j, signal = 'EELS', select_ZLPs = True, **kwargs):
         ### Definition for the matching procedure
         signal = self.get_pixel_signal(i,j, signal)
         
@@ -535,11 +535,12 @@ class Spectral_image():
         #TODO: aanpassen
         def matching( signal, gen_i_ZLP, dE1):
             dE0 = dE1 - 0.5
-            dE2 = dE1*8
+            dE2 = dE1*4
             #gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
-            delta = np.divide((dE1 - dE0), 3)
+            delta = (dE1 - dE0)/10 #lau: 3
             
-            factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - dE1)**2, delta**2))
+            # factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - dE1)**2, delta**2))
+            factor_NN = 1/(1+np.exp(-(self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - (dE0+dE1)/2)/delta))
             factor_dm = 1 - factor_NN
             
             range_0 = signal[self.deltaE < dE0]
@@ -573,17 +574,63 @@ class Spectral_image():
         predict_x = torch.from_numpy(predict_x_np)
         
         dE1 = self.dE1[1,int(cluster)]
+        print("cluster:", cluster, ", dE1:", dE1)
         for k in range(count): 
             model = self.ZLP_models[k]
             with torch.no_grad():
                 predictions = np.exp(model(predict_x.float()).flatten())
             ZLPs[k,:] = matching(signal, predictions, dE1)#matching(energies, np.exp(mean_k), data)
-            
+        
+        if select_ZLPs:
+            ZLPs = ZLPs[self.select_ZLPs(ZLPs, dE1)]
+        
         return ZLPs
-    
-    def calc_gen_ZLPs(self, i,j, **kwargs):
+
+
+    def calc_ZLPs(self, i,j, signal = 'EELS', select_ZLPs = True, **kwargs):
         ### Definition for the matching procedure
-        signal = self.get_pixel_signal(i,j)
+        
+        #TODO: aanpassen
+        def matching( signal, gen_i_ZLP, dE1):
+            dE0 = dE1 - 0.5
+            dE2 = dE1*4
+            #gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
+            delta = (dE1 - dE0)/10 #lau: 3
+            
+            # factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - dE1)**2, delta**2))
+            factor_NN = 1/(1+np.exp(-(self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - (dE0+dE1)/2)/delta))
+            factor_dm = 1 - factor_NN
+            
+            range_0 = signal[self.deltaE < dE0]
+            range_1 = gen_i_ZLP[(self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_NN + signal[(self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_dm
+            range_2 = gen_i_ZLP[(self.deltaE >= dE1) & (self.deltaE < 3 * dE2)]
+            range_3 = gen_i_ZLP[(self.deltaE >= 3 * dE2)] * 0
+            totalfile = np.concatenate((range_0, range_1, range_2, range_3), axis=0)
+            #TODO: now hardcoding no negative values!!!! CHECKKKK
+            totalfile = np.minimum(totalfile, signal)
+            return totalfile
+        
+        
+        ZLPs_gen = self.calc_gen_ZLPs(i,j, signal, select_ZLPs, **kwargs)
+        
+        count = len(ZLPs_gen)
+        ZLPs = np.zeros((count, self.l)) #np.zeros((count, len_data))
+        
+        
+        signal = self.get_pixel_signal(i,j, signal)
+        cluster = self.clustered[i,j]
+        
+        dE1 = self.dE1[1,int(cluster)]
+        print("cluster:", cluster, ", dE1:", dE1)
+        for k in range(count): 
+            predictions = ZLPs_gen[k]
+            ZLPs[k,:] = matching(signal, predictions, dE1)#matching(energies, np.exp(mean_k), data)
+        return ZLPs
+
+    
+    def calc_gen_ZLPs(self, i,j, signal = "eels", select_ZLPs = True, **kwargs):
+        ### Definition for the matching procedure
+        signal = self.get_pixel_signal(i,j, signal)
         
         if not hasattr(self, 'ZLP_models'):
             try:
@@ -645,9 +692,35 @@ class Spectral_image():
             model = self.ZLP_models[k]
             with torch.no_grad():
                 predictions[k,:] = np.exp(model(predict_x.float()).flatten())
-            
-        return predictions
         
+        if select_ZLPs:
+            predictions = predictions[self.select_ZLPs(predictions)]
+        
+        return predictions
+    
+        
+    def select_ZLPs(self, ZLPs, dE1 = None):
+        if dE1 is None:
+            dE1 = min(self.dE1[1,:])
+            dE2 = 3*max(self.dE1[1,:])
+        else:
+            dE2 = 3*dE1
+        
+        ZLPs_c = ZLPs[:,(self.deltaE>dE1) & (self.deltaE<dE2)]
+        low = np.nanpercentile(ZLPs_c, 2, axis=0)
+        high = np.nanpercentile(ZLPs_c, 95, axis=0)
+        
+        threshold = (low[0]+high[0])/100
+        
+        low[low<threshold] = 0
+        high[high<threshold] = threshold
+        
+        check = (ZLPs_c<low)|(ZLPs_c>=high)
+        check = np.sum(check, axis=1)/check.shape[1]
+        
+        threshold = 0.01
+        
+        return [check<threshold]
     
     def train_ZLPs(self, n_clusters = None, conf_interval = 1, clusters = None, signal = 'EELS', **kwargs):
         if not hasattr(self, "clustered"):
@@ -692,7 +765,10 @@ class Spectral_image():
                 with torch.no_grad():
                     model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
                     if self.check_model(model):
+                        #TODO: this check is unnesscicary I believe, to be removed
                         self.ZLP_models.append(copy.deepcopy(model))
+                    else:
+                        print("disregarded model, straight line.")
                 k+=1
     
     @staticmethod
@@ -714,7 +790,7 @@ class Spectral_image():
         
         return (np.std(predictions)/np.average(predictions)) > 1E-3 #very small --> straight line
     
-    def load_ZLP_models_smefit(self, path_to_models = "models", threshold_costs = 1, name_in_path = False, plotting = False, idx = None):
+    def load_ZLP_models_smefit(self, path_to_models = "models", threshold_costs = 0.3, name_in_path = False, plotting = False, idx = None):
         # if n_rep is None and idx is None:
         #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
         #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
@@ -733,6 +809,9 @@ class Spectral_image():
         model = MLP(num_inputs=2, num_outputs=1)
         self.dE1 = np.loadtxt(path_to_models + path_dE1)
         
+        path_scale_var = 'scale_var.txt' #HIER
+        self.scale_var_log_sum_I = np.loadtxt(path_to_models + path_scale_var)
+        
         if hasattr(self, "clustered"):
             if self.n_clusters != self.dE1.shape[1]:
                 print("image clustered in ", self.n_clusters, " clusters, but ZLP-models take ",  self.dE1.shape[1], " clusters, reclustering based on models.")
@@ -750,16 +829,32 @@ class Spectral_image():
         
         path_costs = "costs"
         files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
+        idx_costs = np.array([int(s.replace(path_costs,"").replace(".txt","")) for s in files_costs])
         path_model_rep = "nn_rep"
         files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
-
+        idx_models = np.array([int(s.replace(path_model_rep,"").replace(".txt","")) for s in files_model_rep])
         
-        n_rep = min(len(files_costs), len(files_model_rep))
+        overlap_idx = np.intersect1d(idx_costs, idx_models)
+        
+        n_rep = len(overlap_idx)
         costs = np.zeros(n_rep)
+        files_models = np.zeros(n_rep, dtype='U12') #reads max 999,999 models, you really do not need more.
+        
+        # for i in range(n_rep):
+        #     file = files_costs[i]
+        #     costs[i] =  np.loadtxt(path_to_models + file)
+        
         
         for i in range(n_rep):
-            file = files_costs[i]
-            costs[i] =  np.loadtxt(path_to_models + file)
+            j = overlap_idx[i]
+            idx_cost = np.argwhere(idx_costs == j)[0,0]
+            idx_model = np.argwhere(idx_models == j)[0,0]
+            
+            file = files_costs[idx_cost]
+            costs[i] = np.loadtxt(path_to_models + file)
+            
+            files_models[i] = files_model_rep[idx_model]
+            
         
         self.costs = costs[costs<threshold_costs]
     
@@ -771,13 +866,14 @@ class Spectral_image():
             plt.ylabel("number of occurence")   
         
         
-        for j in range(len(files_model_rep)):
+        for j in range(n_rep):
             if costs[j] < threshold_costs:
-                file = files_model_rep[j]
-                with torch.no_grad():
-                    model.load_state_dict(torch.load(path_to_models + file))
-                if self.check_model(model):
-                    self.ZLP_models.append(copy.deepcopy(model))
+                file = files_models[j]
+                if os.path.getsize(path_to_models + file) > 0:
+                    with torch.no_grad():
+                        model.load_state_dict(torch.load(path_to_models + file))
+                    if self.check_model(model):
+                        self.ZLP_models.append(copy.deepcopy(model))
                 
 
     #METHODS ON DIELECTRIC FUNCTIONS
@@ -1028,7 +1124,7 @@ class Spectral_image():
         return eps, te, Srfint
 
 
-    def KK_pixel(self, i, j, signal = 'EELS'):
+    def KK_pixel2(self, i, j, signal = 'EELS'):
         """
         
         Option to include pooling, not for thickness, as this is an integral and therefor \
@@ -1056,9 +1152,9 @@ class Spectral_image():
 
         """
         #data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-        ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
+        ZLPs = self.calc_ZLPs2(i,j)#[:,self.deltaE>0]
         if signal not in self.EELS_NAMES: 
-            ZLPs_signal = self.calc_ZLPs(i,j, signal = signal)
+            ZLPs_signal = self.calc_ZLPs2(i,j, signal = signal)
             ts_OG = np.zeros(ZLPs.shape[0])  
             IEELSs_OG = np.zeros(ZLPs.shape)  
             max_OG = np.zeros(ZLPs.shape[0]) 
@@ -1085,6 +1181,76 @@ class Spectral_image():
         if signal not in self.EELS_NAMES:
             return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
         return dielectric_functions, ts, S_ss, IEELSs
+    
+    def KK_pixel(self, i, j, signal = 'EELS', select_ZLPs = True):
+        """
+        
+        Option to include pooling, not for thickness, as this is an integral and therefor \
+        more noise robust by default.
+
+        Parameters
+        ----------
+        i : TYPE
+            DESCRIPTION.
+        j : TYPE
+            DESCRIPTION.
+        pooled : TYPE, optional
+            DESCRIPTION. The default is False.
+
+        Returns
+        -------
+        dielectric_functions : TYPE
+            DESCRIPTION.
+        ts : TYPE
+            DESCRIPTION.
+        S_ss : TYPE
+            DESCRIPTION.
+        IEELSs : TYPE
+            DESCRIPTION.
+
+        """
+        #data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
+        ZLPs = self.calc_ZLPs(i,j, select_ZLPs = select_ZLPs)#[:,self.deltaE>0]
+        
+        dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
+        S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
+        ts = np.zeros(ZLPs.shape[0])            
+        IEELSs = np.zeros(ZLPs.shape)
+        max_ieels = np.zeros(ZLPs.shape[0]) 
+        n = self.n[self.clustered[i,j]]
+        for k in range(ZLPs.shape[0]):
+            ZLP_k = ZLPs[k,:]
+            N_ZLP = np.sum(ZLP_k)
+            IEELS = self.deconvolute(i, j, ZLP_k)
+            IEELSs[k,:] = IEELS
+            max_ieels[k] = self.deltaE[np.argmax(IEELS)]
+            if signal in self.EELS_NAMES:
+                dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
+            else:
+                ts[k] = self.calc_thickness(IEELS, n, N_ZLP)
+        if signal  in self.EELS_NAMES:
+            return dielectric_functions, ts, S_ss, IEELSs, max_ieels
+        
+        IEELSs_OG = IEELSs
+        ts_OG = ts
+        max_OG = max_ieels
+        
+        ZLPs_signal = self.calc_ZLPs(i,j, signal = signal, select_ZLPs=select_ZLPs)
+        dielectric_functions = (1+1j)* np.zeros(ZLPs_signal[:,self.deltaE>0].shape)
+        S_ss = np.zeros(ZLPs_signal[:,self.deltaE>0].shape)
+        ts = np.zeros(ZLPs_signal.shape[0])            
+        IEELSs = np.zeros(ZLPs_signal.shape)
+        max_ieels = np.zeros(ZLPs_signal.shape[0]) 
+        
+        for k in range(ZLPs_signal.shape[0]):
+            ZLP_k = ZLPs_signal[k,:]
+            N_ZLP = np.sum(ZLP_k)
+            IEELS = self.deconvolute(i, j, ZLP_k, signal = signal)
+            IEELSs[k] = IEELS
+            max_ieels[k] = self.deltaE[np.argmax(IEELS)]
+            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
+        
+        return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
 
 
     def im_dielectric_function_bs(self, track_process = False, plot = False, save_index = None, save_path = "KK_analysis", smooth=False):
@@ -1408,7 +1574,9 @@ class Spectral_image():
             if 'mask' in kwargs:
                 mask = kwargs['mask']
                 if mask.all():
-                    raise ValueError("Mask all True: no values to plot.")
+                    #raise ValueError("Mask all True: no values to plot.")
+                    warnings.warn("Mask all True: no values to plot.")
+                    return
             else:
                 mask = np.zeros(data.shape).astype('bool') 
             

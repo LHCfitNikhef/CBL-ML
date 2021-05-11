@@ -59,7 +59,11 @@ row = int(sys.argv[3])
 path_to_save += (path_to_save[-1] != '/')*'/'
 
 if not os.path.exists(path_to_save):
-    os.mkdir(path_to_save)
+    try:
+        os.mkdir(path_to_save)
+    except:
+        pass
+
 
 path = '/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4'
 im = Spectral_image.load_data(path)
@@ -72,9 +76,9 @@ if row >= n_x:
     sys.exit()
 
 
-im.cluster(5)
+# im.cluster(5)
 im.load_ZLP_models_smefit(path_to_models)
-
+im.dE1[1,0] -= 0.2
 im.set_n(4.1462, n_vac = 2.1759)
 im.e0 = 200 #keV
 im.beta = 67.2 #mrad
@@ -92,7 +96,7 @@ E_band = np.zeros((im.image_shape[1],3))
 A = np.zeros((im.image_shape[1],3))
 max_ieels = np.zeros((im.image_shape[1],3))
 
-n_model = len(im.ZLP_models)
+# n_model = len(im.ZLP_models)
 n_fails = 0
 
 im.pool(dia_pooled)
@@ -103,6 +107,7 @@ im.pool(dia_pooled)
 for j in range(n_y):
     #epss, ts, S_Es, IEELSs = im.KK_pixel(row, j, signal = "pooled")
     [ts, IEELSs, max_ieelss], [epss, ts_p, S_ss_p, IEELSs_p, max_ieels_p] = im.KK_pixel(row, j, signal = "pooled")
+    n_model = len(IEELSs_p)
     E_bands = np.zeros(n_model)
     # bs = np.zeros(n_model)
     As = np.zeros(n_model)
@@ -114,8 +119,8 @@ for j in range(n_y):
         try:
             cluster = im.clustered[row,j]
             dE1 = im.dE1[1,int(cluster)]
-            range1 = dE1-0.4
-            range2 = dE1+0.8
+            range1 = dE1-1
+            range2 = dE1+0.2
             baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
             # popt, pcov = curve_fit(bandgap, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)], p0 = [400,1.5,0.5], bounds=([0, 0.5, 0],np.inf))
             popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))

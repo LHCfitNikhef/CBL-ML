@@ -16,12 +16,16 @@ import traceback
 
 path_to_models = sys.argv[1]
 path_to_save = sys.argv[2]
+# path_to_models = 'models/dE2_3_times_dE1/train_004_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_10/'
+# path_to_save = '../../KK_results/004_clu10_pooled_5/'
+# path_to_save = '../../KK_results/004_clu10_pooled_5'
 path_to_save += (path_to_save[-1] != '/')*'/'
 
 
 
 
 path = '/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4'
+# path = '../../dmfiles/h-ws2_eels-SI_004.dm4'
 im = Spectral_image.load_data(path)
 [n_x, n_y] = im.image_shape
 
@@ -55,10 +59,11 @@ for i in range(im.image_shape[0]):
         # b_im[i,:,:] = row_dict["b"]
         A_im[i,:,:] = row_dict["A"]
         max_ieels_im[i,:,:] = row_dict["max_ieels"]
-        os.remove(path_dict)
+        # os.remove(path_dict)
+        print("succesfully read dict " + str(i))
     except Exception as e:
         traceback.print_tb(e.__traceback__)
-        warnings.warn(str(type(e).__name__) + ": " + str(e))
+        warnings.warn("Something went wrong on dict " + str(i) + ": " + str(type(e).__name__) + ": " + str(e))
         pass
 im.ieels = ieels_im
 im.ieels_p = ieels_p_im
