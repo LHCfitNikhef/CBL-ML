@@ -2,10 +2,10 @@ Documentation
 =============
 
 .. note::
-   This is a note, pay attention!
+   This is still work in progress
 
 .. tip::
-   This is a tip! You should follow it.
+   This is a tip! It might be wise to follow it.
 
 
 The ``SpectralImage`` class

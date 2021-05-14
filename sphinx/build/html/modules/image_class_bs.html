@@ -191,57 +191,42 @@
 
 <dl class="py class">
 <dt id="image_class_bs.Spectral_image">
-<em class="property">class </em><code class="sig-prename descclassname">image_class_bs.</code><code class="sig-name descname">Spectral_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">deltadeltaE</span></em>, <em class="sig-param"><span class="n">pixelsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">beam_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">image_class_bs.</code><code class="sig-name descname">Spectral_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">deltadeltaE</span></em>, <em class="sig-param"><span class="n">pixelsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">beam_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Example NumPy style docstrings.</p>
-<p>This module demonstrates documentation as specified by the <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">NumPy
-Documentation HOWTO</a>. Docstrings may extend over multiple lines. Sections
-are created with a section header followed by an underline of equal length.</p>
-<p class="rubric">Example</p>
-<p>Examples can be given using either the <code class="docutils literal notranslate"><span class="pre">Example</span></code> or <code class="docutils literal notranslate"><span class="pre">Examples</span></code>
-sections. Sections support any reStructuredText formatting, including
-literal blocks:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python example_numpy.py
-</pre></div>
-</div>
-<p>Section breaks are created with two blank lines. Section breaks are also
-implicitly created anytime a new section starts. Section bodies <em>may</em> be
-indented:</p>
-<p class="rubric">Notes</p>
-<p>This is an example of an indented section. It’s like any other section,
-but the body is indented to help it stand out from surrounding text.</p>
-<p>If a section is indented, then a section break is created by
-resuming unindented text.</p>
-<dl class="py attribute">
-<dt id="image_class_bs.Spectral_image.module_level_variable1">
-<code class="sig-name descname">module_level_variable1</code><a class="headerlink" href="#image_class_bs.Spectral_image.module_level_variable1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Module level variables may be documented in either the <code class="docutils literal notranslate"><span class="pre">Attributes</span></code>
-section of the module docstring, or in an inline docstring immediately
-following the variable.</p>
-<p>Either form is acceptable, but the two should not be mixed. Choose
-one convention to document module level variables and be consistent
-with it.</p>
+<p>This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak
+subtracted.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – Spectral image data as 3D numpy array (x-axis, y-axis, energy loss)</p></li>
+<li><p><strong>deltadeltaE</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Binwidth in energy loss spectrum</p></li>
+<li><p><strong>pixelsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Width of pixels (the default is None, which implies …)</p></li>
+<li><p><strong>beam_energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Energy of electron beam [eV] (default is None, which implies …)</p></li>
+<li><p><strong>collection_angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Collection angle of STEM [rad] (default is None, which implies …)</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Title of the plots (default is None, in which case no title is passed)</p></li>
+<li><p><strong>dielectric_function_im_avg</strong> – average dielectric function for each pixel</p></li>
+<li><p><strong>dielectric_function_im_std</strong> – standard deviation of the dielectric function at each energy for each pixel</p></li>
+<li><p><strong>S_s_avg</strong> – average surface scattering distribution for each pixel</p></li>
+<li><p><strong>S_s_std</strong> – standard deviation of the surface scattering distribution at each energy for each pixel</p></li>
+<li><p><strong>thickness_avg</strong> – average thickness for each pixel</p></li>
+<li><p><strong>IEELS_avg</strong> – average bulk scattering distribution for each pixel</p></li>
+<li><p><strong>IEELS_std</strong> – standard deviation of the bulk scattering distribution at each energy for each pixel</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.BEAM_ENERGY_NAMES">
+<code class="sig-name descname">BEAM_ENERGY_NAMES</code><em class="property"> = ['beam_energy', 'beam_E', 'E_beam', 'E0', 'E_0']</em><a class="headerlink" href="#image_class_bs.Spectral_image.BEAM_ENERGY_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="image_class_bs.Spectral_image.COLLECTION_ANGLE_NAMES">
+<code class="sig-name descname">COLLECTION_ANGLE_NAMES</code><em class="property"> = ['collection_angle', 'col_angle', 'beta']</em><a class="headerlink" href="#image_class_bs.Spectral_image.COLLECTION_ANGLE_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES">
-<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><a class="headerlink" href="#image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of dielectric function names</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="id0">
-<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><em class="property"> = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']</em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DIELECTRIC_FUNCTION_NAMES</code><em class="property"> = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']</em><a class="headerlink" href="#image_class_bs.Spectral_image.DIELECTRIC_FUNCTION_NAMES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -552,19 +537,15 @@ self.IEELS_std = standard deviation of the bulk scattering distribution at each 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.im_dielectric_function_bs">
 <code class="sig-name descname">im_dielectric_function_bs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track_process</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">save_index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save_path</span><span class="o">=</span><span class="default_value">'KK_analysis'</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.im_dielectric_function_bs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.im_dielectric_function_bs" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>INPUT:</dt><dd><p>self – the image of which the dielectic functions are calculated
-track_process – boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
-plot – boolean, default = False, if True, plots all calculated dielectric functions</p>
-</dd>
-<dt>OUTPUT ATRIBUTES:</dt><dd><p>self.dielectric_function_im_avg = average dielectric function for each pixel
-self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
-self.S_s_avg = average surface scattering distribution for each pixel
-self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
-self.thickness_avg = average thickness for each pixel
-self.thickness_std = standard deviation thickness for each pixel
-self.IEELS_avg = average bulk scattering distribution for each pixel
-self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – default = False, if True: prints for each pixel that program is busy with that pixel.</p></li>
+<li><p><strong>plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – default = False, if True, plots all calculated dielectric functions</p></li>
+<li><p><strong>save_index</strong> (<em>opt</em>) – </p></li>
+<li><p><strong>save_path</strong> (<em>opt</em>) – </p></li>
+<li><p><strong>smooth</strong> (<em>opt</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -593,7 +574,7 @@ If both are None or if both are provided an exception is raised.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>zlp</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><em>number</em><em>, </em><em>Signal1D</em>) – ZLP intensity. It is optional (can be None) if <cite>t</cite> is None and <cite>n</cite>
+<li><p><strong>zlp</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – ZLP intensity. It is optional (can be None) if <cite>t</cite> is None and <cite>n</cite>
 is not None and the thickness estimation is not required. If <cite>t</cite>
 is not None, the ZLP is required to perform the normalization and
 if <cite>t</cite> is not None, the ZLP is required to calculate the thickness.
@@ -607,11 +588,12 @@ integrated ZLP intensity.</p></li>
 <li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of the iterations for the internal loop to remove the
 surface plasmon contribution. If 1 the surface plasmon contribution
 is not estimated and subtracted (the default is 1).</p></li>
-<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The medium refractive index. Used for normalization of the
+<li><p><strong>n</strong> (<em>{None</em><em>, </em><em>float}</em>) – The medium refractive index. Used for normalization of the
 SSD to obtain the energy loss function. If given the thickness
 is estimated and returned. It is only required when <cite>t</cite> is None.</p></li>
-<li><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em>, </em><em>number</em><em>, </em><em>Signal1D</em>) – The sample thickness in nm. Used for normalization of the
+<li><p><strong>t</strong> (<em>{None</em><em>, </em><em>number</em><em>, </em><em>Signal1D}</em>) – The sample thickness in nm. Used for normalization of the
 to obtain the energy loss function. It is only required when
+<cite>n</cite> is None. If the thickness is the same for all spectra it can be
 <cite>n</cite> is None. If the thickness is the same for all spectra it can be
 given by a number. Otherwise, it can be provided as a BaseSignal
 with signal dimension 0 and navigation_dimension equal to the
