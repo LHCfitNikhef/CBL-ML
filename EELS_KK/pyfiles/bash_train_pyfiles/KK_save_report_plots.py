@@ -68,9 +68,9 @@ im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_
 im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 40", cbar_kws={'label': '[nm]'}, vmax = 40, vmin =0, cmap = cmap, save_as = save_loc + "t_capped")
 
 im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.03", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.03, vmin=0, mask = mask, save_as = save_loc + "t_CI_capped")
 im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, save_as = save_loc + "t_CI")
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "t_CI_capped")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.06", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.06, vmin=0, save_as = save_loc + "t_CI_capped")
 
 
 #%% PLOT MAX
@@ -145,13 +145,12 @@ im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing 
 
 im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band")
 im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at max 2.5", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_capped_max", vmax= 2.5)
-im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at min 2.5", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_capped_min", vmin= 2.5)
 im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at max 3", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_capped", vmax= 3)
 
 
 # im.plot_heatmap(im.E_band[:,:,0], title = "bandgap energies sample, capped at min 0.7 eV, max 2 eV", cbar_kws={'label':  'energy [eV]'}, cmap = cmap, vmin = 0.7, vmax = 2, mask = mask)
 im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0]/2, title = "relative broadness CI bandgap energies sample", cbar_kws={'label': ' [-]'}, cmap = cmap, mask = mask, save_as = save_loc + "E_band_CI")
-im.plot_heatmap(im.E_band[:,:,2]-im.E_band[:,:,1]/im.E_band[:,:,0]/2, title = "relative broadness CI bandgap energies sample, \ncapped at max 2", cbar_kws={'label': 'energy [eV]'}, vmax=2, cmap = cmap, save_as = save_loc + "E_band_CI_capped", mask = mask)
+im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0]/2, title = "relative broadness CI bandgap energies sample, \ncapped at max 0.4", cbar_kws={'label': '[-]'}, vmax=0.4, cmap = cmap, save_as = save_loc + "E_band_CI_capped", mask = mask)
 
 #%%
 mask_E_band = (mask | ((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0] >= 1))

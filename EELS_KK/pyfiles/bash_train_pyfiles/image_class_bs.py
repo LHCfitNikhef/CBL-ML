@@ -116,22 +116,61 @@ class Spectral_image():
         self.IEELS_std = IEELS_std
 
     def save_image(self, filename):
+        """
+        Function to save image, including all attributes, in pickle (.pkl) format. Image will be saved \
+            at indicated location and name in filename input.
+
+        Parameters
+        ----------
+        filename : str
+            path to save location plus filename. If it does not end on ".pkl", ".pkl" will be added.
+
+        Returns
+        -------
+        None.
+
+        """
         if filename[-4:] != '.pkl':
             filename + '.pkl'
         with open(filename, 'wb') as output:  # Overwrites any existing file.
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
     def save_compressed_image(self, filename):
+        """
+        Function to save image, including all attributes, in compressed pickle (.pbz2) format. Image will \
+            be saved at indicated location and name in filename input. Advantage over save_image is that \
+            the saved file is some orders smaller, disadvantage is that saving and reloading the image \
+            takes significantly longer. 
+
+
+        Parameters
+        ----------
+        filename : str
+            path to save location plus filename. If it does not end on ".pbz2", ".pbz2" will be added.
+
+        Returns
+        -------
+        None.
+
+        """
+        if filename[-5:] != '.pbz2':
+            filename + '.pbz2'
         self.compressed_pickle(filename, self)
 
     @staticmethod
     # Pickle a file and then compress it into a file with extension 
     def compressed_pickle(title, data):
-        with bz2.BZ2File(title + '.pbz2', 'w') as f:
+        """
+        Saves data at location title as compressed pickle.
+        """
+        with bz2.BZ2File(title, 'w') as f:
             cPickle.dump(data, f)
 
     @staticmethod
     def decompress_pickle(file):
+        """
+        Opens, decompresses and returns the pickle file at location file.
+        """
         data = bz2.BZ2File(file, 'rb')
         data = cPickle.load(data)
         return data
@@ -203,29 +242,86 @@ class Spectral_image():
 
     @classmethod
     def load_Spectral_image(cls, path_to_pickle):
+        """
+        Loads spectral image from a pickled file. 
+
+        Parameters
+        ----------
+        path_to_pickle : str
+            path to the pickeled image file.
+
+        Raises
+        ------
+        ValueError
+            If path_to_pickle does not end on the desired format .pkl.
+        FileNotFoundError
+            If path_to_pickle does not exists.
+
+        Returns
+        -------
+        image : Specral_image
+            Image (i.e. including all atributes) loaded from pickle file.
+
+        """
         if path_to_pickle[-4:] != '.pkl':
-            print("please provide a path to a pickle file containing a Spectrall_image class object.")
+            raise ValueError("please provide a path to a pickle file containing a Spectrall_image class object.")
             return
+        if not os.path.exists(path_to_pickle):
+            raise FileNotFoundError('pickled file: ' + path_to_pickle + ' not found')
         with open(path_to_pickle, 'rb') as pickle_im:
             image = pickle.load(pickle_im)
         return image
 
     @classmethod
     def load_compressed_Spectral_image(cls, path_to_compressed_pickle):
-        if path_to_compressed_pickle[-5:] != '.pbz2':
-            print("please provide a path to a compressed .pbz2 pickle file containing a Spectrall_image class object.")
-            return
-        image = cls.decompress_pickle(path_to_compressed_pickle)
-        return image
-
-    def set_n(self, n, n_vac=None):
         """
-        LET OP WELKE WAARDE n_vac is en welke n_sample
+        Loads spectral image from a compressed pickled file. Will take longer than loading from not compressed pickle.
 
         Parameters
         ----------
-        n : TYPE
-            DESCRIPTION.
+        path_to_compressed_pickle : str
+            path to the compressed pickle image file.
+
+        Raises
+        ------
+        ValueError
+            If path_to_compressed_pickle does not end on the desired format .pbz2.
+        FileNotFoundError
+            If path_to_compressed_pickle does not exists.
+
+        Returns
+        -------
+        image : Specral_image
+            Image (i.e. including all atributes) loaded from compressed pickle file.
+
+
+        """
+        if path_to_compressed_pickle[-5:] != '.pbz2':
+            raise ValueError("please provide a path to a compressed .pbz2 pickle file containing a Spectrall_image class object.")
+            return
+        if not os.path.exists(path_to_compressed_pickle):
+            raise FileNotFoundError('pickled file: ' + path_to_compressed_pickle + ' not found')
+
+        image = cls.decompress_pickle(path_to_compressed_pickle)
+        return image
+
+    def set_n(self, n, n_background=None):
+        """
+        Sets value of refractive index for the image as attribute self.n. If unclusered, n will be an \
+            array of length one, otherwise it is an array of len n_clusters. If n_background is defined, \
+            the cluster with the lowest thickness (cluster 0) will be assumed to be the vacuum/background, \
+            and gets the value of the background refractive index.
+            
+        If there are more specimen present in the image, it is wise to check by hand what cluster belongs \
+            to what specimen, and set the values by running image.n[cluster_i] = n_i.
+
+        Parameters
+        ----------
+        n : float
+            refractive index of sample.
+        n_background : float, optional
+            if defined: the refractive index of the background/vacuum. This value will automatically be \
+            assigned to pixels belonging to the thinnest cluster. 
 
         Returns
         -------
@@ -234,8 +330,9 @@ class Spectral_image():
         """
         if type(n) == float or type(n) == int:
             self.n = np.ones(self.n_clusters) * n
-            if n_vac is not None:
-                self.n[0] = n_vac
+            if n_background is not None:
+                # assume thinnest cluster (=cluster 0) is background
+                self.n[0] = n_background 
         elif len(n) == self.n_clusters:
             self.n = n
 
@@ -253,11 +350,21 @@ class Spectral_image():
         self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
         # return deltaE
 
-    def calc_axes(self, image_shape=None):
-        if image_shape is None:
-            image_shape = self.image_shape
-        self.y_axis = np.linspace(0, image_shape[0] - 1, image_shape[0])
-        self.x_axis = np.linspace(0, image_shape[1] - 1, image_shape[1])
+    def calc_axes(self):
+        """
+        Calculates the attribustes x_axis and y_axis of the image. These are the spatial axes, and \
+            can be used to find the spatial location of a pixel and are used in the plotting functions.
+            
+        If one wants to alter these axis, one can do this manually by running image.x_axis = ..., \
+            and image.y_axis = ....
+
+        Returns
+        -------
+        None.
+
+        """
+        self.y_axis = np.linspace(0, self.image_shape[0] - 1, self.image_shape[0])
+        self.x_axis = np.linspace(0, self.image_shape[1] - 1, self.image_shape[1])
         if hasattr(self, 'pixelsize'):
             self.y_axis *= self.pixelsize[0]
             self.x_axis *= self.pixelsize[1]
