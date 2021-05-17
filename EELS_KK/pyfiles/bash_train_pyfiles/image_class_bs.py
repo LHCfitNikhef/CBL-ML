@@ -469,6 +469,16 @@ class Spectral_image():
             self.cluster_data = cluster_data
         else:
             return cluster_data
+        
+    def deltaE_to_arg(self, E):
+        if type(E) in [int, float]:
+            return np.argmin(np.absolute(self.deltaE-E))
+        
+        for i in len(E):
+            E[i] = np.argmin(np.absolute(self.deltaE-E[i]))
+        return E
+        #TODO: check if works
+            
 
     # %%METHODS ON SIGNAL
 
@@ -485,6 +495,8 @@ class Spectral_image():
         -------
         None.
         """
+        if (E1 is None) and (E2 is None):
+            raise ValueError("To cut energy specra, please specify minimum energy E1 and/or maximum energy E2.")
         if E1 is None:
             E1 = self.deltaE.min() - 1
         if E2 is None:
@@ -1229,64 +1241,6 @@ class Spectral_image():
             output['thickness'] = te
 
         return eps, te, Srfint
-
-    def KK_pixel2(self, i, j, signal = 'EELS'):
-        """
-        
-        Option to include pooling, not for thickness, as this is an integral and therefor \
-        more noise robust by default.
-
-        Parameters
-        ----------
-        i : TYPE
-            DESCRIPTION.
-        j : TYPE
-            DESCRIPTION.
-        pooled : TYPE, optional
-            DESCRIPTION. The default is False.
-
-        Returns
-        -------
-        dielectric_functions : TYPE
-            DESCRIPTION.
-        ts : TYPE
-            DESCRIPTION.
-        S_ss : TYPE
-            DESCRIPTION.
-        IEELSs : TYPE
-            DESCRIPTION.
-
-        """
-        #data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-        ZLPs = self.calc_ZLPs2(i,j)#[:,self.deltaE>0]
-        if signal not in self.EELS_NAMES: 
-            ZLPs_signal = self.calc_ZLPs2(i,j, signal = signal)
-            ts_OG = np.zeros(ZLPs.shape[0])  
-            IEELSs_OG = np.zeros(ZLPs.shape)  
-            max_OG = np.zeros(ZLPs.shape[0]) 
-        dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
-        S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
-        ts = np.zeros(ZLPs.shape[0])            
-        IEELSs = np.zeros(ZLPs.shape)
-        max_ieels = np.zeros(ZLPs.shape[0])
-        n = self.n[self.clustered[i, j]]
-        for k in range(ZLPs.shape[0]):
-            ZLP_k = ZLPs[k, :]
-            N_ZLP = np.sum(ZLP_k)
-            IEELS = self.deconvolute(i, j, ZLP_k)
-            if signal not in self.EELS_NAMES:
-                IEELSs_OG[k, :] = IEELS
-                ts_OG[k] = self.calc_thickness(IEELS, n, N_ZLP)
-                max_OG[k] = self.deltaE[np.argmax(IEELS)]
-                ZLP_k = ZLPs_signal[k, :]
-                N_ZLP = np.sum(ZLP_k)
-                IEELS = self.deconvolute(i, j, ZLP_k, signal=signal)
-            IEELSs[k, :] = IEELS
-            max_ieels[k] = self.deltaE[np.argmax(IEELS)]
-            dielectric_functions[k, :], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP=N_ZLP, n=n)
-        if signal not in self.EELS_NAMES:
-            return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
-        return dielectric_functions, ts, S_ss, IEELSs
     
     def KK_pixel(self, i, j, signal = 'EELS', select_ZLPs = True):
         """
@@ -1357,7 +1311,22 @@ class Spectral_image():
             dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
         
         return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
-
+    
+    
+    def optical_absorption_coeff(self, dielectric_function):
+        
+        #TODO: now assuming one input for dielectric function. We could check for dimentions, and do everything at once??
+        
+        eps1 = np.real(dielectric_function)
+        E = self.deltaE[self.deltaE>0]
+        
+        mu = E/(self.h_bar*self.c) * np.power(2 * np.absolute(dielectric_function) - 2*eps1, 0.5)
+        
+        return mu
+        
+        pass
+    
+    
     def im_dielectric_function_bs(self, track_process=False, plot=False, save_index=None, save_path="KK_analysis",
                                   smooth=False):
         """
@@ -1519,7 +1488,11 @@ class Spectral_image():
                 self.IEELS_avg[i, j, :] = np.average(IEELSs, axis=0)
                 self.IEELS_std[i, j, :] = np.std(IEELSs, axis=0)
         # return dielectric_function_im_avg, dielectric_function_im_std
-
+    
+    def optical_absorption_coeff_im(self):
+        #TODO!!
+        pass
+    
     def crossings_im(self):  # ,  delta = 50):
         """
         INPUT: 
@@ -1565,26 +1538,30 @@ class Spectral_image():
         n = len(crossing_E)
         return crossing_E, n
 
-    def crossings_ieels(self, ieels, smooth=True, window_len=50):  # , delta = 50):
-        # l = len(die_fun)
-        die_fun_avg = np.real(self.dielectric_function_im_avg[i, j, :])
-        # die_fun_f = np.zeros(l-2*delta)
-        # TODO: use smooth?
-        """
-        for i in range(self.l-delta):
-            die_fun_avg[i] = np.average(self.dielectric_function_im_avg[i:i+delta])
-        """
-        crossing = np.concatenate((np.array([0]), (die_fun_avg[:-1] < 0) * (die_fun_avg[1:] >= 0)))
-        deltaE_n = self.deltaE[self.deltaE > 0]
-        # deltaE_n = deltaE_n[50:-50]
-        crossing_E = deltaE_n[crossing.astype('bool')]
-        n = len(crossing_E)
-        return crossing_E, n
 
     # %%
     # TODO: add bandgap finding
 
-    def cluster(self, n_clusters=5, n_iterations=30, based_upon="log"):
+    def cluster(self, n_clusters=5, based_upon="log", **kwargs):
+        """
+        Clusters image into n_clusters clusters, based upon (log) integrated intensity of each \
+            pixel or thicknes. Saves cluster centra in self.clusters, and the index of to which \
+            each cluster belongs in self.clustered.
+
+        Parameters
+        ----------
+        n_clusters : TYPE, optional
+            DESCRIPTION. The default is 5.
+        based_upon : TYPE, optional
+            DESCRIPTION. The default is "log".
+        **kwargs : keyword arguments for k_means function
+            options: n_iterations (int, default 30), n_times (int, default 5)
+
+        Returns
+        -------
+        None.
+
+        """
         # TODO: add other based_upons
         if based_upon == "sum":
             values = np.sum(self.data, axis=2).flatten()
@@ -1594,7 +1571,7 @@ class Spectral_image():
             values = self.t.flatten()
         else:
             values = np.sum(self.data, axis=2).flatten()
-        clusters_unsorted, r = k_means(values, n_clusters=n_clusters, n_iterations=n_iterations)
+        clusters_unsorted, r = k_means(values, n_clusters=n_clusters, **kwargs)
         self.clusters = np.sort(clusters_unsorted)[::-1]
         arg_sort_clusters = np.argsort(clusters_unsorted)[::-1]
         self.clustered = np.zeros(self.image_shape)
@@ -1604,6 +1581,9 @@ class Spectral_image():
         self.clustered = self.clustered.astype(int)
 
     def cluster_on_cluster_values(self, cluster_values):
+        """ If the image has been clustered before, and the values of the cluster centra are known, \
+            one can use this function to reconstruct the original clustering of the image. At this \
+            time works for images clustered on (log) integrated intensity."""
         self.clusters = cluster_values
 
         values = np.sum(self.data, axis=2)
@@ -1749,6 +1729,22 @@ class Spectral_image():
             plt.savefig(save_as)
 
     def get_ticks(self, sig=2, n_tick=10):
+        """
+        Generates ticks of (spatial) x- and y axis for plotting perposes.
+
+        Parameters
+        ----------
+        sig : int, optional
+            Scientific signifance of ticsk. The default is 2.
+        n_tick : int, optional
+            desired number of ticks. The default is 10.
+
+        Returns
+        -------
+        xlabels : np.array of type object
+        ylabels : np.array of type object
+
+        """
         fmt = '%.' + str(sig) + 'g'
         xlabels = np.zeros(self.x_axis.shape, dtype=object)
         xlabels[:] = ""
@@ -1849,7 +1845,7 @@ class Spectral_image():
             return 1E-12
         if prefix == 'n':
             return 1E-9
-        if prefix == 'μ' or prefix == 'µ' or prefix == 'u':
+        if prefix in ['μ', 'µ' ,'u', 'micron']:
             return 1E-6
         if prefix == 'm':
             return 1E-3

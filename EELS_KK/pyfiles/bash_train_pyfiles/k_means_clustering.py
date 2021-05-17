@@ -7,7 +7,6 @@ Created on Thu Jan 14 14:23:07 2021
 """
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 #CLUSTERING
 
 def dist(a, b, exp = 2):
@@ -39,7 +38,7 @@ def relocate_clusters(clusters, values, r):
         clusters[i] = relocate_cluster(values[r[i].astype("bool")])
     return clusters
 
-def relocate_cluster( values):
+def relocate_cluster(values):
     #TODO: adjust to accept other costfunctions?
     if values.ndim > 1:
         return np.average(values, axis=0)
@@ -56,6 +55,31 @@ def reassign_values(clusters, values, cost_function = dist):
 
 
 def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
+    """
+    k means clustering algoritm. Unsupervised clustering into n_cluster clusters, by reduing the mean \
+        root square distance to the clustercentra. Returns the cluster centra, and an array corresponding \
+        to the input values array, with to which cluster each value belongs.
+
+    Parameters
+    ----------
+    values : 1D np.array
+        Array with values to be clustered.
+    n_clusters : int, optional
+        The desired number of clusters. The default is 3.
+    n_iterations : int, optional
+        number of iterations in the clustering algoritm. The default is 30.
+    n_times : TYPE, optional
+        number of times the complete algoritm is run. The eventaul outcome that is returned is the outcome \
+        with the lowest overall distance. The default is 5.
+
+    Returns
+    -------
+    min_clusters : np.array
+        values of the cluster centra.
+    min_r : np.array
+        array corresponding to the input values array, with to which cluster each value belongs.
+
+    """
     n_values = len(values)
     if values.ndim == 1:
         vpc = math.floor(n_values/n_clusters)
@@ -72,7 +96,6 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
         ind_cluster = np.floor(np.random.rand(n_clusters)*n_values).astype(int)
         clusters = values[ind_cluster].astype("float")
         for i in range(n_iterations):
-            #print(clusters)
             r = reassign_values(clusters, values)
             r_empty = np.argwhere(np.sum(r, axis = 1)==0)
             while len(r_empty) > 0:
@@ -84,30 +107,10 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
             clusters = relocate_clusters(clusters, values, r)
             costs = np.sum(cost_clusters(values, clusters, r))
             if cost_min > costs:
-                #print(j, i, n_clusters, costs)
                 cost_min = costs
                 min_clusters = clusters
                 min_r = r
-                #print(cost_min)
             if (old_clusters == clusters).all():
                 break
             old_clusters = np.copy(clusters)
     return min_clusters, min_r
-
-b = np.array([4, 4, 4, 4, 4, 4, 4, 4, 5, 4])
-k_means(b,5)
-
-"""
-a = np.array([[1,2],[2,3],[3,4],[3,5]])
-bi = np.array([[1,0],[1,1],[2,0]])
-r = np.array([[0,1,0,0],[1,0,0,0],[0,0,1,1]])
-#costs = cost_clusters(a, bi,r)
-
-a = np.array([2,3,5,8,5,4,3,2,4,67,9,2,3,6, 7,4,2,98,5,45,63,23,7,90,54,8])
-bi = np.array([3,7,30])
-r =np.array([[1,1,0,0,0,1,1,1,1,0 ,0],
-             [0,0,1,1,1,0,0,0,0,0 ,1],
-             [0,0,0,0,0,0,0,0,0,1 ,0]])
-#costs = cost_clusters(a, bi,r)
-clusters = k_means(a)
-"""
