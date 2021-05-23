@@ -1,3 +1,4 @@
+from logging import error
 from typing import Tuple
 from ncempy import io
 import numpy as np
@@ -7,7 +8,6 @@ from scipy.signal import convolve2d as cv2
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-from numba import vectorize, float64, njit
 
 
 c = 299792458
@@ -288,22 +288,21 @@ def radial_integration_stack(r1, stack, radii3d, r0=0, ringsize=5):
     return integral
 
 
-def line_integration(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize: int) -> np.ndarray:
+def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize: int) -> np.ndarray:
 
-    integration_area = np.where( (radii<r1), stack, 0)
-    entries = np.where((radii<r1), 1, 0)
-    integral = np.sum(integration_area)/np.sum(entries)
+    selection_area = np.where( (radii<r1), stack, 0)
+    #entries = np.where((radii<r1), 1, 0)
+    max_mom = np.max(selection_area)
 
-    return integral
+    return max_mom
 
 
 def line_integration_stack(r1: int, stack: np.ndarray,
-                           radii3d: np.ndarray, ringsize: int) -> np.ndarray:
+                           radii3d: np.ndarray) -> np.ndarray:
 
     integration_area = np.where((radii3d<r1), stack, 0)
     entries = np.where((radii3d<r1), 1, 0)
-    integral = (np.sum( np.sum(integration_area, axis=2), axis=1)
-                / np.sum( np.sum(entries, axis=2), axis=1))
+    integral = (np.sum( np.sum(integration_area, axis=2), axis=1)/ np.sum( np.sum(entries, axis=2), axis=1))
 
     return integral
 
@@ -334,8 +333,8 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
 
     offset_y = stack_centre[0]-int(ysize/2)
     offset_x = stack_centre[1]-int(xsize/2)
-    y = (np.arange(ysize)-ysize/2)
-    x = (np.arange(xsize)-ysize/2)
+    y = (np.arange(ysize)-ysize/2)+0.5
+    x = (np.arange(xsize)-ysize/2)+0.5
     X, Y = np.meshgrid(y, x)
     radii = np.sqrt( (X-offset_x)**2 + (Y-offset_y)**2 )
     radii3d = np.broadcast_to(radii, mr_data_stack.stack.shape).astype('float32')
@@ -383,12 +382,12 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
         for i in tqdm(iterate):
-            momentum_frame_total = line_integration(momentum_map, radii, i, ringsize)
+            momentum_frame_total = line_integration_mom(momentum_map, radii, i, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
         radii = None
         with ThreadPoolExecutor(threads) as ex:
             def part_func(r):
-                args = (stack, radii3d, ringsize)
+                args = (stack, radii3d)
                 return line_integration_stack(r, *args)
             r = [i for i in range(r0,r1,ringsize)]
             results = list(tqdm(ex.map(part_func, r), total=len(r)))
@@ -404,11 +403,12 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
     std = np.std(x)
     return 1/(1+np.exp(-(x-avg)/std))
 
+
 def plot_qeels_data(mr_data: object, intensity_qmap: np.ndarray,
                     momentum_qaxis: np.ndarray, prefix: str) -> None:
     plt.close()
-    mask = np.where( np.isnan(momentum_qaxis), False, True)
-    qmap = sigmoid(intensity_qmap[mask])
+    mask = np.where( np.isnan(momentum_qaxis) | (momentum_qaxis == 0.0) , False, True)
+    qmap = intensity_qmap[mask]
     qaxis = momentum_qaxis[mask]
     min_q = qaxis.min()
     max_q = qaxis.max()
@@ -427,7 +427,7 @@ def plot_qeels_data(mr_data: object, intensity_qmap: np.ndarray,
     plt.colorbar(c)
     plt.title(prefix)
     ax.set_xlabel(r"Energy [$eV$]")
-    ax.set_ylabel(r"$q^{-1}$ [$\AA^{-1}$]")
+    ax.set_ylabel(r"$q$ [$\AA^{-1}$]")
     fig.savefig(prefix+'_plot_q[{min_q:.2f}_{max_q:.2f}].pdf'.format(min_q=min_q, max_q=max_q), format='pdf')
     plt.show()
 
@@ -477,7 +477,6 @@ def dif_guesser(scat_prob_slice: np.ndarray, KrogerTerms: object, omega: float):
 
 
 
-@vectorize([float64(float64, float64)])
 def error_map(target: np.ndarray, attempt: np.ndarray) -> np.ndarray:
     return target - attempt
 
@@ -561,7 +560,7 @@ class KrogerTerms:
 
 class MomentumResolvedDataStack:
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str, pref_frame=0) -> None:
 
         dm4_file = io.dm.fileDM(filename)
 
@@ -589,12 +588,7 @@ class MomentumResolvedDataStack:
         self.stack = dm4_file.getDataset(0)['data']
         self.stack_corrected = None
 
-    def build_axes(self):
-        self.axis0 = np.linspace(self.axis_0_origin,
-                                 self.axis_0_end,
-                                 self.axis_0_steps)
-        self.axis1 = (np.arange(self.axis_1_steps)-self.axis_1_steps/2+0.5)*self.axis_1_scale
-        self.axis2 = (np.arange(self.axis_2_steps)-self.axis_2_steps/2+0.5)*self.axis_2_scale
+        self.pref_frame = pref_frame
 
     def get_centre(self, index: int) -> tuple:
         slice = self.stack[index]
@@ -602,7 +596,17 @@ class MomentumResolvedDataStack:
         self.centre = (y_centre, x_centre)
         return (y_centre, x_centre)
 
-    def correct_drift(self, preferred_frame=0) -> None:
+    def build_axes(self):
+        c = self.get_centre(self.pref_frame)
+        off_y, off_x = c[0]-self.axis_1_steps/2, c[1]-self.axis_2_steps/2
+        self.axis0 = np.linspace(self.axis_0_origin,
+                                 self.axis_0_end,
+                                 self.axis_0_steps)
+        self.axis1 = (np.arange(self.axis_1_steps)-self.axis_1_steps/2-off_y+0.5)*self.axis_1_scale
+        self.axis2 = (np.arange(self.axis_2_steps)-self.axis_2_steps/2-off_x+0.5)*self.axis_2_scale
+
+    def correct_drift(self) -> None:
+        preferred_frame = self.pref_frame
         stack_copy = np.copy(self.stack)
         stack_avg = np.average(stack_copy)
         stack_std = np.std(stack_copy)
