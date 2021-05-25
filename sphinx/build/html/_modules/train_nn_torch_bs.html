@@ -87,6 +87,7 @@
 <p class="caption"><span class="caption-text">Theory</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../theory/kk_analysis.html">Kramer-Kronig Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Implementation</span></p>
 <ul>
@@ -655,7 +656,7 @@
     
     
     <span class="c1"># TODO: something like: os.path.join(*path_to_models.split(&#39;/&#39;))</span>
-    <span class="n">path_to_models</span> <span class="o">+=</span> <span class="p">(</span><span class="n">path_to_models</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39;/&#39;</span>
+    <span class="n">path_to_models</span> <span class="o">+=</span> <span class="p">(</span><span class="n">path_to_models</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39;/&#39;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">):</span>
         <span class="n">Path</span><span class="p">(</span><span class="n">path_to_models</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -679,7 +680,7 @@
         <span class="c1">#data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)</span>
     
     
-    <span class="c1">#new??? #TODO</span>
+    <span class="c1">#new??? #TODO: verplaats dit naar determine_dE1</span>
     <span class="n">wl1</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">l</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
     <span class="n">wl2</span> <span class="o">=</span> <span class="n">wl1</span><span class="o">*</span><span class="mi">2</span>
     <span class="n">units_per_bin</span> <span class="o">=</span> <span class="mi">4</span>
@@ -690,7 +691,7 @@
     <span class="c1">#dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)</span>
     
     
-    <span class="n">dE1</span> <span class="o">=</span> <span class="n">determine_dE1_new</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">smooth_dy_dx</span><span class="p">,</span> <span class="n">spectra_smooth</span><span class="p">)</span> <span class="o">-</span> <span class="n">added_dE1</span> <span class="c1">#dE1s, dy_dx)</span>
+    <span class="n">dE1</span> <span class="o">=</span> <span class="n">determine_dE1_new</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">smooth_dy_dx</span><span class="p">,</span> <span class="n">spectra_smooth</span><span class="p">)</span> <span class="o">*</span> <span class="n">added_dE1</span> <span class="c1">#dE1s, dy_dx)</span>
     <span class="c1">#image.dE1 = dE1</span>
     
     <span class="c1">#TODO: instead of the binned statistics, just use xth value to dischart -&gt; neh says Juan    </span>

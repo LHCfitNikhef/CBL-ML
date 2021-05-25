@@ -22,6 +22,7 @@ EELSfiter is an open-source Python-based framework developed for the analysis an
    :hidden:
 
    theory/kk_analysis
+   references
 
 
 .. toctree::

@@ -87,6 +87,7 @@
 <p class="caption"><span class="caption-text">Theory</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../theory/kk_analysis.html">Kramer-Kronig Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Implementation</span></p>
 <ul>
@@ -186,7 +187,25 @@
 <dl class="py function">
 <dt id="k_means_clustering.k_means">
 <code class="sig-prename descclassname">k_means_clustering.</code><code class="sig-name descname">k_means</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">n_times</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/k_means_clustering.html#k_means"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_means_clustering.k_means" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>k means clustering algoritm. Unsupervised clustering into n_cluster clusters, by reduing the mean         root square distance to the clustercentra. Returns the cluster centra, and an array corresponding         to the input values array, with to which cluster each value belongs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>1D np.array</em>) – Array with values to be clustered.</p></li>
+<li><p><strong>n_clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The desired number of clusters. The default is 3.</p></li>
+<li><p><strong>n_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of iterations in the clustering algoritm. The default is 30.</p></li>
+<li><p><strong>n_times</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – number of times the complete algoritm is run. The eventaul outcome that is returned is the outcome         with the lowest overall distance. The default is 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>min_clusters</strong> (<em>np.array</em>) – values of the cluster centra.</p></li>
+<li><p><strong>min_r</strong> (<em>np.array</em>) – array corresponding to the input values array, with to which cluster each value belongs.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="k_means_clustering.log">
