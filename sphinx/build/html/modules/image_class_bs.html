@@ -166,8 +166,6 @@
             
   <div class="section" id="module-image_class_bs">
 <span id="image-class-bs-module"></span><h1>image_class_bs module<a class="headerlink" href="#module-image_class_bs" title="Permalink to this headline">¶</a></h1>
-<p>Created on Fri Dec 18 17:38:57 2020</p>
-<p>&#64;author: isabel</p>
 <dl class="py function">
 <dt id="image_class_bs.CFT">
 <code class="sig-prename descclassname">image_class_bs.</code><code class="sig-name descname">CFT</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#CFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.CFT" title="Permalink to this definition">¶</a></dt>
@@ -241,7 +239,7 @@ subtracted.</p>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.KK_pixel">
-<code class="sig-name descname">KK_pixel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.KK_pixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.KK_pixel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">KK_pixel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.KK_pixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.KK_pixel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Option to include pooling, not for thickness, as this is an integral and therefor         more noise robust by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,7 +288,12 @@ subtracted.</p>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.calc_ZLPs">
-<code class="sig-name descname">calc_ZLPs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_ZLPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_ZLPs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calc_ZLPs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_ZLPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_ZLPs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.calc_ZLPs2">
+<code class="sig-name descname">calc_ZLPs2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_ZLPs2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_ZLPs2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -300,12 +303,22 @@ subtracted.</p>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.calc_axes">
-<code class="sig-name descname">calc_axes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_axes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">calc_axes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the attribustes x_axis and y_axis of the image. These are the spatial axes, and             can be used to find the spatial location of a pixel and are used in the plotting functions.</p>
+<p>If one wants to alter these axis, one can do this manually by running image.x_axis = …,             and image.y_axis = ….</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.calc_gen_ZLPs">
-<code class="sig-name descname">calc_gen_ZLPs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_gen_ZLPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_gen_ZLPs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calc_gen_ZLPs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'eels'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.calc_gen_ZLPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.calc_gen_ZLPs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -342,27 +355,40 @@ Nota bene: does not correct for surface scatterings. If you wish to correct     
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.cluster">
-<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">based_upon</span><span class="o">=</span><span class="default_value">'log'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cluster" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">based_upon</span><span class="o">=</span><span class="default_value">'log'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters image into n_clusters clusters, based upon (log) integrated intensity of each             pixel or thicknes. Saves cluster centra in self.clusters, and the index of to which             each cluster belongs in self.clustered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_clusters</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is 5.</p></li>
+<li><p><strong>based_upon</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is “log”.</p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments for k_means function</em>) – options: n_iterations (int, default 30), n_times (int, default 5)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.cluster_on_cluster_values">
 <code class="sig-name descname">cluster_on_cluster_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster_values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.cluster_on_cluster_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.cluster_on_cluster_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>If the image has been clustered before, and the values of the cluster centra are known,             one can use this function to reconstruct the original clustering of the image. At this             time works for images clustered on (log) integrated intensity.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.compressed_pickle">
 <em class="property">static </em><code class="sig-name descname">compressed_pickle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.compressed_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.compressed_pickle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Saves data at location title as compressed pickle.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.crossings">
 <code class="sig-name descname">crossings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.crossings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.crossings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="image_class_bs.Spectral_image.crossings_ieels">
-<code class="sig-name descname">crossings_ieels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ieels</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">window_len</span><span class="o">=</span><span class="default_value">50</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.crossings_ieels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.crossings_ieels" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -405,11 +431,17 @@ self.crossings_n = numpy array (image-shape), number of crossings per pixel</p>
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.decompress_pickle">
 <em class="property">static </em><code class="sig-name descname">decompress_pickle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.decompress_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.decompress_pickle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Opens, decompresses and returns the pickle file at location file.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.deconvolute">
 <code class="sig-name descname">deconvolute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">ZLP</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.deconvolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.deconvolute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.deltaE_to_arg">
+<code class="sig-name descname">deltaE_to_arg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.deltaE_to_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.deltaE_to_arg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -507,7 +539,23 @@ numeric – bool, default = True, if numeric the prefix is translated to the num
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.get_ticks">
 <code class="sig-name descname">get_ticks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sig</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">n_tick</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.get_ticks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.get_ticks" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Generates ticks of (spatial) x- and y axis for plotting perposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Scientific signifance of ticsk. The default is 2.</p></li>
+<li><p><strong>n_tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – desired number of ticks. The default is 10.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xlabels</strong> (<em>np.array of type object</em>)</p></li>
+<li><p><strong>ylabels</strong> (<em>np.array of type object</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="image_class_bs.Spectral_image.h_bar">
@@ -662,7 +710,25 @@ Microscope”, Springer-Verlag, 2011.</p>
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.load_Spectral_image">
 <em class="property">classmethod </em><code class="sig-name descname">load_Spectral_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_pickle</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_Spectral_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_Spectral_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Loads spectral image from a pickled file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_pickle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to the pickeled image file.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If path_to_pickle does not end on the desired format .pkl.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.9)"><strong>FileNotFoundError</strong></a> – If path_to_pickle does not exists.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>image</strong> – Image (i.e. including all atributes) loaded from pickle file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Specral_image</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.load_ZLP_models">
@@ -671,13 +737,31 @@ Microscope”, Springer-Verlag, 2011.</p>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.load_ZLP_models_smefit">
-<code class="sig-name descname">load_ZLP_models_smefit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">threshold_costs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">name_in_path</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plotting</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">idx</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_ZLP_models_smefit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_ZLP_models_smefit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_ZLP_models_smefit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">threshold_costs</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">name_in_path</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">plotting</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">idx</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_ZLP_models_smefit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_ZLP_models_smefit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.load_compressed_Spectral_image">
 <em class="property">classmethod </em><code class="sig-name descname">load_compressed_Spectral_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_compressed_pickle</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.load_compressed_Spectral_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.load_compressed_Spectral_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Loads spectral image from a compressed pickled file. Will take longer than loading from not compressed pickle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_compressed_pickle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to the compressed pickle image file.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If path_to_compressed_pickle does not end on the desired format .pbz2.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FileNotFoundError" title="(in Python v3.9)"><strong>FileNotFoundError</strong></a> – If path_to_compressed_pickle does not exists.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>image</strong> – Image (i.e. including all atributes) loaded from compressed pickle file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Specral_image</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.load_data">
@@ -706,6 +790,16 @@ Microscope”, Springer-Verlag, 2011.</p>
 <em class="property">property </em><code class="sig-name descname">n_spectra</code><a class="headerlink" href="#image_class_bs.Spectral_image.n_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns number of spectra in specral image</p>
 </dd></dl>
+
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.optical_absorption_coeff">
+<code class="sig-name descname">optical_absorption_coeff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dielectric_function</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.optical_absorption_coeff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.optical_absorption_coeff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.optical_absorption_coeff_im">
+<code class="sig-name descname">optical_absorption_coeff_im</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.optical_absorption_coeff_im"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.optical_absorption_coeff_im" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.plot_all">
@@ -753,20 +847,53 @@ Plots the summation over the intensity for each pixel in a heatmap.</p>
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.save_compressed_image">
 <code class="sig-name descname">save_compressed_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.save_compressed_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.save_compressed_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function to save image, including all attributes, in compressed pickle (.pbz2) format. Image will             be saved at indicated location and name in filename input. Advantage over save_image is that             the saved file is some orders smaller, disadvantage is that saving and reloading the image             takes significantly longer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to save location plus filename. If it does not end on “.pbz2”, “.pbz2” will be added.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.save_image">
 <code class="sig-name descname">save_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.save_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.save_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to save image, including all attributes, in pickle (.pkl) format. Image will be saved             at indicated location and name in filename input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path to save location plus filename. If it does not end on “.pkl”, “.pkl” will be added.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="image_class_bs.Spectral_image.select_ZLPs">
+<code class="sig-name descname">select_ZLPs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ZLPs</span></em>, <em class="sig-param"><span class="n">dE1</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.select_ZLPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.select_ZLPs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="image_class_bs.Spectral_image.set_n">
-<code class="sig-name descname">set_n</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">n_vac</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.set_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.set_n" title="Permalink to this definition">¶</a></dt>
-<dd><p>LET OP WELKE WAARDE n_vac is en welke n_sample</p>
+<code class="sig-name descname">set_n</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">n_background</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/image_class_bs.html#Spectral_image.set_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#image_class_bs.Spectral_image.set_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets value of refractive index for the image as attribute self.n. If unclusered, n will be an             array of length one, otherwise it is an array of len n_clusters. If n_background is defined,             the cluster with the lowest thickness (cluster 0) will be assumed to be the vacuum/background,             and gets the value of the background refractive index.</p>
+<p>If there are more specimen present in the image, it is wise to check by hand what cluster belongs             to what specimen, and set the values by running image.n[cluster_i] = n_i.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – refractive index of sample.</p></li>
+<li><p><strong>n_background</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – if defined: the refractive index of the background/vacuum. This value will automatically be             assigned to pixels belonging to the thinnest cluster.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>

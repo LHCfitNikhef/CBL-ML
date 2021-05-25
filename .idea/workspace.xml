@@ -2,7 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch">
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +54,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -60,6 +73,7 @@
       <workItem from="1619775568481" duration="320000" />
       <workItem from="1619959278836" duration="1000" />
       <workItem from="1620374617416" duration="1137000" />
+      <workItem from="1621926100464" duration="4248000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>

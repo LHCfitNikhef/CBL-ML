@@ -172,7 +172,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="c1">#CLUSTERING</span>
 
 <div class="viewcode-block" id="dist"><a class="viewcode-back" href="../modules/modules.html#k_means_clustering.dist">[docs]</a><span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">exp</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
@@ -204,7 +203,7 @@
         <span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">relocate_cluster</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">clusters</span></div>
 
-<div class="viewcode-block" id="relocate_cluster"><a class="viewcode-back" href="../modules/modules.html#k_means_clustering.relocate_cluster">[docs]</a><span class="k">def</span> <span class="nf">relocate_cluster</span><span class="p">(</span> <span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="relocate_cluster"><a class="viewcode-back" href="../modules/modules.html#k_means_clustering.relocate_cluster">[docs]</a><span class="k">def</span> <span class="nf">relocate_cluster</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
     <span class="c1">#TODO: adjust to accept other costfunctions?</span>
     <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -221,6 +220,31 @@
 
 
 <div class="viewcode-block" id="k_means"><a class="viewcode-back" href="../modules/modules.html#k_means_clustering.k_means">[docs]</a><span class="k">def</span> <span class="nf">k_means</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_iterations</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">n_times</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    k means clustering algoritm. Unsupervised clustering into n_cluster clusters, by reduing the mean \</span>
+<span class="sd">        root square distance to the clustercentra. Returns the cluster centra, and an array corresponding \</span>
+<span class="sd">        to the input values array, with to which cluster each value belongs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : 1D np.array</span>
+<span class="sd">        Array with values to be clustered.</span>
+<span class="sd">    n_clusters : int, optional</span>
+<span class="sd">        The desired number of clusters. The default is 3.</span>
+<span class="sd">    n_iterations : int, optional</span>
+<span class="sd">        number of iterations in the clustering algoritm. The default is 30.</span>
+<span class="sd">    n_times : TYPE, optional</span>
+<span class="sd">        number of times the complete algoritm is run. The eventaul outcome that is returned is the outcome \</span>
+<span class="sd">        with the lowest overall distance. The default is 5.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    min_clusters : np.array</span>
+<span class="sd">        values of the cluster centra.</span>
+<span class="sd">    min_r : np.array</span>
+<span class="sd">        array corresponding to the input values array, with to which cluster each value belongs.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_values</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">vpc</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">n_values</span><span class="o">/</span><span class="n">n_clusters</span><span class="p">)</span>
@@ -237,7 +261,6 @@
         <span class="n">ind_cluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span><span class="o">*</span><span class="n">n_values</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">clusters</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">ind_cluster</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
-            <span class="c1">#print(clusters)</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">reassign_values</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
             <span class="n">r_empty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_empty</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -249,33 +272,13 @@
             <span class="n">clusters</span> <span class="o">=</span> <span class="n">relocate_clusters</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
             <span class="n">costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cost_clusters</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">cost_min</span> <span class="o">&gt;</span> <span class="n">costs</span><span class="p">:</span>
-                <span class="c1">#print(j, i, n_clusters, costs)</span>
                 <span class="n">cost_min</span> <span class="o">=</span> <span class="n">costs</span>
                 <span class="n">min_clusters</span> <span class="o">=</span> <span class="n">clusters</span>
                 <span class="n">min_r</span> <span class="o">=</span> <span class="n">r</span>
-                <span class="c1">#print(cost_min)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">old_clusters</span> <span class="o">==</span> <span class="n">clusters</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="k">break</span>
             <span class="n">old_clusters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">min_clusters</span><span class="p">,</span> <span class="n">min_r</span></div>
-
-<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="n">k_means</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">a = np.array([[1,2],[2,3],[3,4],[3,5]])</span>
-<span class="sd">bi = np.array([[1,0],[1,1],[2,0]])</span>
-<span class="sd">r = np.array([[0,1,0,0],[1,0,0,0],[0,0,1,1]])</span>
-<span class="sd">#costs = cost_clusters(a, bi,r)</span>
-
-<span class="sd">a = np.array([2,3,5,8,5,4,3,2,4,67,9,2,3,6, 7,4,2,98,5,45,63,23,7,90,54,8])</span>
-<span class="sd">bi = np.array([3,7,30])</span>
-<span class="sd">r =np.array([[1,1,0,0,0,1,1,1,1,0 ,0],</span>
-<span class="sd">             [0,0,1,1,1,0,0,0,0,0 ,1],</span>
-<span class="sd">             [0,0,0,0,0,0,0,0,0,1 ,0]])</span>
-<span class="sd">#costs = cost_clusters(a, bi,r)</span>
-<span class="sd">clusters = k_means(a)</span>
-<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>
