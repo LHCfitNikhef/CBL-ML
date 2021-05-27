@@ -348,7 +348,7 @@ class Spectral_image():
         data_avg = np.average(self.data, axis=(0, 1))
         ind_max = np.argmax(data_avg)
         self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
-        # return deltaE
+        return self.deltaE
 
     def calc_axes(self):
         """

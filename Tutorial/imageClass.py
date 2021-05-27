@@ -1,6 +1,13 @@
 from ncempy.io import dm
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+import seaborn as sns
+from matplotlib import rc
+import trainZLP
+
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 15})
+rc('text', usetex=True)
 
 
 class Spectral_image():
@@ -9,30 +16,129 @@ class Spectral_image():
         self.data = data
         self.ddeltaE = deltadeltaE
         self.deltaE = self.determine_deltaE()
-
+        self.x_axis, self.y_axis = self.calc_axes()
         if pixelsize is not None:
             self.pixelsize = pixelsize * 1E6
+
+    def calc_axes(self):
+        """
+        Calculates the attribustes x_axis and y_axis of the image. These are the spatial axes, and \
+            can be used to find the spatial location of a pixel and are used in the plotting functions.
+
+        If one wants to alter these axis, one can do this manually by running image.x_axis = ..., \
+            and image.y_axis = ....
+
+        Returns
+        -------
+        None.
+
+        """
+        y_axis = np.linspace(0, self.image_shape[0] - 1, self.image_shape[0])
+        x_axis = np.linspace(0, self.image_shape[1] - 1, self.image_shape[1])
+        if hasattr(self, 'pixelsize'):
+            y_axis *= self.pixelsize[0]
+            x_axis *= self.pixelsize[1]
+        return x_axis, y_axis
 
     def determine_deltaE(self):
         data_avg = np.average(self.data, axis=(0, 1))
         ind_max = np.argmax(data_avg)
-        self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
-        return self.deltaE
+        deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
+        return deltaE
 
-    def plot_all(self, i, j, same_image=True, normalize=False, legend=False,
-                 range_x=None, range_y=None, range_E=None, signal="EELS", log=False):
 
-        if range_x is None:
-            range_x = [0, self.image_shape[1]]
-        if range_y is None:
-            range_y = [0, self.image_shape[0]]
-        if same_image:
-            plt.figure()
-            plt.title("Spectrum image " + signal + " spectra")
-            plt.xlabel("[eV]")
-            if range_E is not None:
-                plt.xlim(range_E)
+    def get_ticks(self, sig=2, n_tick=10):
+        """
+        Generates ticks of (spatial) x- and y axis for plotting perposes.
 
+        Parameters
+        ----------
+        sig : int, optional
+            Scientific signifance of ticsk. The default is 2.
+        n_tick : int, optional
+            desired number of ticks. The default is 10.
+
+        Returns
+        -------
+        xlabels : np.array of type object
+        ylabels : np.array of type object
+
+        """
+        fmt = '%.' + str(sig) + 'g'
+        xlabels = np.zeros(self.x_axis.shape, dtype=object)
+        xlabels[:] = ""
+        each_n_pixels = math.floor(len(xlabels) / n_tick)
+        for i in range(len(xlabels)):
+            if i % each_n_pixels == 0:
+                xlabels[i] = '%s' % float(fmt % self.x_axis[i])
+        ylabels = np.zeros(self.y_axis.shape, dtype=object)
+        ylabels[:] = ""
+        each_n_pixels = math.floor(len(ylabels) / n_tick)
+        for i in range(len(ylabels)):
+            if i % each_n_pixels == 0:
+                ylabels[i] = '%s' % float(fmt % self.y_axis[i])
+        return xlabels, ylabels
+
+    def show_image(self, title=None, xlab=None, ylab=None, selection=None, pixel_highlight = None):
+        """
+        INPUT:
+            self -- spectral image
+            title -- str, delfault = None, title of plot
+            xlab -- str, default = None, x-label
+            ylab -- str, default = None, y-label
+        OUTPUT:
+        Plots the summation over the intensity for each pixel in a heatmap.
+        """
+        # TODO: invert colours
+        if hasattr(self, 'name'):
+            name = self.name
+        else:
+            name = ''
+        plt.figure(figsize=(10, 6))
+        ax = plt.subplot(111)
+        if title is None:
+            plt.title(r'$\rm{Integrated\;intensity\;spectrum}$')
+        else:
+            plt.title(title)
+        if hasattr(self, 'pixelsize'):
+            xticks, yticks = self.get_ticks(sig=0) #TODO signifance does not seem to change digits
+            sns.heatmap(np.sum(self.data, axis=2), xticklabels=xticks, yticklabels=yticks)
+            plt.xlabel(r'$\rm{[\mu m]}$')
+            plt.ylabel(r'$\rm{[\mu m]}$')
+        else:
+            sns.heatmap(np.sum(self.data, axis=2))
+        if xlab is not None:
+            plt.xlabel(xlab)
+        if ylab is not None:
+            plt.ylabel(ylab)
+
+        if pixel_highlight is not None:
+            rect = plt.Rectangle(pixel_highlight, 1, 1, color="C0", linewidth=3, fill=False, clip_on=False)
+            ax.add_patch(rect)
+
+        if selection is None:
+            plt.show()
+        else:
+            full_width, full_height = self.image_shape[1], self.image_shape[0]
+            window_xmin = int(selection[0,0] * full_width)
+            window_width = int(selection[0,1] * full_width)
+            window_ymin = int(selection[1,0] * full_height)
+            window_height = int(selection[1,1] * full_height)
+            rect = plt.Rectangle([window_xmin, window_ymin], window_width, window_height, color="gold",
+                                 linewidth=3, fill=False, clip_on=False)
+            ax.add_patch(rect)
+            plt.show()
+
+            # zoomed in plot
+            xticks_zoom, yticks_zoom = None, None  # TODO: add custom x and y ticks for the zoomed in plot
+            data_zoomed = self.data[window_ymin: window_ymin + window_height, window_xmin: window_xmin + window_width, :]
+            sns.heatmap(np.sum(data_zoomed,axis=2))
+            plt.title("Integrated intensity spectrum close up " + name)
+            plt.show()
+
+            return data_zoomed
+
+    def plot_spectrum(self, i, j, normalize=False, signal="EELS", log=False):
         signal_pixel = self.get_pixel_signal(i, j, signal)
         if normalize:
             signal_pixel /= np.max(np.absolute(signal_pixel))
@@ -54,6 +160,9 @@ class Spectral_image():
             signal: 1D numpy array, array with the requested signal from the requested pixel
         """
         return self.data[i, j, :]
+
+    def train_ZLPs(self, training_data, **kwargs):
+        trainZLP.train_nn_scaled(self, training_data, **kwargs)
 
     @property
     def l(self):

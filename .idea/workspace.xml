@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="add references to documentation">
+      <change afterPath="$PROJECT_DIR$/Tutorial/trainZLP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CBL-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CBL-ML.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial/imageClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/imageClass.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -74,6 +73,8 @@
       <workItem from="1619959278836" duration="1000" />
       <workItem from="1620374617416" duration="1137000" />
       <workItem from="1621926100464" duration="4248000" />
+      <workItem from="1622100462529" duration="1418000" />
+      <workItem from="1622101951878" duration="10055000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -172,6 +173,7 @@
     <MESSAGE value="added pyc to gitignore" />
     <MESSAGE value="new layout sphinx" />
     <MESSAGE value="linked sphinx doc to master branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="linked sphinx doc to master branch" />
+    <MESSAGE value="add references to documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="add references to documentation" />
   </component>
 </project>
