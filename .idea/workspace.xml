@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="add references to documentation">
-      <change afterPath="$PROJECT_DIR$/Tutorial/trainZLP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CBL-ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CBL-ML.iml" afterDir="false" />
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="plotting section finished">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tutorial/imageClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/imageClass.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +69,7 @@
       <workItem from="1620374617416" duration="1137000" />
       <workItem from="1621926100464" duration="4248000" />
       <workItem from="1622100462529" duration="1418000" />
-      <workItem from="1622101951878" duration="10055000" />
+      <workItem from="1622101951878" duration="10521000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -146,7 +141,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619775797015</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="plotting section finished">
+      <created>1622115101372</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1622115101372</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +176,7 @@
     <MESSAGE value="new layout sphinx" />
     <MESSAGE value="linked sphinx doc to master branch" />
     <MESSAGE value="add references to documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="add references to documentation" />
+    <MESSAGE value="plotting section finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="plotting section finished" />
   </component>
 </project>
