@@ -376,17 +376,43 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         small_angle = np.abs(np.arctan2(np.sqrt(2)*peak_width,r1))
 
         stack = np.where( (angles<(angle_to_centre+small_angle))&(angles>(angle_to_centre-small_angle)), mr_data_stack.stack, 0)
+
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
         for i in tqdm(iterate):
             momentum_frame_total = line_integration_mom(momentum_map, radii, i, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
 
+
+        #since our peak is in one quadrant we can cut it from the array and only use that cut.
+        #This will in the optimal case reduce memory usage by 75%.
+
+        if true_fw_peak[0] < stack_centre[0]:
+            #peak upper-half:
+            if true_fw_peak[1] < stack_centre[1]:
+                #peak lhs
+                radii = radii[0:stack_centre[0], 0:stack_centre[1]]
+                stack = stack[:, 0:stack_centre[0], 0:stack_centre[1]]
+            else:
+                #peak rhs
+                radii = radii[0:stack_centre[0], stack_centre[1]:]
+                stack = stack[:, 0:stack_centre[0], stack_centre[1]:]
+        else:
+            #peak lower-half
+            if true_fw_peak[1] < stack_centre[1]:
+                #peak lhs
+                radii = radii[stack_centre[0]:, 0:stack_centre[1]]
+                stack = stack[:, stack_centre[0]:, 0:stack_centre[1]]
+            else:
+                #peak rhs
+                radii = radii[stack_centre[0]:, stack_centre[1]:]
+                stack = stack[:, stack_centre[0]:, stack_centre[1]:]
+
         def part_func(e_index):
             args = (stack[e_index], radii)
-            to_return = np.zeros((len(rs),1))
+            to_return = np.zeros(len(rs))
             for r in range(len(rs)):
-                to_return[r,:] = line_integration_int(rs[r], *args)
+                to_return[r] = line_integration_int(rs[r], *args)
             return to_return
 
         rs = [i for i in range(r0,r1,ringsize)]
@@ -398,7 +424,7 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         for i in range(0, len(energies)):
             qmap[:,i] = results[i]
 
-    return qmap, momentum_qaxis[:-1]
+    return qmap, momentum_qaxis
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
