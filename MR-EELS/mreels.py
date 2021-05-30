@@ -293,7 +293,6 @@ def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize
     selection_area = np.where( (radii<r1), stack, 0)
     #entries = np.where((radii<r1), 1, 0)
     max_mom = np.max(selection_area)
-
     return max_mom
 
 
@@ -307,15 +306,13 @@ def line_integration_stack(r1: int, stack: np.ndarray,
     return integral
 
 
-""" def local_norm(image: np.ndarray) -> np.ndarray:
-    a = 1/(4+4*np.sqrt(2))
-    mask = 1/(np.array([
-        [1,np.sqrt(2),1],
-        [np.sqrt(2),0.1,np.sqrt(2)],
-        [1, np.sqrt(2),1]
-    ]))
-    return cv2(image, mask)
- """
+def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray) -> np.ndarray:
+    integration_area = np.where(radii<radius, stack, 0)
+    entries = np.where((radii<radius), 1, 0)
+    integral = np.sum(integration_area)/np.sum(entries)
+
+    return integral
+
 
 
 def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_frame: int,
@@ -384,18 +381,24 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         for i in tqdm(iterate):
             momentum_frame_total = line_integration_mom(momentum_map, radii, i, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
-        radii = None
+
+        def part_func(e_index):
+            args = (stack[e_index], radii)
+            to_return = np.zeros((len(rs),1))
+            for r in range(len(rs)):
+                to_return[r,:] = line_integration_int(rs[r], *args)
+            return to_return
+
+        rs = [i for i in range(r0,r1,ringsize)]
+        energies = [e_index for e_index in range(len(mr_data_stack.axis0))]
+
         with ThreadPoolExecutor(threads) as ex:
-            def part_func(r):
-                args = (stack, radii3d)
-                return line_integration_stack(r, *args)
-            r = [i for i in range(r0,r1,ringsize)]
-            results = list(tqdm(ex.map(part_func, r), total=len(r)))
+            results = list(tqdm(ex.map(part_func, energies), total=len(energies)))
 
-        for i in range(0,len(iterate)):
-            qmap[i] = results[i]
+        for i in range(0, len(energies)):
+            qmap[:,i] = results[i]
 
-    return qmap, momentum_qaxis
+    return qmap, momentum_qaxis[:-1]
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
@@ -589,6 +592,14 @@ class MomentumResolvedDataStack:
         self.stack_corrected = None
 
         self.pref_frame = pref_frame
+
+    def rem_neg_el(self):
+        if self.pref_frame == None:
+            raise ValueError("preferred frame must be set for the building of the axis")
+        self.build_axes()
+        mask = np.where(self.axis0 <= 0, False, True)
+        self.axis0 = self.axis0[mask]
+        self.stack = self.stack[mask,:,:]
 
     def get_centre(self, index: int) -> tuple:
         slice = self.stack[index]
