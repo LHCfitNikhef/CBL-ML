@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="correct colab link to notebook">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/train_nn_torch_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/train_nn_torch_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial/imageClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/imageClass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial/trainZLP.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/trainZLP.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +55,35 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
+  <component name="RunManager">
+    <configuration name="training_images_bs" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CBL-ML" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" />
+      <option name="PARAMETERS" value="1" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.training_images_bs" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -69,7 +103,8 @@
       <workItem from="1620374617416" duration="1137000" />
       <workItem from="1621926100464" duration="4248000" />
       <workItem from="1622100462529" duration="1418000" />
-      <workItem from="1622101951878" duration="10594000" />
+      <workItem from="1622101951878" duration="16678000" />
+      <workItem from="1622447396175" duration="6024000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -155,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622115468294</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="correct colab link to notebook">
+      <created>1622115573460</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1622115573460</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,5 +228,19 @@
     <MESSAGE value="plotting section finished" />
     <MESSAGE value="correct colab link to notebook" />
     <option name="LAST_COMMIT_MESSAGE" value="correct colab link to notebook" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/train_nn_torch_bs.py</url>
+          <line>577</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CBL_ML$training_images_bs.coverage" NAME="training_images_bs Coverage Results" MODIFIED="1622453301551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles" />
   </component>
 </project>

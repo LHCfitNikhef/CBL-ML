@@ -290,7 +290,7 @@ def user_check(dE12, value):
 def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", display_step = 1000):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
     if hasattr(image, "name"):
-        path_to_model = image.name + "_" + path_to_model
+        path_to_model = image.name + "_" + path_to_models
     
     if not os.path.exists(path_to_model):
         Path(path_to_model).mkdir(parents=True, exist_ok=True)
@@ -564,8 +564,10 @@ def train_nn_scaled(image, spectra, n_rep = 500, n_epochs = 30000, lr=1e-3,added
         save_idx = i + n_rep*bs_rep_num
         if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
         data = np.empty((0,1))
-        data_x = np.empty((0,2))
+        data_x = np.empty((0,2)) #TODO 0, 1
         data_sigma = np.empty((0,1))
+
+        # TODO: remove loop and integrated intensity dependence
         
         for cluster in range(image.n_clusters):
             n_cluster = len(spectra[cluster])

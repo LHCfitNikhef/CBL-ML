@@ -9,6 +9,7 @@ import datetime as dt
 import torch.optim as optim
 import random
 from sklearn.model_selection import train_test_split
+import sys
 
 
 class MLP(nn.Module):
@@ -84,7 +85,7 @@ def derivative_clusters(image, clusters):
     return der_clusters
 
 
-def find_dE1(image, dy_dx, y_smooth):
+def find_dE1(image, dy_dx, y_smooth, fct=0.7):
     # crossing
     # first positive derivative after dE=0:
 
@@ -95,7 +96,7 @@ def find_dE1(image, dy_dx, y_smooth):
     else:
         up = np.argmax(crossing[np.argmax(y_smooth) + 1:]) + np.argmax(y_smooth) + 1
     pos_der = image.deltaE[up]
-    return pos_der
+    return pos_der*fct
 
 
 def determine_dE1_new(image, dy_dx_clusters, y_smooth_clusters, check_with_user=False):
@@ -179,33 +180,26 @@ def train_nn_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, added_dE
         elif not ans[0] == 'y':
             path_to_models = input("Please define the new path: \n")
     """
+
+    print(spectra.shape)
+    sys.exit()
+
     if display_step is None:
         print_progress = False
         display_step = 1E6
     else:
         print_progress = True
 
-    # TODO: something like: os.path.join(*path_to_models.split('/'))
-    path_to_models += (path_to_models[-1] != '/') * '/'
-
-    if not os.path.exists(path_to_models):
-        Path(path_to_models).mkdir(parents=True, exist_ok=True)
-
-    num_saving_per_rep = 50
-    saving_step = int(n_epochs / num_saving_per_rep)
-
-    for i in range(len(spectra)):
-        spectra[i][spectra[i] < 1] = 1
 
     loss_test_reps = np.zeros(n_rep)
     n_data = image.l
 
     # data_sigma = np.zeros((n_data,1))
-    sigma_clusters = np.zeros((image.n_clusters, image.l))
-    for cluster in range(image.n_clusters):
-        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis=0)
-        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis=0)
-        sigma_clusters[cluster, :] = np.absolute(ci_high - ci_low)
+    # sigma_clusters = np.zeros((image.n_clusters, image.l))
+    # for cluster in range(image.n_clusters):
+    #     ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis=0)
+    #     ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis=0)
+    #     sigma_clusters[cluster, :] = np.absolute(ci_high - ci_low)
         # data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
 
     # new??? #TODO: verplaats dit naar determine_dE1
@@ -254,33 +248,32 @@ def train_nn_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, added_dE
 
 
     for i in range(n_rep):
-        save_idx = i
         if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
         data = np.empty((0, 1))
         data_x = np.empty((0, 2))
         data_sigma = np.empty((0, 1))
 
-        for cluster in range(image.n_clusters):
-            n_cluster = len(spectra[cluster])
-            idx = random.randint(0, n_cluster - 1)
-            # data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
-            select1 = len(image.deltaE[image.deltaE < dE1[cluster]])
-            select2 = len(image.deltaE[image.deltaE > dE2[cluster]])
-            data = np.append(data, np.log(spectra[cluster][idx][:select1]))
-            data = np.append(data, np.zeros(select2))
 
-            pseudo_x = np.ones((select1 + select2, 2))
-            pseudo_x[:select1, 0] = deltaE_scaled[:select1]
-            pseudo_x[-select2:, 0] = deltaE_scaled[-select2:]
-            int_log_I_idx_scaled = scale(np.log(np.sum(spectra[cluster][idx])), ab_int_log_I)
-            pseudo_x[:, 1] = int_log_I_idx_scaled
+        n_cluster = len(spectra[cluster])
+        idx = random.randint(0, n_cluster - 1)
+        # data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
+        select1 = len(image.deltaE[image.deltaE < dE1[cluster]])
+        select2 = len(image.deltaE[image.deltaE > dE2[cluster]])
+        data = np.append(data, np.log(spectra[cluster][idx][:select1]))
+        data = np.append(data, np.zeros(select2))
 
-            data_x = np.concatenate((data_x, pseudo_x))  # np.append(data_x, pseudo_x)
+        pseudo_x = np.ones((select1 + select2, 2))
+        pseudo_x[:select1, 0] = deltaE_scaled[:select1]
+        pseudo_x[-select2:, 0] = deltaE_scaled[-select2:]
+        int_log_I_idx_scaled = scale(np.log(np.sum(spectra[cluster][idx])), ab_int_log_I)
+        pseudo_x[:, 1] = int_log_I_idx_scaled
 
-            data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
-            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
+        data_x = np.concatenate((data_x, pseudo_x))  # np.append(data_x, pseudo_x)
 
-        model = MLP(num_inputs=2, num_outputs=1)
+        data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
+        data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
+
+        model = MLP(num_inputs=1, num_outputs=1)
         model.apply(weight_reset)
         # optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)
         optimizer = optim.Adam(model.parameters(), lr=lr)

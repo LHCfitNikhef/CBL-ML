@@ -17,6 +17,7 @@ class Spectral_image():
         self.ddeltaE = deltadeltaE
         self.deltaE = self.determine_deltaE()
         self.x_axis, self.y_axis = self.calc_axes()
+        self.data_zoomed = None
         if pixelsize is not None:
             self.pixelsize = pixelsize * 1E6
 
@@ -131,12 +132,12 @@ class Spectral_image():
 
             # zoomed in plot
             xticks_zoom, yticks_zoom = None, None  # TODO: add custom x and y ticks for the zoomed in plot
-            data_zoomed = self.data[window_ymin: window_ymin + window_height, window_xmin: window_xmin + window_width, :]
-            sns.heatmap(np.sum(data_zoomed,axis=2))
+            self.data_zoomed = self.data[window_ymin: window_ymin + window_height, window_xmin: window_xmin + window_width, :]
+            sns.heatmap(np.sum(self.data_zoomed,axis=2))
             plt.title("Integrated intensity spectrum close up " + name)
             plt.show()
 
-            return data_zoomed
+
 
     def plot_spectrum(self, i, j, normalize=False, signal="EELS", log=False):
         signal_pixel = self.get_pixel_signal(i, j, signal)

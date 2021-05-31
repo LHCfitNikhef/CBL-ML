@@ -15,11 +15,11 @@ import sys
 bs_rep_num = int(sys.argv[1])
 
 
-im = Spectral_image.load_data('../../data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_003.dm4')
+im = Spectral_image.load_data('/Users/jaco/Documents/CBL-ML/Tutorial/area03-eels-SI-aligned.dm4')
 
 
 
-path_to_models = '/data/theorie/ipostmes/cluster_programs/EELS_KK/pyfiles/bash_train_pyfiles/models/train_003'
+path_to_models = '/Users/jaco/Documents/CBL-ML/Tutorial/models'
 im.train_ZLPs(n_clusters = 5, n_rep = 1, n_epochs = 300000, bs_rep_num= bs_rep_num, path_to_models = path_to_models, \
               display_step = 10000)
 """    
