@@ -5,19 +5,23 @@ import math
 import seaborn as sns
 from matplotlib import rc
 import trainZLP
+import torch.utils.data as data
 
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 15})
 rc('text', usetex=True)
 
 
-class Spectral_image():
+class Spectral_image(data.Dataset):
 
     def __init__(self, data, deltadeltaE, pixelsize=None, name=None):
+        super().__init__()
         self.data = data
         self.ddeltaE = deltadeltaE
         self.deltaE = self.determine_deltaE()
         self.x_axis, self.y_axis = self.calc_axes()
         self.data_zoomed = None
+        self.data_zoomed_concat = None
+        self.data_unc = None
         if pixelsize is not None:
             self.pixelsize = pixelsize * 1E6
 
@@ -137,6 +141,11 @@ class Spectral_image():
             plt.title("Integrated intensity spectrum close up " + name)
             plt.show()
 
+        self.data_zoomed_concat = np.reshape(self.data_zoomed, (-1, self.l))
+        ci_low = np.nanpercentile(self.data_zoomed_concat, 16, axis=0)
+        ci_high = np.nanpercentile(self.data_zoomed_concat, 84, axis=0)
+        self.data_unc= np.absolute(ci_high - ci_low)
+
 
 
     def plot_spectrum(self, i, j, normalize=False, signal="EELS", log=False):
@@ -149,6 +158,7 @@ class Spectral_image():
         plt.plot(self.deltaE, signal_pixel, label="[" + str(j) + "," + str(i) + "]")
         plt.legend()
         plt.show()
+        return signal_pixel
 
     def get_pixel_signal(self, i, j, signal='EELS'):
         """
@@ -164,6 +174,15 @@ class Spectral_image():
 
     def train_ZLPs(self, training_data, **kwargs):
         trainZLP.train_nn_scaled(self, training_data, **kwargs)
+
+    def __getitem__(self, idx):
+        # Return the idx-th data point of the dataset
+        # If we have multiple things to return (data point and label), we can return them as tuple
+        data_point = self.data_zoomed_concat[idx]
+        return self.deltaE[idx], data_point, self.data_unc[idx]
+
+    def __len__(self):
+        return self.l
 
     @property
     def l(self):
