@@ -84,7 +84,7 @@ class Spectral_image(data.Dataset):
                 ylabels[i] = '%s' % float(fmt % self.y_axis[i])
         return xlabels, ylabels
 
-    def show_image(self, title=None, xlab=None, ylab=None, selection=None, pixel_highlight = None):
+    def show_image(self, title=None, xlab=None, ylab=None, pixel_highlight=None, selection=np.array([[0, 10], [0, 10]])):
         """
         INPUT:
             self -- spectral image
@@ -124,11 +124,15 @@ class Spectral_image(data.Dataset):
         if selection is None:
             plt.show()
         else:
-            full_width, full_height = self.image_shape[1], self.image_shape[0]
-            window_xmin = int(selection[0,0] * full_width)
-            window_width = int(selection[0,1] * full_width)
-            window_ymin = int(selection[1,0] * full_height)
-            window_height = int(selection[1,1] * full_height)
+            window_xmin = selection[0, 0]
+            window_width = selection[0, 1]
+            window_ymin = selection[1, 0]
+            window_height = selection[1, 1]
+            # full_width, full_height = self.image_shape[1], self.image_shape[0]
+            # window_xmin = int(selection[0,0] * full_width)
+            # window_width = int(selection[0,1] * full_width)
+            # window_ymin = int(selection[1,0] * full_height)
+            # window_height = int(selection[1,1] * full_height)
             rect = plt.Rectangle([window_xmin, window_ymin], window_width, window_height, color="gold",
                                  linewidth=3, fill=False, clip_on=False)
             ax.add_patch(rect)

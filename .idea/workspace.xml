@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="added section on smoothing and finding dE1 and dE2">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="network learns">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tutorial/imageClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/imageClass.py" afterDir="false" />
@@ -102,7 +102,8 @@
       <workItem from="1622100462529" duration="1418000" />
       <workItem from="1622101951878" duration="16678000" />
       <workItem from="1622447396175" duration="6062000" />
-      <workItem from="1622458698042" duration="6921000" />
+      <workItem from="1622458698042" duration="6939000" />
+      <workItem from="1622532150473" duration="3339000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -202,7 +203,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622454444138</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="network learns">
+      <created>1622491855214</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1622491855214</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,7 +241,8 @@
     <MESSAGE value="plotting section finished" />
     <MESSAGE value="correct colab link to notebook" />
     <MESSAGE value="added section on smoothing and finding dE1 and dE2" />
-    <option name="LAST_COMMIT_MESSAGE" value="added section on smoothing and finding dE1 and dE2" />
+    <MESSAGE value="network learns" />
+    <option name="LAST_COMMIT_MESSAGE" value="network learns" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CBL_ML$training_images_bs.coverage" NAME="training_images_bs Coverage Results" MODIFIED="1622453301551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles" />
