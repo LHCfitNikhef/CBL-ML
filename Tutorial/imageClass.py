@@ -146,8 +146,10 @@ class Spectral_image(data.Dataset):
             plt.show()
 
         self.data_zoomed_concat = np.reshape(self.data_zoomed, (-1, self.l))
-        ci_low = np.nanpercentile(self.data_zoomed_concat, 16, axis=0)
-        ci_high = np.nanpercentile(self.data_zoomed_concat, 84, axis=0)
+        epsilon = 1e-3
+        self.data_zoomed_concat[self.data_zoomed_concat < 0] = epsilon
+        ci_low = np.nanpercentile(np.log(self.data_zoomed_concat), 16, axis=0)
+        ci_high = np.nanpercentile(np.log(self.data_zoomed_concat), 84, axis=0)
         self.data_unc= np.absolute(ci_high - ci_low)
 
 
