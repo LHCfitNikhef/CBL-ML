@@ -1,8 +1,8 @@
 from logging import error
+from os import path
 from typing import Tuple
 from ncempy import io
 import numpy as np
-from numpy.lib.function_base import gradient
 import scipy.fftpack as sfft
 from scipy.signal import convolve2d as cv2
 from tqdm import tqdm
@@ -293,7 +293,6 @@ def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize
     selection_area = np.where( (radii<r1), stack, 0)
     #entries = np.where((radii<r1), 1, 0)
     max_mom = np.max(selection_area)
-
     return max_mom
 
 
@@ -307,15 +306,13 @@ def line_integration_stack(r1: int, stack: np.ndarray,
     return integral
 
 
-""" def local_norm(image: np.ndarray) -> np.ndarray:
-    a = 1/(4+4*np.sqrt(2))
-    mask = 1/(np.array([
-        [1,np.sqrt(2),1],
-        [np.sqrt(2),0.1,np.sqrt(2)],
-        [1, np.sqrt(2),1]
-    ]))
-    return cv2(image, mask)
- """
+def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray) -> np.ndarray:
+    integration_area = np.where(radii<radius, stack, 0)
+    entries = np.where((radii<radius), 1, 0)
+    integral = np.sum(integration_area)/np.sum(entries)
+
+    return integral
+
 
 
 def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_frame: int,
@@ -379,23 +376,89 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         small_angle = np.abs(np.arctan2(np.sqrt(2)*peak_width,r1))
 
         stack = np.where( (angles<(angle_to_centre+small_angle))&(angles>(angle_to_centre-small_angle)), mr_data_stack.stack, 0)
+
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
         for i in tqdm(iterate):
             momentum_frame_total = line_integration_mom(momentum_map, radii, i, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
-        radii = None
-        with ThreadPoolExecutor(threads) as ex:
-            def part_func(r):
-                args = (stack, radii3d)
-                return line_integration_stack(r, *args)
-            r = [i for i in range(r0,r1,ringsize)]
-            results = list(tqdm(ex.map(part_func, r), total=len(r)))
 
-        for i in range(0,len(iterate)):
-            qmap[i] = results[i]
+
+        #since our peak is in one quadrant we can cut it from the array and only use that cut.
+        #This will in the optimal case reduce memory usage by 75%.
+
+        if true_fw_peak[0] < stack_centre[0]:
+            #peak upper-half:
+            if true_fw_peak[1] < stack_centre[1]:
+                #peak lhs
+                radii = radii[0:stack_centre[0], 0:stack_centre[1]]
+                stack = stack[:, 0:stack_centre[0], 0:stack_centre[1]]
+            else:
+                #peak rhs
+                radii = radii[0:stack_centre[0], stack_centre[1]:]
+                stack = stack[:, 0:stack_centre[0], stack_centre[1]:]
+        else:
+            #peak lower-half
+            if true_fw_peak[1] < stack_centre[1]:
+                #peak lhs
+                radii = radii[stack_centre[0]:, 0:stack_centre[1]]
+                stack = stack[:, stack_centre[0]:, 0:stack_centre[1]]
+            else:
+                #peak rhs
+                radii = radii[stack_centre[0]:, stack_centre[1]:]
+                stack = stack[:, stack_centre[0]:, stack_centre[1]:]
+
+        def part_func(e_index):
+            args = (stack[e_index], radii)
+            to_return = np.zeros(len(rs))
+            for r in range(len(rs)):
+                to_return[r] = line_integration_int(rs[r], *args)
+            return to_return
+
+        rs = [i for i in range(r0,r1,ringsize)]
+        energies = [e_index for e_index in range(len(mr_data_stack.axis0))]
+
+        with ThreadPoolExecutor(threads) as ex:
+            results = list(tqdm(ex.map(part_func, energies), total=len(energies)))
+
+        for i in range(0, len(energies)):
+            qmap[:,i] = results[i]
 
     return qmap, momentum_qaxis
+
+
+def get_qeels_slice(data_stack: object, point: tuple) -> np.ndarray:
+    centre = data_stack.get_centre(data_stack.pref_frame)
+    yp, xp = point
+    path_length = int(np.hypot(xp-centre[1], yp-centre[0]))
+    xsamp = np.linspace(centre[1], xp, path_length)
+    ysamp = np.linspace(centre[0], yp, path_length)
+    qmap = data_stack.stack[:,ysamp.astype(int),xsamp.astype(int)].T
+
+    qaxis = np.zeros(int(path_length))
+    data_stack.build_axes()
+    mom_y, mom_x = np.meshgrid(data_stack.axis1, data_stack.axis2)
+    mom_map = np.sqrt(mom_y**2 + mom_x**2)
+    qaxis = mom_map[xsamp.astype(int), ysamp.astype(int)]
+
+    double_entries = np.asarray([])
+    for i in range(0,len(qaxis)-1):
+        if qaxis[i] == qaxis[i+1]:
+            double_entries = np.append(double_entries, i)
+
+    qaxis_sc = np.asarray([])
+    qmap_sc = np.asarray([])
+    for i in range(len(qaxis)):
+        if i not in double_entries:
+            qaxis_sc = np.append(qaxis_sc, qaxis[i])
+            qmap_sc = np.append(qmap_sc, qmap[i])
+    """ else:
+            qm_avg = (qmap[i]+qmap[i+1])/2
+            qaxis_sc = np.append(qaxis_sc, qaxis[i])
+            qmap_sc = np.append(qmap_sc, qmap[i])
+    """
+    qmap_sc = qmap_sc.reshape((len(qaxis_sc), qmap.shape[1]))
+    return qmap_sc, qaxis_sc
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
@@ -590,7 +653,18 @@ class MomentumResolvedDataStack:
 
         self.pref_frame = pref_frame
 
+    def rem_neg_el(self):
+        if self.pref_frame == None:
+            raise ValueError("preferred frame must be set for the building of the axis")
+        self.build_axes()
+        mask = np.where(self.axis0 <= 0, False, True)
+        self.axis0 = self.axis0[mask]
+        self.stack = self.stack[mask,:,:]
+
     def get_centre(self, index: int) -> tuple:
+        if index == None:
+            index = self.pref_frame
+
         slice = self.stack[index]
         (y_centre, x_centre) = np.argwhere(slice==slice.max())[0]
         self.centre = (y_centre, x_centre)

@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 data_obj = mreels.MomentumResolvedDataStack('n-inse_C1_EFTEM-SI-004 [-3,36] eV.dm4')
-qmap = np.load('line_1_GKGK_qmap.npy')
-qaxis = np.load('line_1_GKGK_qaxis.npy')
+qmap = np.load('slice_1_GKGK_qmap_alt.npy')
+qaxis = np.load('slice_1_gkgk_qaxis_alt.npy')
 #qmap = mreels.sigmoid(qmap)
 #mreels.plot_qeels_data(data_obj, qmap, qaxis, '..')
 
@@ -29,7 +29,7 @@ cbar = fig.colorbar(c, ax=ax[0])
 cbar.set_label('Arbitrary Scale', rotation=90)
 plt.title(r"$\Gamma$ M $\Gamma$ M")
 ax[0].set_xlabel(r"Energy [$eV$]")
-ax[0].set_ylabel(r"$q$ [$\AA^{-1}$]")
+ax[0].set_ylabel(r"$q$ [$nm^{-1}$]")
 
 centre = data_obj.get_centre(25)
 my, mx = (1071-471)/2+471, (1023-533)/2+533
@@ -46,9 +46,13 @@ ax[1].text(my+50, mx+50, r'$M_0$', fontsize=15, color='orange')
 ax[1].text(471, 533, r'$\Gamma_1$', color='yellow', fontsize=15 )
 ax[1].plot(my+disty*2, mx+distx*2, marker='2', markersize=10, color='orange')
 ax[1].text(my+50+disty*2, mx+distx*2+50, r'$M_1$', fontsize=15, color='orange')
-ax[1].set_xlabel(r'$q_y$ [$\AA^{-1}$]')
-ax[1].set_ylabel(r'$q_x$ [$\AA^{-1}$]')
+ax[1].set_yticks([y for y in range(0,len(data_obj.axis1),50)])
+ax[1].set_xticks([x for x in range(0,len(data_obj.axis2),50)])
+ax[1].set_yticklabels(["{:.2f}".format(data_obj.axis1[y]) for y in range(0, len(data_obj.axis1), 50)])
+ax[1].set_xticklabels(["{:.2f}".format(data_obj.axis2[y]) for y in range(0, len(data_obj.axis2), 50)], rotation=90)
+ax[1].set_xlabel(r'$q_y$ [$nm^{-1}$]')
+ax[1].set_ylabel(r'$q_x$ [$nm^{-1}$]')
 
 
-fig.savefig('_plot_q[{min_q:.2f}_{max_q:.2f}].pdf'.format(min_q=min_q, max_q=max_q), format='pdf')
+fig.savefig('I slicing', format='pdf')
 plt.show()
