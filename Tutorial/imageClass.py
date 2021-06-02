@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import seaborn as sns
-from matplotlib import rc
+#from matplotlib import rc
 import trainZLP
 import torch.utils.data as data
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 15})
-rc('text', usetex=True)
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 15})
+#rc('text', usetex=True)
 
 
 class Spectral_image(data.Dataset):
@@ -102,14 +102,14 @@ class Spectral_image(data.Dataset):
         plt.figure(figsize=(10, 6))
         ax = plt.subplot(111)
         if title is None:
-            plt.title(r'$\rm{Integrated\;intensity\;spectrum}$')
+            plt.title('Integrated intensity spectrum')
         else:
             plt.title(title)
         if hasattr(self, 'pixelsize'):
             xticks, yticks = self.get_ticks(sig=0) #TODO signifance does not seem to change digits
             sns.heatmap(np.sum(self.data, axis=2), xticklabels=xticks, yticklabels=yticks)
-            plt.xlabel(r'$\rm{[\mu m]}$')
-            plt.ylabel(r'$\rm{[\mu m]}$')
+            plt.xlabel('micron')
+            plt.ylabel('micron')
         else:
             sns.heatmap(np.sum(self.data, axis=2))
         if xlab is not None:

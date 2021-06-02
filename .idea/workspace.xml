@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="zlp subtraction">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/EELS_tutorial.ipynb" afterDir="false" />
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="zlp subtraction works">
       <change beforePath="$PROJECT_DIR$/Tutorial/imageClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial/imageClass.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +101,7 @@
       <workItem from="1622101951878" duration="16678000" />
       <workItem from="1622447396175" duration="6062000" />
       <workItem from="1622458698042" duration="6939000" />
-      <workItem from="1622532150473" duration="6741000" />
+      <workItem from="1622532150473" duration="7088000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -217,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622545846787</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="zlp subtraction works">
+      <created>1622573265656</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1622573265656</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -250,7 +255,8 @@
     <MESSAGE value="added section on smoothing and finding dE1 and dE2" />
     <MESSAGE value="network learns" />
     <MESSAGE value="zlp subtraction" />
-    <option name="LAST_COMMIT_MESSAGE" value="zlp subtraction" />
+    <MESSAGE value="zlp subtraction works" />
+    <option name="LAST_COMMIT_MESSAGE" value="zlp subtraction works" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CBL_ML$training_images_bs.coverage" NAME="training_images_bs Coverage Results" MODIFIED="1622453301551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles" />
