@@ -437,9 +437,17 @@ def get_qeels_slice(data_stack: object, point: tuple) -> np.ndarray:
 
     qaxis = np.zeros(int(path_length))
     data_stack.build_axes()
-    mom_y, mom_x = np.meshgrid(data_stack.axis1, data_stack.axis2)
-    mom_map = np.sqrt(mom_y**2 + mom_x**2)
-    qaxis = mom_map[xsamp.astype(int), ysamp.astype(int)]
+
+
+    if data_stack.naxis0 == None:
+        mom_y, mom_x = np.meshgrid(data_stack.axis1, data_stack.axis2)
+        mom_map = np.sqrt(mom_y**2 + mom_x**2)
+        qaxis = mom_map[xsamp.astype(int), ysamp.astype(int)]
+    else:
+        k_y, k_x = np.meshgrid(data_stack.naxis1, data_stack.naxis2)
+        kmap = np.sqrt(k_x**2 + k_y**2)
+        qaxis = kmap[xsamp.astype(int), ysamp.astype(int)]
+
 
     double_entries = np.asarray([])
     for i in range(0,len(qaxis)-1):
@@ -503,6 +511,9 @@ def transform_axis(DataStack: object, Setup: object) -> Tuple[np.ndarray, np.nda
     k_y_axis = Setup.y_angles / momentum_y
     k_x_axis = Setup.x_angles / momentum_x
     omega_axis = DataStack.axis0 / 6.626e-34
+    DataStack.naxis0 = omega_axis
+    DataStack.naxis1 = k_y_axis
+    DataStack.naxis2 = k_x_axis
     return omega_axis, k_y_axis, k_x_axis
 
 
@@ -522,20 +533,24 @@ def scat_prob_differential(qmap: np.ndarray, qaxis: np.ndarray,
     return dEdQdQ[2:-2,2:-2], qaxis[2:-2], eaxis[2:-2]
 
 
-def create_guess(KrogerTerms: object, error_map: np.ndarray, old_guess: np.ndarray) -> np.ndarray:
-    pass
+def create_guess(error_map: np.ndarray, old_guess: np.ndarray) -> np.ndarray:
+    #The guess is the dielectric function if the error becomes sufficiently low.
+    guess = old_guess
+    guess += 1/(np.exp(-error_map))
+    return guess
 
 
-
-def dif_guesser(scat_prob_slice: np.ndarray, KrogerTerms: object, omega: float):
-    goal = np.copy(scat_prob_slice).ravel()
-    guess = np.random.rand(len(goal))
+def dif_guesser(scat_prob: np.ndarray, KrogerTerms: object, omega: float):
+    goal = np.copy(scat_prob)
+    guess = np.random.rand(0,1,scat_prob.shape)
+    guess_terms = KrogerTerms.update_terms(guess, omega, kperp)
 
     if KrogerTerms.a or KrogerTerms.e0 == None:
         raise RuntimeError('Supply the function with an already initialised KrogerTerms object')
 
     abs_error = 10
     while abs_error > 1:
+        #outcome = KrogerTerms.
         pass
 
 
@@ -546,10 +561,15 @@ def error_map(target: np.ndarray, attempt: np.ndarray) -> np.ndarray:
 
 class KrogerTerms:
 
-    def create_terms(self, ImagingSetup, di_elec_func, omega, kperp, e0, a):
+    def __init__(self, ImagingSetup, di_elec_func, omega, kperp, e0, a):
 
         self.e0 = e0
         self.a = a
+
+        Omega, Kperp = np.meshgrid(omega, kperp)
+
+        Omega = Omega.astype('complex128')
+        Kperp = Kperp.astype('complex128')
 
         if self.e0 == None and e0 == None:
             raise ValueError("Provide e0 for first run")
@@ -561,15 +581,17 @@ class KrogerTerms:
 
         self.electron_v = hbar/self.electron_lambda/electron_mass
         self.beta_sq = self.electron_v**2 / c**2
-        self.labda = np.sqrt(kperp**2 - di_elec_func * omega**2 / c**2)
-        self.labda0 = np.sqrt(kperp**2 - self.e0*omega**2 / c**2)
+        self.labda = np.sqrt(Kperp**2 - di_elec_func * Omega**2 / c**2)
+        self.labda0 = np.sqrt(Kperp**2 - self.e0*Omega**2 / c**2)
         self.mu_sq = 1-di_elec_func*self.beta_sq
-        self.phi_sq = self.labda**2 + omega**2 / self.electron_v
+        self.phi_sq = self.labda**2 + Omega**2 / self.electron_v
         self.mu_0_sq = 1-self.e0*self.beta_sq
-        self.phi0_sq = self.labda0**2 + omega**2 / self.electron_v**2
-        self.phi01_sq = kperp**2 + omega**2 / self.electron_v**2 - (di_elec_func + self.e0)*omega**2 / c**2
+        self.phi0_sq = self.labda0**2 + Omega**2 / self.electron_v**2
+        self.phi01_sq = Kperp**2 + Omega**2 / self.electron_v**2 - (di_elec_func + self.e0)*Omega**2 / c**2
         self.Lplus = self.labda0*di_elec_func + self.labda * self.e0 * np.tanh(self.labda*self.a)
-        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0*(np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
+        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0
+        #*(np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
+        test = 1
 
     def update_terms(self, di_elec_func, omega, kperp):
         self.labda = np.sqrt(kperp**2 - di_elec_func*omega**2 / c**2)
@@ -577,20 +599,21 @@ class KrogerTerms:
         self.phi_sq = self.labda**2 + omega**2 / self.electron_v
         self.phi01_sq = kperp**2 + omega**2 / self.electron_v**2 - (di_elec_func + self.e0)*omega**2 / c**2
         self.Lplus = self.labda0*di_elec_func + self.labda * self.e0 * np.tanh(self.labda*self.a)
-        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0*(
-                    np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
+        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0
+        #*(np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
 
     def bulk_term(self: object, di_elec_func: np.ndarray, omega: float,
                   kperp: np.ndarray) -> np.ndarray:
 
         self.update_terms(di_elec_func, omega, kperp)
-        return np.imag(self.mu_sq / di_elec_func /self.phi_sq * self.a*2)
+        return self.mu_sq / di_elec_func /self.phi_sq * self.a*2
 
     def prefactor(self: object, di_elec_func: np.ndarray, omega: float,
                   kperp: np.ndarray) -> np.ndarray:
 
         self.update_terms(di_elec_func, omega, kperp)
-        return np.imag( -2*kperp**2 * (di_elec_func-self.e0)**2 / self.phi0_sq**2 / self.phi_sq**2)
+        tr =  -2*kperp**2 * (di_elec_func-self.e0)**2 / self.phi0_sq**2 / self.phi_sq**2
+        return tr
 
     def first_correction(self: object, di_elec_func: np.ndarray, omega: float,
                          kperp: np.ndarray) -> np.ndarray:
@@ -600,15 +623,17 @@ class KrogerTerms:
         inner = (np.sin(omega*self.a / self.electron_v)**2 / self.Lplus
                  + np.cos(omega*self.a / self.electron_v)**2 / self.Lmin)
         outer = self.phi01_sq**2 / di_elec_func / self.e0
-        return np.imag( prefactor*outer*inner)
+        tr = prefactor*outer*inner
+        return tr
 
     def second_correction(self: object, di_elec_func: np.ndarray, omega: float,
                           kperp: np.ndarray) -> np.ndarray:
         self.update_terms(di_elec_func, omega, kperp)
         prefactor = self.prefactor(di_elec_func, omega, kperp)
         outer = self.beta_sq*self.labda0*omega / self.electron_v /self.e0 * self.phi01_sq
-        inner = (1/self.Lplus - 1/self.Lplus) * np.sin(2*omega*self.a / self.electron_v)
-        return np.imag(prefactor*outer*inner)
+        inner = (1/self.Lplus - 1/self.Lmin) * np.sin(2*omega*self.a / self.electron_v)
+        tr = prefactor*outer*inner
+        return tr
 
     def third_correction(self: object, di_elec_func: np.ndarray, omega: float,
                          kperp: np.ndarray) -> np.ndarray:
@@ -617,9 +642,19 @@ class KrogerTerms:
         outer = -self.beta_sq**2 * omega**2 / self.electron_v**2 * self.labda0 * self.labda
         inner = ((np.cos(omega*self.a / self.electron_v)**2
                   * np.tanh(self.labda * self.a)/ self.Lplus)
-                  + np.sin(omega*self.a / self.electron_v)**2
-                  * np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a) /self.Lmin)
-        return np.imag(prefactor*outer*inner)
+                  + np.sin(omega*self.a / self.electron_v)**2)
+        #np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a) /self.Lmin)
+        tr = prefactor*outer*inner
+        return tr
+
+    def get_kroger(self, di_elec_func, Omega, Kperp):
+        bulk = self.bulk_term(di_elec_func, Omega, Kperp)
+        fcor = self.first_correction(di_elec_func, Omega, Kperp)
+        scor = self.second_correction(di_elec_func, Omega, Kperp)
+        tcor = self.third_correction(di_elec_func, Omega, Kperp)
+        pref = e_charge**2 / np.pi**2 /hbar /self.electron_v**2
+        return pref*np.imag(bulk -fcor +scor -tcor)
+
 
 class MomentumResolvedDataStack:
 
@@ -647,6 +682,10 @@ class MomentumResolvedDataStack:
         self.axis_2_steps = dm4_file.allTags['.ImageList.2.ImageData.Dimensions.1']
 
         self.axis_0_end = dm4_file.allTags[KEY2+'End Energy (eV)']
+
+        self.naxis0 = None
+        self.naxis1 = None
+        self.naxis2 = None
 
         self.stack = dm4_file.getDataset(0)['data']
         self.stack_corrected = None
