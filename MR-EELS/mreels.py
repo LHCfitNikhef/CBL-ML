@@ -1,3 +1,4 @@
+from scipy.optimize import curve_fit as cv
 from logging import error
 from os import path
 from typing import Tuple
@@ -17,7 +18,7 @@ e_charge = 1.602e-19
 
 
 def develop(frame):
-    """Develops or processes an image so that it can be better processed by ...,
+    """Develops or processes an image so that it can be better processed by get_drift(),
     Applies a hamming filter to the frame and gets convolved by two 3x3 Sobel matrices, the resulting frames get normalised by a sigmoid function centered around the mean and adds the result in a square root.
 
     Parameters
@@ -124,7 +125,7 @@ def get_true_centres(frame, false_centres, leeway=50):
     false_centres : list
         list of false centres in list format: [ [fy0, fx0], [fy.., fx..], [fyN, fxN] ]
     leeway : int, optional
-        Amount of pixels around the false centre in which the true centre lies, by default 50
+        Amount of pixels around the false centre in which the true centre will be searched for, by default 50
 
     Returns
     -------
@@ -141,6 +142,20 @@ def get_true_centres(frame, false_centres, leeway=50):
 
 
 def get_peak_width(frame: np.ndarray, tr_centre: tuple) -> int:
+    """Returns an estimate of the width of a peak located at tr_centre, width is estimated as twice the distance from the centre to a value 1/10th the value of centre.
+
+    Parameters
+    ----------
+    frame : np.ndarray
+        A frame in which the peak lies.
+    tr_centre : tuple
+        Tuple or Iterable containing y and x coordinate of peak i.e.: (y, x) or [y, x]
+
+    Returns
+    -------
+    int
+        Width of the peak
+    """
     trace = frame[tr_centre[0],tr_centre[1]:tr_centre[1]+100]
     width = np.argwhere( trace<(frame[tr_centre[0],tr_centre[1]]/15))[0]
     return width
@@ -204,7 +219,7 @@ def generate_angle_map(frame_dimensions, beam_centre, ccd_pixel_size, camera_dis
 
 
 def momentum_trans_map(angle_map, dE, E0, e_k):
-    """Generates a map momenta transfers per pixel in the ccd
+    """Generates a map momenta transfers per pixel on the ccd
 
     Parameters
     ----------
@@ -231,7 +246,7 @@ def momentum_trans_map(angle_map, dE, E0, e_k):
     return np.sqrt(mom_trans_par**2 + mom_trans_per**2)
 
 
-def radial_integration(frame, radii, r1, r0=0, ringsize=5):
+def radial_integration(r1, frame, radii, r0=0):
     """Performs radial integration of the slice from slice_centre outwards.
     sums all values where the distance of those values is greater than r0 and inbetween r1 and r1-ringsize.
     Parameters
@@ -252,72 +267,94 @@ def radial_integration(frame, radii, r1, r0=0, ringsize=5):
         value of the sum over the integration area
     """
 
-    integration_area0 = np.where( radii>r0, frame, 0)
-    integration_area = np.where( radii<r1, integration_area0, 0)
+    integration_area = np.where( radii<r1, frame, 0)
     #integration_area = np.where( radii>(r1-ringsize), integration_area1, 0)
 
-    entries0 = np.where( radii>r0, 1, 0)
-    entries = np.where( radii<r1, entries0, 0)
+    entries = np.where( radii<r1, 1, 0)
     #entries = np.where( radii>(r1-ringsize), entries1, 0)
     integral = np.sum(integration_area) / np.sum(entries)
 
     return integral
 
 
-def radial_integration_stack(r1, stack, radii3d, r0=0, ringsize=5):
-    """Performs radial integration on a stack from stack_centre outwards in only spatial directions.
-    Sums all values where the distance of those values is greater than r0 and inbetween r1 and r1-ringsize.
-    Centre is shared for the whole stack so a shift-corrected stack is advised.
+def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize: int) -> np.ndarray:
+    """Returns the maximum momentum in stack between two radii
+
     Parameters
     ----------
-    stack : ndarray
-        Stack containing MREELS values with axis=0 the energy axis, (E, Y, X)
-    stack_centre : tuple
-        Centre of the stack (y, x)
+    stack : np.ndarray
+        Map of total momentum per pixel
+    radii : np.ndarray
+        Map of total radius per pixel
     r1 : int
-        Outermost diameter of integration
-    r0 : int, optional
-        Inner limit of integration ring, disregarded if r1-ringsize>r0, by default 0
-    ringsize : int, optional
-        Thickness of integration ring, by default 5
+        Maximum radius
+    ringsize : int
+        unused
+
+    Returns
+    -------
+    np.ndarray
+        Maximum momentum in masked stack
     """
-    integration_area = np.where( ((radii3d>r0) & (radii3d<r1)), stack, 0)
-
-    entries = np.where(((radii3d>r0) & (radii3d<r1)), 1, 0)
-    integral = np.sum( np.sum(integration_area, axis=2), axis=1) / np.sum( np.sum( entries, axis=2), axis=1)
-    return integral
-
-
-def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize: int) -> np.ndarray:
-
     selection_area = np.where( (radii<r1), stack, 0)
     #entries = np.where((radii<r1), 1, 0)
     max_mom = np.max(selection_area)
     return max_mom
 
 
-def line_integration_stack(r1: int, stack: np.ndarray,
-                           radii3d: np.ndarray) -> np.ndarray:
-
-    integration_area = np.where((radii3d<r1), stack, 0)
-    entries = np.where((radii3d<r1), 1, 0)
-    integral = (np.sum( np.sum(integration_area, axis=2), axis=1)/ np.sum( np.sum(entries, axis=2), axis=1))
-
-    return integral
-
-
 def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray) -> np.ndarray:
+    """Integrates along a circle segment from where radii is zero to where radii is radius,
+    Uses radii as a mask for selecting the values from stack. Averages EELS spectra at a radius and returns this averaged spectrum
+
+    Parameters
+    ----------
+    radius : int
+        Upper bound of integration
+    stack : np.ndarray
+        EFTEM stack of which the EELS spectra will be averaged
+    radii : np.ndarray
+        Map of total radius per pixel
+
+    Returns
+    -------
+    np.ndarray
+        The averaged EELS spectrum
+    """
     integration_area = np.where(radii<radius, stack, 0)
     entries = np.where((radii<radius), 1, 0)
     integral = np.sum(integration_area)/np.sum(entries)
-
     return integral
 
 
 
 def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_frame: int,
                    forward_peak=None, method='radial',
-                   r0=0, threads=2) -> Tuple[np.ndarray,np.ndarray]:
+                   threads=2) -> Tuple[np.ndarray,np.ndarray]:
+    """Gets averaged/integrated EELS data per momenta and energy and returns this as a 2D array of size (M,E) with a corresponding 1D array of size (M) containing the corresponding momenta.
+    E is the same size as the energy axis of the EFTEM stack.
+
+    Parameters
+    ----------
+    mr_data_stack : object
+        MomentumResolvedDataSTack object, pre-assigned and potentially cleaned with methods
+    r1 : int
+        Upper bound of integration for 'radial' method, unused in 'line' method
+    ringsize : int
+        Size of integration ring, allows for pooling spectra in range (r, r+ringsize), smaller ringsizes increase computation time significantely.
+    preferred_frame : int
+        Index of preferred frame, used for get_centre() method.
+    forward_peak : Tuple or List, optional
+        Coordinates of the forward peak if using 'line' method, by default None
+    method : str, optional
+        Method of integration, 'radial' or 'line', by default 'radial'
+    threads : int, optional
+        Number of processor threads the function is allowed to use, if there is enough ram this cuts compute time by 1/threads, by default 2
+
+    Returns
+    -------
+    Tuple[np.ndarray,np.ndarray]
+        Tuple containing the qeels_map of size (M,E) and the corresponding momentum_axis of size (M)
+    """
     #stop counting negative energy values
     (esize, ysize, xsize) = mr_data_stack.stack.shape
     momentum_qaxis = np.array([])
@@ -328,16 +365,17 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
 
     stack_centre = mr_data_stack.get_centre(preferred_frame)
 
+    stack_centre = (stack_centre[1], stack_centre[0])
+
     offset_y = stack_centre[0]-int(ysize/2)
     offset_x = stack_centre[1]-int(xsize/2)
     y = (np.arange(ysize)-ysize/2)+0.5
-    x = (np.arange(xsize)-ysize/2)+0.5
-    X, Y = np.meshgrid(y, x)
+    x = (np.arange(xsize)-xsize/2)+0.5
+    X, Y = np.meshgrid(x, y)
     radii = np.sqrt( (X-offset_x)**2 + (Y-offset_y)**2 )
-    radii3d = np.broadcast_to(radii, mr_data_stack.stack.shape).astype('float32')
     #zeros = np.zeros((mr_data_stack.stack.shape), dtype=np.float32)
     #ones = np.ones((mr_data_stack.stack.shape), dtype=np.float32)
-
+    r0 = 0
     qmap = None
 
     if method == 'radial':
@@ -347,18 +385,25 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
         for i in tqdm(iterate):
-            momentum_frame_total = radial_integration(momentum_map, radii, i, r0, ringsize)
+            momentum_frame_total = radial_integration(i, momentum_map, radii, r0)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
-        radii = None
-        with ThreadPoolExecutor(threads) as ex:
-            def part_func(r):
-                args = (mr_data_stack.stack, radii3d, r0*1.0, ringsize*1.0)
-                return radial_integration_stack(r, *args)
-            r = [i for i in range(r0, r1, ringsize)]
-            results = list(tqdm(ex.map(part_func, r), total=len(r)))
 
-        for i in range(0,len(iterate)):
-            qmap[i] = results[i]
+        rs = [i for i in range(r0,r1,ringsize)]
+        energies = [ei for ei in range(0, len(mr_data_stack.axis0))]
+
+        def part_func(ei):
+            args = (mr_data_stack.stack[ei], radii)
+            tr = np.zeros(len(rs))
+            for r in range(len(rs)):
+                tr[r] = radial_integration(rs[r], *args)
+            return tr
+
+        with ThreadPoolExecutor(threads) as ex:
+            results = list(tqdm(ex.map(part_func, energies),
+                                desc="Radial integration", total=len(energies)))
+
+        for i in range(0, len(energies)):
+            qmap[:,i] = results[i]
 
 
     elif method == 'line':
@@ -427,8 +472,38 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
     return qmap, momentum_qaxis
 
 
-def get_qeels_slice(data_stack: object, point: tuple) -> np.ndarray:
-    centre = data_stack.get_centre(data_stack.pref_frame)
+def get_qeels_slice(data_stack: object, point: tuple,
+                    use_k_axis=False, starting_point=None) -> np.ndarray:
+    """Get QEELS data by slicing EFTEM stack between two points. Return QEELS data per momentum and energy in 2d array of shape (M,E),
+    returns array of corresponding momenta, shape (M)
+
+    Parameters
+    ----------
+    data_stack : object
+        MomentumResolvedDataStack object
+    point : tuple
+        (y, x) coordinate of point to slice to
+    use_k_axis : bool, optional
+        Toggle return the k-axis instead of q-axis as momentum data/axis, by default False
+    starting_point : Tuple, optional
+        (ys, xs) coordinate of starting point to slice from, by default None
+
+    Returns
+    -------
+    Tuple of ndarray
+        Containing QEELS data of shape (M,E) as entry 0 and q/k-axis ndarray of shape (M) as entry 1
+
+    Raises
+    ------
+    ValueError
+        Raises ValueError if using k-axis is toggled on but MomentumResolvedDataStack has no k-axis attribute, use transform_axis() before using k-axis.
+    """
+    if starting_point == None:
+        centre = data_stack.get_centre(data_stack.pref_frame)
+    else:
+        centre = starting_point
+
+
     yp, xp = point
     path_length = int(np.hypot(xp-centre[1], yp-centre[0]))
     xsamp = np.linspace(centre[1], xp, path_length)
@@ -439,11 +514,13 @@ def get_qeels_slice(data_stack: object, point: tuple) -> np.ndarray:
     data_stack.build_axes()
 
 
-    if data_stack.naxis0 == None:
+    if use_k_axis == False:
         mom_y, mom_x = np.meshgrid(data_stack.axis1, data_stack.axis2)
         mom_map = np.sqrt(mom_y**2 + mom_x**2)
         qaxis = mom_map[xsamp.astype(int), ysamp.astype(int)]
     else:
+        if data_stack.naxis0 == None:
+            raise ValueError('The transformed axes are not build, use transform_axis()')
         k_y, k_x = np.meshgrid(data_stack.naxis1, data_stack.naxis2)
         kmap = np.sqrt(k_x**2 + k_y**2)
         qaxis = kmap[xsamp.astype(int), ysamp.astype(int)]
@@ -469,27 +546,57 @@ def get_qeels_slice(data_stack: object, point: tuple) -> np.ndarray:
     return qmap_sc, qaxis_sc
 
 
-def sigmoid(x: np.ndarray) -> np.ndarray:
-    avg = np.average(x)
-    std = np.std(x)
-    return 1/(1+np.exp(-(x-avg)/std))
+def sigmoid(x: np.ndarray, borders=None) -> np.ndarray:
+    """Maps values of x to values between 0..1 by using a scaled logistic function, optimises logistic function for region if borders is set.
 
+    Parameters
+    ----------
+    x : np.ndarray
+        Input image
+    borders : Tuple of int, optional
+        (lower, upper) index values of region in which to optimise logistic function, by default None
+
+    Returns
+    -------
+    np.ndarray
+        Altered image with values between 0 and 1
+    """
+    if borders == None:
+        avg = np.average(x)
+        std = np.std(x)
+        im = 1/(1+np.exp(-(x-avg)/std))
+    else:
+        avg = np.average(x[borders[0]:borders[1], :])
+        std = np.std(x[borders[0]:borders[1], :])
+        im = 1/(1+np.exp(-(x-avg)/std))
+    return im
 
 def plot_qeels_data(mr_data: object, intensity_qmap: np.ndarray,
-                    momentum_qaxis: np.ndarray, prefix: str) -> None:
+                    momentum_qaxis: np.ndarray, prefix: str, save=False) -> None:
+    """Function to quickly plot qeels data
+
+    Parameters
+    ----------
+    mr_data : object
+        MomentumResolvedDataStack object
+    intensity_qmap : np.ndarray
+        QEELS map of shape (M,E)
+    momentum_qaxis : np.ndarray
+        Q/K-axis of shape (M)
+    prefix : str
+        prefix used for file saving and plot title
+    save : bool, optional
+        Toggle saving the file or not, by default False
+    """
     plt.close()
     mask = np.where( np.isnan(momentum_qaxis) | (momentum_qaxis == 0.0) , False, True)
     qmap = intensity_qmap[mask]
     qaxis = momentum_qaxis[mask]
     min_q = qaxis.min()
     max_q = qaxis.max()
-    step_q = (max_q-min_q)/len(qaxis)
 
     mr_data.build_axes()
     e = mr_data.axis0
-    min_e = e.min()
-    max_e = e.max()
-    step_e = (max_e-min_e)/len(e)
 
     #Q, E = np.mgrid[min_q:max_q:step_q, min_e:max_e:step_e]
     fig, ax = plt.subplots(1,1)
@@ -498,12 +605,27 @@ def plot_qeels_data(mr_data: object, intensity_qmap: np.ndarray,
     plt.colorbar(c)
     plt.title(prefix)
     ax.set_xlabel(r"Energy [$eV$]")
-    ax.set_ylabel(r"$q$ [$\AA^{-1}$]")
-    fig.savefig(prefix+'_plot_q[{min_q:.2f}_{max_q:.2f}].pdf'.format(min_q=min_q, max_q=max_q), format='pdf')
+    ax.set_ylabel(r"$q$ [$nm^{-1}$]")
+    if save == True:
+        fig.savefig(prefix+'_plot_q[{min_q:.2f}_{max_q:.2f}].pdf'.format(min_q=min_q, max_q=max_q), format='pdf')
     plt.show()
 
 
-def transform_axis(DataStack: object, Setup: object) -> Tuple[np.ndarray, np.ndarray]:
+def transform_axis(DataStack: object, Setup: object) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Transform axes of MomentumResovledDataStack to \omega, ky and kx and return these.
+
+    Parameters
+    ----------
+    DataStack : object
+        MomentumResolvedDataStack
+    Setup : object
+        ImagingSetup object
+
+    Returns
+    -------
+    Tuple[np.ndarray, np.ndarray, np.ndarray]
+        \omega axis, ky-axis, kx-axis.
+    """
     DataStack.build_axes()
     Setup.angle_on_ccd_axis()
     momentum_y = DataStack.axis1
@@ -518,6 +640,18 @@ def transform_axis(DataStack: object, Setup: object) -> Tuple[np.ndarray, np.nda
 
 
 def angle_map(setup: object) -> np.ndarray:
+    """Generates a map of angles corresponding to the pixels on the CCD device.
+
+    Parameters
+    ----------
+    setup : object
+        ImagingSetup object
+
+    Returns
+    -------
+    np.ndarray
+        Map of angles corresponding to pixels on CCD
+    """
     pixels_x = np.arange(setup.resolution[1])-setup.resolution[1]/2+0.5
     pixels_y = np.arange(setup.resolution[0])-setup.resolution[0]/2+0.5
     PX, PY = np.meshgrid(pixels_x, pixels_y)
@@ -525,135 +659,125 @@ def angle_map(setup: object) -> np.ndarray:
     return angles
 
 
-def scat_prob_differential(qmap: np.ndarray, qaxis: np.ndarray,
-                           eaxis: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    dE = np.gradient(qmap, eaxis, axis=1)
-    dEdQ = np.gradient(dE, qaxis, axis=0)
-    dEdQdQ = np.gradient(dEdQ, qaxis, axis=0)
-    return dEdQdQ[2:-2,2:-2], qaxis[2:-2], eaxis[2:-2]
+def batson_correct(eels_obj: object, energy_window: int, qmap: np.ndarray):
+    """Performs Batson correction on the QEELS data and returns the corrected QEELS data.
+
+    Parameters
+    ----------
+    eels_obj : object
+        MomentumResolvedDataStack object
+    energy_window : int
+        Size of energy windows in units the same as MRDS.axis0
+    qmap : np.ndarray
+        QEELS data
+
+    Returns
+    -------
+    np.ndarray
+        The batson corrected QEELS data
+    """
+    eels_obj.build_axes()
+
+    area = eels_obj.axis_1_steps*eels_obj.axis_2_steps
+    image_spectrum = np.sum(eels_obj.stack, axis=(2,1))/area
+    image_spectrum[image_spectrum <= 0] = 0
+
+    def integrate_window_fp(slice, energy_window):
+        slice_max = np.argwhere(slice == slice.max())[0][0]
+        half_window_len = int(energy_window /2 /eels_obj.axis_0_scale)
+        lower_bound = int(slice_max - half_window_len)
+        upper_bound = int(slice_max + half_window_len)
+        if lower_bound < eels_obj.axis0.min():
+            lower_bound = 0
+        if upper_bound > eels_obj.axis0.max():
+            upper_bound = len(eels_obj.axis0)
+        integral = np.sum(slice[lower_bound:upper_bound])
+        return integral
+
+    im_spec_int = integrate_window_fp(image_spectrum, energy_window)
+    im_spec_max_index = np.argwhere(image_spectrum == image_spectrum.max())[0][0]
+    batson_map = np.copy(qmap)
+
+    for i in range(1, qmap.shape[0]):
+        slice = qmap[i]
+        slice_int = integrate_window_fp(slice, energy_window)
+        norm_im_spec = np.copy(image_spectrum)
+        norm_im_spec *= slice_int/im_spec_int
+        peakshift = im_spec_max_index - np.argwhere(slice == slice.max())[0][0]
+        if peakshift > 0:
+            slice[0:qmap.shape[1]-peakshift] -= norm_im_spec[0:qmap.shape[1]-peakshift]
+        elif peakshift < 0:
+            slice[-peakshift:qmap.shape[1]] -= norm_im_spec[-peakshift:qmap.shape[1]]
+        else:
+            slice -= norm_im_spec
+        batson_map[i] = slice
+
+    return batson_map
 
 
-def create_guess(error_map: np.ndarray, old_guess: np.ndarray) -> np.ndarray:
-    #The guess is the dielectric function if the error becomes sufficiently low.
-    guess = old_guess
-    guess += 1/(np.exp(-error_map))
-    return guess
+def pool_qmap(qmap: np.ndarray, qaxis: np.ndarray, poolsize: int) -> Tuple[np.ndarray, np.ndarray]:
+    """Pools QEELS data by addition in the range of (m-1/2*poolsize, m+1/2*poolsize) and pools qaxis by averaging in same range.
+
+    Parameters
+    ----------
+    qmap : np.ndarray
+        QEELS data
+    qaxis : np.ndarray
+        Q/K-axis
+    poolsize : int
+        Size of the pooling in bins
+
+    Returns
+    -------
+    Tuple[np.ndarray, np.ndarray]
+        Tuple containing pooled QEELS data and Q/K-axis
+    """
+    half_size = poolsize // 2
+    bounds = np.asarray([ i for i in range(0, qmap.shape[0], 2*half_size)])
+    pooled_qmap = np.zeros((len(bounds)-1, qmap.shape[1]))
+    pooled_qaxis = np.zeros(len(bounds)-1)
+
+    for i in range(len(bounds)-1):
+        upp = bounds[i+1]
+        low = bounds[i]
+        pooled_qmap[i] = np.sum(qmap[low:upp,:], axis = 0)
+        pooled_qaxis[i] = np.sum(qaxis[low:upp])/2 /half_size
+
+    return pooled_qmap, pooled_qaxis
 
 
-def dif_guesser(scat_prob: np.ndarray, KrogerTerms: object, omega: float):
-    goal = np.copy(scat_prob)
-    guess = np.random.rand(0,1,scat_prob.shape)
-    guess_terms = KrogerTerms.update_terms(guess, omega, kperp)
+def find_peak_in_range(qmap: np.ndarray, centre: int, window_size: int) -> Tuple[np.ndarray, np.ndarray]:
+    """Tries to find peak in given range determined by windows_size/2 centered around centre, returns index of peak and error estimate.
+    error is estimated as energy resolution multiplied by the standard deviation of the multiple peaks.
 
-    if KrogerTerms.a or KrogerTerms.e0 == None:
-        raise RuntimeError('Supply the function with an already initialised KrogerTerms object')
+    Parameters
+    ----------
+    qmap : np.ndarray
+        QEELS data
+    centre : int
+        Index of the centre of the windows in which to find the peak
+    window_size : int
+        Size of the window in bins
 
-    abs_error = 10
-    while abs_error > 1:
-        #outcome = KrogerTerms.
-        pass
+    Returns
+    -------
+    Tuple[np.ndarray, np.ndarray]
+        peak position and error in peak position
+    """
+    half_size = window_size // 2
+    search_field = qmap*0
+    search_field[:, centre-half_size:centre+half_size] = qmap[:, centre-half_size:centre+half_size]
+    search_field[np.isnan(search_field)] = 0
 
+    ppos = np.array([], dtype='int')
+    perr = np.array([])
+    for i in range(0,len(search_field[:,0])):
+        search_slice = search_field[i]
+        tmp = np.argwhere(search_slice==search_slice.max())
+        perr = np.append(perr, np.std(tmp))
+        ppos = np.append(ppos, int(np.average(tmp)))
 
-
-def error_map(target: np.ndarray, attempt: np.ndarray) -> np.ndarray:
-    return target - attempt
-
-
-class KrogerTerms:
-
-    def __init__(self, ImagingSetup, di_elec_func, omega, kperp, e0, a):
-
-        self.e0 = e0
-        self.a = a
-
-        Omega, Kperp = np.meshgrid(omega, kperp)
-
-        Omega = Omega.astype('complex128')
-        Kperp = Kperp.astype('complex128')
-
-        if self.e0 == None and e0 == None:
-            raise ValueError("Provide e0 for first run")
-        if self.a == None and a == None:
-            raise ValueError('Provide thickness for first run')
-
-        acc_volt = ImagingSetup.voltage
-        self.electron_lambda = (hbar * c / np.sqrt( (e_charge *acc_volt)**2+2*e_charge*acc_volt*electron_mass*c**2 ) )
-
-        self.electron_v = hbar/self.electron_lambda/electron_mass
-        self.beta_sq = self.electron_v**2 / c**2
-        self.labda = np.sqrt(Kperp**2 - di_elec_func * Omega**2 / c**2)
-        self.labda0 = np.sqrt(Kperp**2 - self.e0*Omega**2 / c**2)
-        self.mu_sq = 1-di_elec_func*self.beta_sq
-        self.phi_sq = self.labda**2 + Omega**2 / self.electron_v
-        self.mu_0_sq = 1-self.e0*self.beta_sq
-        self.phi0_sq = self.labda0**2 + Omega**2 / self.electron_v**2
-        self.phi01_sq = Kperp**2 + Omega**2 / self.electron_v**2 - (di_elec_func + self.e0)*Omega**2 / c**2
-        self.Lplus = self.labda0*di_elec_func + self.labda * self.e0 * np.tanh(self.labda*self.a)
-        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0
-        #*(np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
-        test = 1
-
-    def update_terms(self, di_elec_func, omega, kperp):
-        self.labda = np.sqrt(kperp**2 - di_elec_func*omega**2 / c**2)
-        self.mu_sq = 1-di_elec_func*self.beta_sq
-        self.phi_sq = self.labda**2 + omega**2 / self.electron_v
-        self.phi01_sq = kperp**2 + omega**2 / self.electron_v**2 - (di_elec_func + self.e0)*omega**2 / c**2
-        self.Lplus = self.labda0*di_elec_func + self.labda * self.e0 * np.tanh(self.labda*self.a)
-        self.Lmin = self.labda0*di_elec_func + self.labda*self.e0
-        #*(np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a))
-
-    def bulk_term(self: object, di_elec_func: np.ndarray, omega: float,
-                  kperp: np.ndarray) -> np.ndarray:
-
-        self.update_terms(di_elec_func, omega, kperp)
-        return self.mu_sq / di_elec_func /self.phi_sq * self.a*2
-
-    def prefactor(self: object, di_elec_func: np.ndarray, omega: float,
-                  kperp: np.ndarray) -> np.ndarray:
-
-        self.update_terms(di_elec_func, omega, kperp)
-        tr =  -2*kperp**2 * (di_elec_func-self.e0)**2 / self.phi0_sq**2 / self.phi_sq**2
-        return tr
-
-    def first_correction(self: object, di_elec_func: np.ndarray, omega: float,
-                         kperp: np.ndarray) -> np.ndarray:
-
-        self.update_terms(di_elec_func, omega, kperp)
-        prefactor = self.prefactor(di_elec_func, omega, kperp)
-        inner = (np.sin(omega*self.a / self.electron_v)**2 / self.Lplus
-                 + np.cos(omega*self.a / self.electron_v)**2 / self.Lmin)
-        outer = self.phi01_sq**2 / di_elec_func / self.e0
-        tr = prefactor*outer*inner
-        return tr
-
-    def second_correction(self: object, di_elec_func: np.ndarray, omega: float,
-                          kperp: np.ndarray) -> np.ndarray:
-        self.update_terms(di_elec_func, omega, kperp)
-        prefactor = self.prefactor(di_elec_func, omega, kperp)
-        outer = self.beta_sq*self.labda0*omega / self.electron_v /self.e0 * self.phi01_sq
-        inner = (1/self.Lplus - 1/self.Lmin) * np.sin(2*omega*self.a / self.electron_v)
-        tr = prefactor*outer*inner
-        return tr
-
-    def third_correction(self: object, di_elec_func: np.ndarray, omega: float,
-                         kperp: np.ndarray) -> np.ndarray:
-        self.update_terms(di_elec_func, omega, kperp)
-        prefactor = self.prefactor(di_elec_func, omega, kperp)
-        outer = -self.beta_sq**2 * omega**2 / self.electron_v**2 * self.labda0 * self.labda
-        inner = ((np.cos(omega*self.a / self.electron_v)**2
-                  * np.tanh(self.labda * self.a)/ self.Lplus)
-                  + np.sin(omega*self.a / self.electron_v)**2)
-        #np.cosh(self.labda*self.a)/np.sinh(self.labda*self.a) /self.Lmin)
-        tr = prefactor*outer*inner
-        return tr
-
-    def get_kroger(self, di_elec_func, Omega, Kperp):
-        bulk = self.bulk_term(di_elec_func, Omega, Kperp)
-        fcor = self.first_correction(di_elec_func, Omega, Kperp)
-        scor = self.second_correction(di_elec_func, Omega, Kperp)
-        tcor = self.third_correction(di_elec_func, Omega, Kperp)
-        pref = e_charge**2 / np.pi**2 /hbar /self.electron_v**2
-        return pref*np.imag(bulk -fcor +scor -tcor)
+    return ppos, perr
 
 
 class MomentumResolvedDataStack:
@@ -696,9 +820,16 @@ class MomentumResolvedDataStack:
         if self.pref_frame == None:
             raise ValueError("preferred frame must be set for the building of the axis")
         self.build_axes()
-        mask = np.where(self.axis0 <= 0, False, True)
+        mask = np.where(self.axis0 < 0, False, True)
         self.axis0 = self.axis0[mask]
+        self.axis_0_steps = np.sum(mask)
+        self.axis_0_origin = self.axis0.min()
+        self.axis_0_end = self.axis0.max()
         self.stack = self.stack[mask,:,:]
+
+    def remove_neg_val(self):
+        if self.stack.min() < 0:
+            self.stack += self.stack.min()
 
     def get_centre(self, index: int) -> tuple:
         if index == None:
@@ -731,7 +862,7 @@ class MomentumResolvedDataStack:
         stack_shape = pref_develop.shape
         self.stack_corrected = np.zeros(self.stack.shape)
 
-        for i in tqdm(range(0, self.axis_0_steps)):
+        for i in tqdm(range(0, self.axis_0_steps), desc='Aligning EFTEM stack'):
             current_slice = stack_develop[i]
             cur_slice_fft = sfft.fft2(current_slice)
 
@@ -739,8 +870,11 @@ class MomentumResolvedDataStack:
             cross_cor = np.abs(sfft.ifft2(cross_pws))
             cross_cor = sfft.fftshift(cross_cor)
 
-            [sy, sx] = np.argwhere( cross_cor == cross_cor.max())[0]
-            [sy, sx] = [sy - stack_shape[0]/2, sx - stack_shape[1]/2]
+            if len( np.argwhere( cross_cor == cross_cor.max())) == 0:
+                [sy, sx] = [0, 0]
+            else:
+                [sy, sx] = np.argwhere( cross_cor == cross_cor.max())[0]
+                [sy, sx] = [sy - stack_shape[0]/2, sx - stack_shape[1]/2]
 
             new_frame_shape = ( stack_shape[0]+int(abs(sy)), stack_shape[1]+int(abs(sx)))
             new_frame = np.zeros(new_frame_shape)
@@ -754,6 +888,27 @@ class MomentumResolvedDataStack:
         self.stack_corrected = None
         stack_copy = None
 
+
+    def remove_zlp(self, threads=2):
+        def function(e, a, b, c):
+            return a*np.exp(-(e-b)**2 / c**2)
+
+        def zlp_x(i):
+            for j in tqdm(range(len(self.axis2)), desc="removing zlp: "+str(i)+"/"+str(len(self.axis2)), total=2048):
+                tmp = self.stack[:,i,j]
+                fit_to = tmp[mask]
+                try:
+                    opt, *_ = cv(function, self.axis0[mask], fit_to)
+                    #plt.plot(self.axis0 ,function(self.axis0, *opt)); plt.show()
+                    self.stack[:, i, j] - function(self.axis0, *opt)
+                except:
+                    self.stack[:, i, j]
+
+        mask = self.axis0 <= 3
+
+        with ThreadPoolExecutor(threads) as ex:
+            for i in range(len(self.axis1)):
+                ex.submit(zlp_x, i)
 
 class ImagingSetup:
     def __init__(self, filename: str ) -> None:
