@@ -831,7 +831,6 @@ class Spectral_image():
         high = np.nanpercentile(ZLPs_c, 90, axis=0)
     
         threshold = (low[0]+high[0])/20
-        print(low[0], high[0])
     
         low[low<threshold] = 0
         high[high<threshold] = threshold
@@ -960,9 +959,8 @@ class Spectral_image():
         try:
             path_scale_var_deltaE = 'scale_var_deltaE.txt'
             self.scale_var_deltaE = np.loadtxt(path_to_models + path_scale_var_deltaE)
-            print("tried finding delta E vars")
+            print("found delta E vars")
         except:
-            print("failed though")
             pass
         
         if hasattr(self, "clustered"):
