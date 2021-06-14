@@ -83,7 +83,7 @@ class Spectral_image():
     COLLECTION_ANGLE_NAMES = ["collection_angle", "col_angle", "beta"]
     BEAM_ENERGY_NAMES = ["beam_energy", "beam_E", "E_beam", "E0", "E_0"]
 
-    m_0 = 511.06  # eV, electron rest mass
+    m_0 = 5.1106E5  # eV, electron rest mass
     a_0 = 5.29E-11  # m, Bohr radius
     h_bar = 6.582119569E-16  # eV/s
     c = 2.99792458E8  # m/s
@@ -746,7 +746,6 @@ class Spectral_image():
         cluster = self.clustered[i,j]
         
         dE1 = self.dE1[1,int(cluster)]
-        print("cluster:", cluster, ", dE1:", dE1)
         for k in range(count): 
             predictions = ZLPs_gen[k]
             ZLPs[k,:] = matching(signal, predictions, dE1)#matching(energies, np.exp(mean_k), data)
@@ -820,8 +819,32 @@ class Spectral_image():
         
         return predictions
     
-        
     def select_ZLPs(self, ZLPs, dE1 = None):
+        if dE1 is None:
+            dE1 = min(self.dE1[1,:])
+            dE2 = 3*max(self.dE1[1,:])
+        else:
+            dE2 = 3*dE1
+    
+        ZLPs_c = ZLPs[:,(self.deltaE>dE1) & (self.deltaE<dE2)]
+        low = np.nanpercentile(ZLPs_c, 1, axis=0)
+        high = np.nanpercentile(ZLPs_c, 90, axis=0)
+    
+        threshold = (low[0]+high[0])/20
+        print(low[0], high[0])
+    
+        low[low<threshold] = 0
+        high[high<threshold] = threshold
+    
+        check = (ZLPs_c<low)|(ZLPs_c>=high)
+        check_sum = np.sum(check, axis=1)/check.shape[1]
+    
+        threshold = np.nanpercentile(check_sum, 85)
+        
+        return (check_sum<=threshold)
+
+
+    def select_ZLPs_old(self, ZLPs, dE1 = None):
         if dE1 is None:
             dE1 = min(self.dE1[1,:])
             dE2 = 3*max(self.dE1[1,:])
@@ -842,7 +865,7 @@ class Spectral_image():
         
         threshold = 0.01
         
-        return [check<threshold]
+        return (check<threshold)
     
     def train_ZLPs(self, n_clusters = None, conf_interval = 1, clusters = None, signal = 'EELS', **kwargs):
         if not hasattr(self, "clustered"):
@@ -934,6 +957,13 @@ class Spectral_image():
         
         path_scale_var = 'scale_var.txt' #HIER
         self.scale_var_log_sum_I = np.loadtxt(path_to_models + path_scale_var)
+        try:
+            path_scale_var_deltaE = 'scale_var_deltaE.txt'
+            self.scale_var_deltaE = np.loadtxt(path_to_models + path_scale_var_deltaE)
+            print("tried finding delta E vars")
+        except:
+            print("failed though")
+            pass
         
         if hasattr(self, "clustered"):
             if self.n_clusters != self.dE1.shape[1]:
@@ -1146,8 +1176,6 @@ class Spectral_image():
         # Constants and units
         me = 511.06
 
-        e0 = 200  # keV
-        beta = 30  # mrad
 
         e0 = self.e0
         beta = self.beta
@@ -1159,10 +1187,10 @@ class Spectral_image():
         i0 = N_ZLP
 
         # Kinetic definitions
-        ke = e0 * (1 + e0 / 2. / me) / (1 + e0 / me) ** 2
+        ke = e0 * (1 + e0 / 2. / me) / (1 + e0 / me) ** 2 #m0 v**2
         tgt = e0 * (2 * me + e0) / (me + e0)
-        rk0 = 2590 * (1 + e0 / me) * np.sqrt(2 * ke / me)
-
+        rk0 = 2590 * (1 + e0 / me) * np.sqrt(2 * ke / me) #me c**2 / (hbar c) gamma sqrt(2Ekin /(me c**2))
+ 
         for io in range(iterations):
             # Calculation of the ELF by normalization of the SSD
             # We start by the "angular corrections"
@@ -1176,15 +1204,9 @@ class Spectral_image():
             elif n is not None:
                 # normalize using the refractive index.
                 K = np.sum(Im / eaxis) * self.ddeltaE
-                K = (K / (np.pi / 2) / (1 - 1. / n ** 2))
+                K = K / (np.pi / 2) / (1 - 1. / n ** 2)
                 te = (332.5 * K * ke / i0)
-            elif t is not None:
-                if N_ZLP is None:
-                    raise ValueError("The ZLP must be provided when the  "
-                                     "thickness is used for normalization.")
-                # normalize using the thickness
-                K = t * i0 / (332.5 * ke)
-                te = t
+            
             Im = Im / K
 
             # Kramers Kronig Transform:
@@ -1194,12 +1216,12 @@ class Spectral_image():
             # make it double the closest upper value to workaround the
             # wrap-around problem.
             esize = next_fast_len(2 * l)  # 2**math.floor(math.log2(l)+1)*4
-            q = -2 * np.fft.fft(Im, esize).imag / esize
+            q = -2 * np.fft.fft(Im, esize).imag / esize #TODO : min twee?????
 
             q[:l] *= -1
             q = np.fft.fft(q)
             # Final touch, we have Re(1/eps)
-            Re = q[:l].real + 1
+            Re = q[:l].real + 1 #TODO: plus 1???
             # Egerton does this to correct the wrap-around problem, but in our
             # case this is not necessary because we compute the fft on an
             # extended and padded spectrum to avoid this problem.
@@ -1216,7 +1238,7 @@ class Spectral_image():
             e1 = Re / (Re ** 2 + Im ** 2)
             e2 = Im / (Re ** 2 + Im ** 2)
 
-            if iterations > 0 and N_ZLP is not None:
+            if iterations > 0 and N_ZLP is not None: #TODO: loop weghalen.
                 # Surface losses correction:
                 #  Calculates the surface ELF from a vaccumm border effect
                 #  A simulated surface plasmon is subtracted from the ELF
@@ -1242,7 +1264,7 @@ class Spectral_image():
 
         return eps, te, Srfint
     
-    def KK_pixel(self, i, j, signal = 'EELS', select_ZLPs = True):
+    def KK_pixel(self, i, j, signal = 'EELS', select_ZLPs = True, **kwargs):
         """
         
         Option to include pooling, not for thickness, as this is an integral and therefor \
@@ -1285,7 +1307,7 @@ class Spectral_image():
             IEELSs[k,:] = IEELS
             max_ieels[k] = self.deltaE[np.argmax(IEELS)]
             if signal in self.EELS_NAMES:
-                dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
+                dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n, **kwargs)
             else:
                 ts[k] = self.calc_thickness(IEELS, n, N_ZLP)
         if signal  in self.EELS_NAMES:
@@ -1308,7 +1330,7 @@ class Spectral_image():
             IEELS = self.deconvolute(i, j, ZLP_k, signal = signal)
             IEELSs[k] = IEELS
             max_ieels[k] = self.deltaE[np.argmax(IEELS)]
-            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n)
+            dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n = n, **kwargs)
         
         return [ts_OG, IEELSs_OG, max_OG], [dielectric_functions, ts, S_ss, IEELSs, max_ieels]
     
@@ -1566,9 +1588,13 @@ class Spectral_image():
         if based_upon == "sum":
             values = np.sum(self.data, axis=2).flatten()
         elif based_upon == "log":
-            values = np.log(np.sum(self.data, axis=2).flatten())
+            values = np.log(np.sum(np.maximum(self.data,1e-14), axis=2).flatten())
         elif based_upon == "thickness":
-            values = self.t.flatten()
+            values = self.t[:,:,0].flatten()
+        elif type(based_upon) == np.ndarray:
+            values = based_upon.flatten()
+            if values.size != (self.image_shape[0]*self.image_shape[1]):
+                raise IndexError("The size of values on which to cluster does not match the image size.")
         else:
             values = np.sum(self.data, axis=2).flatten()
         clusters_unsorted, r = k_means(values, n_clusters=n_clusters, **kwargs)
@@ -1644,32 +1670,34 @@ class Spectral_image():
         Plots the summation over the intensity for each pixel in a heatmap.
         """
         # TODO: invert colours
-        if hasattr(self, 'name'):
-            name = self.name
-        else:
-            name = ''
-        plt.figure()
+        
+        plt.figure(dpi=200)
         if title is None:
-            plt.title("intgrated intensity spectrum " + name)
+            if hasattr(self, 'name'):
+                plt.title(self.name)
         else:
             plt.title(title)
+        if 'mask' in kwargs:
+            mask = kwargs['mask']
+            if mask.all():
+                #raise ValueError("Mask all True: no values to plot.")
+                warnings.warn("Mask all True: no values to plot.")
+                return
+        else:
+            mask = np.zeros(data.shape).astype('bool')
+        dis_max = None
+        dis_min = None
         if discrete_colormap:
-            if 'mask' in kwargs:
-                mask = kwargs['mask']
-                if mask.all():
-                    #raise ValueError("Mask all True: no values to plot.")
-                    warnings.warn("Mask all True: no values to plot.")
-                    return
-            else:
-                mask = np.zeros(data.shape).astype('bool')
 
             unique_data_points = np.unique(data[~mask])
 
             if 'vmax' in kwargs:
+                dis_max = kwargs['vmax']
                 if len(unique_data_points[unique_data_points > kwargs['vmax']]) > 0:
                     unique_data_points = unique_data_points[unique_data_points <= kwargs['vmax']]
                     unique_data_points = np.append(unique_data_points, kwargs['vmax'])
             if 'vmin' in kwargs:
+                dis_min = kwargs['vmin']
                 if len(unique_data_points[unique_data_points < kwargs['vmin']]) > 0:
                     unique_data_points = unique_data_points[unique_data_points >= kwargs['vmin']]
                     unique_data_points = np.append(kwargs['vmin'], unique_data_points)
@@ -1679,7 +1707,7 @@ class Spectral_image():
                     color_bin_size = 1
                 else:
                     color_bin_size = np.nanpercentile(unique_data_points[1:]-unique_data_points[:-1],30)
-            n_colors = int((np.max(unique_data_points) - np.min(unique_data_points))/color_bin_size +1)
+            n_colors = round((np.max(unique_data_points) - np.min(unique_data_points))/color_bin_size +1)
             cmap = cm.get_cmap(cmap, n_colors)
             spacing = color_bin_size / 2
 
@@ -1695,7 +1723,7 @@ class Spectral_image():
         if hasattr(self, 'pixelsize'):
             plt.xlabel("[m]")
             plt.ylabel("[m]")
-            xticks, yticks = self.get_ticks(sig=sig)
+            xticks, yticks = self.get_ticks(sig=2)#sig)
             ax = sns.heatmap(data, xticklabels=xticks, yticklabels=yticks, cmap=cmap, **kwargs)
         else:
             ax = sns.heatmap(data, **kwargs)
@@ -1707,22 +1735,51 @@ class Spectral_image():
             plt.ylabel(ylab)
         else:
             plt.ylabel('[micron]')
+        
+        colorbar = ax.collections[0].colorbar
         if discrete_colormap:
             # TODO: even space in colorbar
-            colorbar = ax.collections[0].colorbar
             if data.dtype == int:
                 colorbar.set_ticks(np.unique(data[~mask]))
             else:
-                cbar_ticks = []
+                colorbar.set_ticks(np.unique(data[~mask]))#cbar_ticks)
+                cbar_ticks_labels = []
                 for tick in np.unique(data[~mask]):
                     # fmt = '%.' + str(sig) + 'g'
                     # cbar_ticks.append('%s' % float(fmt % tick))
-                    cbar_ticks.append(round_scientific(tick, sig))
-                colorbar.set_ticks(cbar_ticks)
+                    cbar_ticks_labels.append(round_scientific(tick, sig))
+                colorbar.ax.set_yticklabels(cbar_ticks_labels)
+                # colorbar.set_ticks(cbar_ticks)
+        if (('vmin' in kwargs) and not discrete_colormap) or (dis_min is not None):
+            if np.nanmin(data[~mask]) < kwargs['vmin']:
+                cbar_ticks = colorbar.ax.get_yticklabels()
+                loc = 0
+                if discrete_colormap:
+                    #TODO: add hele groter dan plus bin gedoe net als bij vmax
+                    loc = np.min(np.argwhere(colorbar.ax.get_yticks() >= dis_min))
+                cbar_ticks[loc] = r'$\leq$' + cbar_ticks[loc].get_text()
+                colorbar.ax.set_yticklabels(cbar_ticks)
+        if (('vmax' in kwargs) and not discrete_colormap) or (dis_max is not None):
+            if np.nanmax(data[~mask]) > kwargs['vmax']:
+                cbar_ticks = colorbar.ax.get_yticklabels()
+                cbar_ticks_values = colorbar.ax.get_yticks()
+                loc = -1
+                if discrete_colormap:
+                    loc = np.max(np.argwhere(cbar_ticks_values <= dis_max + color_bin_size/2))
+                    if cbar_ticks_values[loc] <= cbar_ticks_values[-1] - color_bin_size:
+                        tick = colorbar.ax.get_yticks()[loc] + color_bin_size
+                        cbar_ticks_values[loc+1] = tick
+                        colorbar.ax.set_yticks(cbar_ticks)
+                        cbar_ticks_labels[loc+1] = round_scientific(tick, sig)
+                        colorbar.ax.set_yticklabels(cbar_ticks_labels)
+                        loc += 1
+                cbar_ticks[loc] = r'$\geq$' + cbar_ticks[loc].get_text()
+                colorbar.ax.set_yticklabels(cbar_ticks)
         plt.show()
         if save_as:
             if type(save_as) != str:
-                save_as = name
+                if hasattr(self, 'name'):
+                    save_as = self.name
             if 'mask' in kwargs:
                 save_as += '_masked'
             save_as += '.pdf'
@@ -1835,6 +1892,7 @@ class Spectral_image():
                 if numeric:
                     return 1
                 else:
+                    #TODO:
                     return prefix
         else:
             prefix = unit[0]

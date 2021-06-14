@@ -111,21 +111,24 @@ path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash
 path_to_models = 'models/dE2_3_times_dE1/train_004_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_10/'
 path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_5/'
 
+path_to_models = 'models/dE_n10-inse_SI-003/E1_05'
+path_to_models = 'models/report/004_clu10_p5_final_35dE1_06dE1/'
+
 # path_to_models = "/Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/pyfiles/bash_train_pyfiles/models/train_lau_log"
 
 
 # im = im
-# im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
-im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
-
+im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
+# im = Spectral_image.load_data('../../dmfiles/area03-eels-SI-aligned.dm4')
+# im = Spectral_image.load_data('../../dmfiles/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4')
 
 name = ""
 # name = "Lau's sample, "
 
 [n_x, n_y] = im.image_shape
 
-row = 64
-j_b = 80
+row = 50
+j_b = 50
 
 if row >= n_x:
     sys.exit()
@@ -133,14 +136,17 @@ if row >= n_x:
 
 im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
 
-im.set_n(4.1462, n_vac = 2.1759)
+im.set_n(4.1462, n_background = 2.1759)
+im.set_n(3.0)
 im.e0 = 200 #keV
-im.beta = 67.2 #mrad
+im.beta = 30#67.2 #mrad
 #%%
-try_pixels = [3,30,60,90]#,120]
+try_pixels = [30,60,90,120]
 
 ieels = np.zeros((len(try_pixels),3,im.l))
 eps = (1+1j)*np.zeros((len(try_pixels),3, np.sum(im.deltaE>0)))
+ss = np.zeros((len(try_pixels),3, np.sum(im.deltaE>0)))
+ssratio = np.zeros((len(try_pixels),3))
 t = np.zeros((len(try_pixels),3))
 E_cross = np.zeros(len(try_pixels), dtype = 'object')
 n_cross = np.zeros((len(try_pixels),3))
@@ -177,6 +183,13 @@ for j in range(len(try_pixels)):# n_y):
     col = try_pixels[j]
     [ts, IEELSs, max_ieelss], [epss, ts_p, S_ss_p, IEELSs_p, max_ieels_p] = im.KK_pixel(col,row,  signal = "pooled")
     
+    
+    
+    
+    
+    
+    
+    
     n_model = len(IEELSs_p)
     E_bands_08 = np.zeros(n_model)
     E_bands_12 = np.zeros(n_model)
@@ -194,61 +207,66 @@ for j in range(len(try_pixels)):# n_y):
     n_cross_pix = np.zeros(n_model)
     for i in range(n_model):
         IEELS = IEELSs_p[i]
+        boundery_onset = np.max(IEELS)/30
+        first_not_onset = np.min(np.argwhere(IEELS>boundery_onset))
+        range2 = im.deltaE[first_not_onset]
+        if i%100 == 0:
+            print("pixel:",j, ", model:", i, ", boundery onset:", boundery_onset,", range2:", range2)
         try:
             cluster = im.clustered[col,row]
             dE1 = im.dE1[1,int(cluster)]
             range1 = dE1-1
-            range2 = dE1+0.8
+            # range2 = dE1+0.8
             baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
-            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
+            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,range2-0.3], bounds=([0, 0.5],np.inf))
             E_bands_08[i] = popt[1]
             As_08[i] = popt[0]
         except:
             n_fails += 1
-        try:
-            cluster = im.clustered[col,row]
-            dE1 = im.dE1[1,int(cluster)]
-            range1 = dE1-1
-            range2 = dE1+1.2
-            baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
-            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
-            E_bands_12[i] = popt[1]
-            As_12[i] = popt[0]
-        except:
-            n_fails += 1
-        try:
-            cluster = im.clustered[col,row]
-            dE1 = im.dE1[1,int(cluster)]
-            range1 = dE1-1
-            range2 = dE1+0.2
-            baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
-            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
-            As_02[i] = popt[0]
-            E_bands_02[i] = popt[1]
-        except:
-            n_fails += 1
-        try:
-            cluster = im.clustered[col,row]
-            dE1 = im.dE1[1,int(cluster)]
-            range1 = dE1-1
-            range2 = dE1+0.4
-            baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
-            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
-            As_04[i] = popt[0]
-            E_bands_04[i] = popt[1]
-        except:
-            n_fails += 1
-        try:
-            cluster = im.clustered[col,row]
-            dE1 = im.dE1[1,int(cluster)]
-            range1 = dE1-1
-            range2 = dE1+0.6
-            baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
-            popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
-            As_06[i] = popt[0]
-            E_bands_06[i] = popt[1]
-        except:
-             n_fails += 1
+        # try:
+        #     cluster = im.clustered[col,row]
+        #     dE1 = im.dE1[1,int(cluster)]
+        #     range1 = dE1-1
+        #     range2 = dE1+1.2
+        #     baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
+        #     popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
+        #     E_bands_12[i] = popt[1]
+        #     As_12[i] = popt[0]
+        # except:
+        #     n_fails += 1
+        # try:
+        #     cluster = im.clustered[col,row]
+        #     dE1 = im.dE1[1,int(cluster)]
+        #     range1 = dE1-1
+        #     range2 = dE1+0.2
+        #     baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
+        #     popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
+        #     As_02[i] = popt[0]
+        #     E_bands_02[i] = popt[1]
+        # except:
+        #     n_fails += 1
+        # try:
+        #     cluster = im.clustered[col,row]
+        #     dE1 = im.dE1[1,int(cluster)]
+        #     range1 = dE1-1
+        #     range2 = dE1+0.4
+        #     baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
+        #     popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
+        #     As_04[i] = popt[0]
+        #     E_bands_04[i] = popt[1]
+        # except:
+        #     n_fails += 1
+        # try:
+        #     cluster = im.clustered[col,row]
+        #     dE1 = im.dE1[1,int(cluster)]
+        #     range1 = dE1-1
+        #     range2 = dE1+0.6
+        #     baseline = np.average(IEELS[(im.deltaE>range1 -0.1) & (im.deltaE<range1)])
+        #     popt, pcov = curve_fit(bandgap_b, im.deltaE[(im.deltaE>range1) & (im.deltaE<range2)], IEELS[(im.deltaE>range1) & (im.deltaE<range2)]-baseline, p0 = [400,1.5], bounds=([0, 0.5],np.inf))
+        #     As_06[i] = popt[0]
+        #     E_bands_06[i] = popt[1]
+        # except:
+        #      n_fails += 1
         
         crossing = np.concatenate((np.array([0]),(smooth_1D(np.real(epss[i]),50)[:-1]<0) * (smooth_1D(np.real(epss[i]),50)[1:] >=0)))
         deltaE_n = im.deltaE[im.deltaE>0]
@@ -267,7 +285,16 @@ for j in range(len(try_pixels)):# n_y):
     
     else: 
         E_cross_pix_n = np.zeros((0))
+        
+        
+    ieelssums = np.sum(IEELSs_p[:,im.deltaE>0], axis = 1)
+    sssums = np.sum(S_ss_p, axis = 1)
+    s_ratios = sssums/ieelssums
+        
+    
     ieels[j,:,:] = summary_distribution(IEELSs_p)
+    ss[j,:,:] = summary_distribution(S_ss_p)
+    ssratio[j,:] = summary_distribution(s_ratios)
     eps[j,:,:] = summary_distribution(epss)
     t[j,:] = summary_distribution(ts)
     E_cross[j] = E_cross_pix_n
@@ -395,7 +422,7 @@ A_06 = np.zeros((len(try_pixels),3))
 for j in range(len(try_pixels)):# n_y):
     # epss, ts, S_Es, IEELSs = im.KK_pixel(row, j, signal = "pooled")
     col = try_pixels[j]
-    [ts, IEELSs, max_ieelss], [epss, ts_p, S_ss_p, IEELSs_p, max_ieels_p] = im.KK_pixel(col,row,  signal = "pooled")
+    [ts, IEELSs, max_ieelss], [epss, ts_p, S_ss_p, IEELSs_p, max_ieels_p] = im.KK_pixel(col,row,  signal = "pooled", iterations = 5)
     
     n_model = len(IEELSs_p)
     E_bands_08 = np.zeros(n_model)

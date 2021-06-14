@@ -18,12 +18,50 @@ from image_class_bs import Spectral_image
 
 path_to_results = "../../KK_results/image_KK_004_clu_10_p_5.pkl"
 path_to_results = "../../KK_results/image_KK_lau_clu5_pooled_5.pkl"
+path_to_results = "../../KK_results/report/image_KK_004_clu10_p5_35dE1_06dE1.pkl"
+path_to_results = "../../KK_results/report/image_KK_ 004_clu10_pooled_5_35dE1_06dE1_5iter.pkl"
+
+
+plotim = '004'
+
+
+
+if plotim == '004':
+    im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_004.dm4')
+    path_to_models = 'models/dE2_3_times_dE1/train_004_not_pooled_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_10/'
+
+    save_loc = "../../plots/final_report/004/KK"
+    try_pixels = [[66,7],[66,45],[66,83]]
+    name = "sample with WS$_2$ nanostructures"
+    xlim_times_dE1 = 4
+    
+    path_to_results = "../../KK_results/report/image_KK_004_clu10_pooled_5_3dE1_07dE1_1iter.pkl"
+
+
+
+elif plotim == '003':
+    im = Spectral_image.load_data('../../dmfiles/h-ws2_eels-SI_003.dm4')
+    path_to_models = 'models/dE2_3_times_dE1/train_004_not_pooled_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_10/'
+    path_to_models = 'models/dE2_4_times_dE1/004_clu10_p5_final'
+    path_to_models = 'models/report/004_clu10_p5_final_35dE1_06dE1/'
+    save_loc = "../../plots/final_report/003"
+
+
+
+
+
+
+
+
+
 im = Spectral_image.load_Spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
 # im.cluster(5, based_upon = 'log')
 
-path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_5/'
+#path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_5/'
+#path_to_models = 'models/report/004_clu10_p5_final_35dE1_06dE1/'
+
 im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
 
 
@@ -33,30 +71,38 @@ cmap="coolwarm"
 
 
 #%%
-thicknesslimit = np.nanpercentile(im.t[im.clustered == 0],97)
+thicknesslimit = np.nanpercentile(im.t[im.clustered == 0],99)
 mask = (im.t[:,:,0]<thicknesslimit)
 
-save_loc = "../../plots/plots_symposium/lau/"
+#save_loc = "../../plots/final_report/004/plots/KK/"
 
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "003_t")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 100", cbar_kws={'label': '[nm]'}, vmax = 100, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "003_t_capped_40")
-im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 100", cbar_kws={'label': '[nm]'}, vmax = 100, vmin =0, cmap = cmap, save_as = save_loc + "003_t_capped_40")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample", cbar_kws={'label': '[nm]'}, cmap = cmap, mask = mask, save_as = save_loc + "004_t")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 150", cbar_kws={'label': '[nm]'}, vmax = 150, vmin =0, cmap = cmap, mask = mask, save_as = save_loc + "004_t_capped_40")
+im.plot_heatmap(im.t[:,:,0], title = "thickness sample, capped at max 150", cbar_kws={'label': '[nm]'}, vmax = 150, vmin =0, cmap = cmap, save_as = save_loc + "004_t_capped_40")
 
 im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask)
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "003_t_CI")
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "003_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.10", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.1, vmin=0, mask = mask, save_as = save_loc + "004_t_CI")
+im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0]/2, title = "relative broadness CI thickness sample, capped at 0, 0.20", cbar_kws={'label': '[-]'}, cmap = cmap, vmax=0.2, vmin=0, save_as = save_loc + "004_t_CI")
 
 
 #%% PLOT MAX
-
+"""
 max_ieels = im.max_ieels # im.deltaE[np.argmax(im.ieels, axis = 3)]
 
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask)
-im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 22,26", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 22, vmax=26, save_as = save_loc + "003_max")
+im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum, capped at 22,26", cbar_kws={'label': '[eV]'}, cmap = cmap, mask = mask, vmin = 22, vmax=26, save_as = save_loc + "004_max")
 im.plot_heatmap(max_ieels[:,:,0], title = "max IEELS spectrum", cbar_kws={'label': '[eV]'}, cmap = cmap)
 
 
-im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0]/2, title = "relative broadness CI maximum IEELS, capped at max 0.5", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, vmax = 0.5, save_as = save_loc + "003_max_CI")
+im.plot_heatmap((max_ieels[:,:,2]-max_ieels[:,:,1])/max_ieels[:,:,0]/2, title = "relative broadness CI maximum IEELS, capped at max 0.5", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, vmax = 0.5, save_as = save_loc + "004_max_CI")
+"""
+#%%
+im.plot_heatmap(im.ssratio[:,:,0], title = "surface scattering ratio sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, save_as = save_loc + "004_ssratio")
+im.plot_heatmap(im.ssratio[:,:,0], title = "surface scattering ratio sample", cbar_kws={'label': '[-]'}, vmax = 0.01, cmap = cmap, mask = mask, save_as = save_loc + "004_ssratio_capped")
+
+im.plot_heatmap((im.ssratio[:,:,2]-im.ssratio[:,:,1])/im.ssratio[:,:,0]/2, title = "relative broadness CI ssratio sample", cbar_kws={'label': '[-]'}, cmap = cmap, mask = mask, save_as = save_loc + "004_ssratio_CI")
+
+
 
 #%% NUM CROSSINGS
 #TODO
@@ -126,7 +172,7 @@ im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0]/2, title = 
 im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0]/2, title = "relative broadness CI bandgap energies sample, \ncapped at max 1", cbar_kws={'label': 'energy [eV]'}, vmax=1, cmap = cmap, save_as = save_loc + "E_band_CI_capped", mask = mask)
 
 #%%
-mask_E_band = (mask | ((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0] >= 1))
+mask_E_band = (mask | ~((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0] < 0.5))
 
 size_E_bins = np.nanpercentile((im.E_band[:,:,2]-im.E_band[:,:,1])[~mask_E_band],50)/2
 E_round  = np.round(im.E_band[:,:,0]/size_E_bins) * size_E_bins

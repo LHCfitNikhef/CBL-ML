@@ -31,9 +31,6 @@ def kramers_kronig_hs(self, I_EELS,
     # Constants and units
     me = 511.06
 
-    e0 = 200 #keV
-    beta =30 #mrad
-    
     e0 = self.e0
     beta = self.beta
 
@@ -79,6 +76,110 @@ def kramers_kronig_hs(self, I_EELS,
         esize = next_fast_len(2*l)#2**math.floor(math.log2(l)+1)*4)# #HIER AANGEPAST, omgedraaid -> helpt niet
         q = -2 * np.fft.fft(Im, esize).imag / esize
 
+        q[:l] *= -1
+        q = np.fft.fft(q)
+        # Final touch, we have Re(1/eps)
+        Re = q[:l].real + 1
+       
+        e1 = Re / (Re ** 2 + Im ** 2)
+        e2 = Im / (Re ** 2 + Im ** 2)
+
+        if iterations > 0 and N_ZLP is not None:
+            Srfelf = 4 * e2 / ((e1 + 1) ** 2 + e2 ** 2) - Im
+            adep = (tgt / (eaxis + delta) *
+                    np.arctan(beta * tgt / eaxis) -
+                    beta / 1000. /
+                    (beta ** 2 + eaxis ** 2. / tgt ** 2))
+            Srfint = 2000 * K * adep * Srfelf / rk0 / te * self.ddeltaE #axis.scale #TODO: HIER - toegevoegd om effect te zien
+            if correct_S_s == True:
+                print("correcting S_s")
+                Srfint[Srfint<0] = 0
+                Srfint[Srfint>S_E] = S_E[Srfint>S_E]
+            y = S_E - Srfint 
+            _logger.debug('Iteration number: %d / %d', io + 1, iterations)
+            
+
+    eps = (e1 + e2 * 1j)
+    del y
+    del I_EELS
+    if 'thickness' in output:
+        # As above,prevent errors if the signal is a single spectrum
+        output['thickness'] = te
+    
+    return eps, te, Srfint
+
+
+def kramers_kronig_hs(self, I_EELS, n,
+                        N_ZLP=1,
+                        iterations=1,
+                        delta=0.5, correct_S_s = False,
+                        Srfint_start = None , initial_S_s = None):
+    
+    # if initial_S_s is not None:
+    #     I_EELS = I_EELS - initial_S_s
+    
+    output = {}
+    # Constants and units
+    me = self.me
+
+    e0 = self.e0 #keV
+    beta = self.beta
+
+    eaxis = self.deltaE[self.deltaE>0] #axis.axis.copy()
+    S_E = I_EELS[self.deltaE>0] # - initial_S_s[self.deltaE>0]
+    if initial_S_s is not None:
+        y = I_EELS[self.deltaE>0] - initial_S_s[self.deltaE>0]
+    else:
+        y = I_EELS[self.deltaE>0]
+    l = len(eaxis)
+    N0 = N_ZLP
+    esize = next_fast_len(2*l)
+    half = int(esize/2)  
+    #lengthend energy axis
+    e2 = np.linspace(self.ddeltaE, self.ddeltaE*esize, esize)
+    
+    
+    # Kinetic definitions
+    # electron mass given in eV, so mass is technically me = me*c**2
+    gamma = 1 + (self.e0/self.me) #[-], note: e0 in eV, c set to 1
+    v = (1 - 1/gamma**2)**0.5 #[-], note: v/c, c set to 1
+    T = self.me * v**2 / 2 #[eV]
+    
+    k0 = (self.me/self.c**2) * gamma * (v*self.c) / self.hbar#[m^-1], relativistic momentum
+    
+    theta_E = eaxis / (2*gamma*T)
+    
+    
+    
+    
+    
+    ke = e0 * (1 + e0 / 2. / me) / (1 + e0 / me) ** 2
+    tgt = e0 * (2 * me + e0) / (me + e0)
+    rk0 = 2590 * (1 + e0 / me) * np.sqrt(2 * ke / me)
+
+    for io in range(iterations):
+        # Calculation of the ELF by normalization of the SSD
+        # We start by the "angular corrections"
+        I_ac = y / (np.log(1 + (beta / theta_E) ** 2)) # / self.ddeltaE#axis.scale
+        # normalize using the refractive index.
+        
+        K = np.sum(Im/eaxis)*self.ddeltaE / (np.pi / 2) / (1 - 1. / n ** 2)
+        #K = (K )
+        te = 2*math.pi*self.a0 * K * ke / i0
+        
+
+
+        
+        
+        q = -2 * np.fft.fft(Im, esize).imag / esize
+        q = 2 * CFT(e2,Im).imag #sine fourier transform
+        p = q
+        p[half:] *= -1
+        Re = iCFT(e2,p)[:l].real + 1
+        
+        
+        
+        
         q[:l] *= -1
         q = np.fft.fft(q)
         # Final touch, we have Re(1/eps)

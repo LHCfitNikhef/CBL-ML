@@ -39,10 +39,12 @@ im.t = np.load(path_to_save_sum+"t.npy")
 im.E_cross = np.load(path_to_save_sum+"E_cross.npy", allow_pickle=True)
 im.n_cross = np.load(path_to_save_sum+"n_cross.npy")
 im.E_band = np.load(path_to_save_sum+"E_band.npy")
+im.E_band_sscor = np.load(path_to_save_sum+"E_band_sscor.npy")
 # im.b = np.load(path_to_save_sum+"b_band.npy")
 im.max_ieels = np.load(path_to_save_sum+"max_ieels.npy")
 im.ieels_p = np.load(path_to_save_sum+"ieels_p.npy")
-
+im.ss = np.load(path_to_save_sum+"ss.npy")
+im.ssratio = np.load(path_to_save_sum+"ssratio.npy")
 
 #TODO: check exsits --> other path
 path_to_save_im = path_to_save + "image_KK" #".pkl"

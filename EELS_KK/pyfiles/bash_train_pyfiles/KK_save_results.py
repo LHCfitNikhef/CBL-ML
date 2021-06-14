@@ -25,6 +25,8 @@ path_to_save += (path_to_save[-1] != '/')*'/'
 
 
 path = '/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_004.dm4'
+path = '/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/area03-eels-SI-aligned.dm4'
+
 # path = '../../dmfiles/h-ws2_eels-SI_004.dm4'
 im = Spectral_image.load_data(path)
 [n_x, n_y] = im.image_shape
@@ -32,13 +34,17 @@ im = Spectral_image.load_data(path)
 
 
 
-ieels_im = (1+1j)*np.zeros(np.append(np.append(im.image_shape, 3), im.l))
-ieels_p_im = (1+1j)*np.zeros(np.append(np.append(im.image_shape, 3), im.l))
+ieels_im = np.zeros(np.append(np.append(im.image_shape, 3), im.l))
+ieels_p_im = np.zeros(np.append(np.append(im.image_shape, 3), im.l))
+ss_im = np.zeros(np.append(np.append(im.image_shape, 3), np.sum(im.deltaE>0)))
+ssratio_im = np.zeros(np.append(im.image_shape,3))
 eps_im = (1+1j)*np.zeros(np.append(np.append(im.image_shape, 3), np.sum(im.deltaE>0)))
+
 t_im = np.zeros(np.append(im.image_shape,3))
 E_cross_im = np.zeros(im.image_shape, dtype = 'object')
 n_cross_im = np.zeros(np.append(im.image_shape,3))
 E_band_im = np.zeros(np.append(im.image_shape,3))
+E_band_sscor_im = np.zeros(np.append(im.image_shape,3))
 # b_im = np.zeros(np.append(im.image_shape,3))
 A_im = np.zeros(np.append(im.image_shape,3))
 max_ieels_im = np.zeros(np.append(im.image_shape,3))
@@ -51,11 +57,14 @@ for i in range(im.image_shape[0]):
             row_dict = pickle.load(fp)
         ieels_im[i,:,:,:] = row_dict["ieels"]
         ieels_p_im[i,:,:,:] = row_dict["ieels_p"]
+        ss_im[i,:,:,:] = row_dict["ss"]
+        ssratio_im[i,:,:] = row_dict["ssratio"]
         eps_im[i,:,:,:] = row_dict["eps"]
         t_im[i,:,:] = row_dict["t"]
         E_cross_im[i,:] = row_dict["E_cross"]
         n_cross_im[i,:,:] = row_dict["n_cross"]
         E_band_im[i,:,:] = row_dict["E_band"]
+        E_band_sscor_im[i,:,:] = row_dict["E_band_sscor"]
         # b_im[i,:,:] = row_dict["b"]
         A_im[i,:,:] = row_dict["A"]
         max_ieels_im[i,:,:] = row_dict["max_ieels"]
@@ -67,11 +76,14 @@ for i in range(im.image_shape[0]):
         pass
 im.ieels = ieels_im
 im.ieels_p = ieels_p_im
+im.ss = ss_im
+im.ssratio = ssratio_im
 im.eps = eps_im
 im.t = t_im
 im.E_cross = E_cross_im
 im.n_cross = n_cross_im
 im.E_band = E_band_im
+im.E_band_sscor = E_band_sscor_im
 # im.b = b_im
 im.A = A_im
 im.max_ieels = max_ieels_im
@@ -85,6 +97,10 @@ with open(path_to_save_sum+"ieels.npy", 'wb') as f:
     np.save(f, ieels_im)
 with open(path_to_save_sum+"ieels_p.npy", 'wb') as f:
     np.save(f, ieels_p_im)
+with open(path_to_save_sum+"ss.npy", 'wb') as f:
+    np.save(f, ss_im)
+with open(path_to_save_sum+"ssratio.npy", 'wb') as f:
+    np.save(f, ssratio_im)
 with open(path_to_save_sum+"eps.npy", 'wb') as f:
     np.save(f, eps_im)
 with open(path_to_save_sum+"t.npy", 'wb') as f:
@@ -95,6 +111,8 @@ with open(path_to_save_sum+"n_cross.npy", 'wb') as f:
     np.save(f, n_cross_im)
 with open(path_to_save_sum+"E_band.npy", 'wb') as f:
     np.save(f, E_band_im)
+with open(path_to_save_sum+"E_band_sscor.npy", 'wb') as f:
+    np.save(f, E_band_sscor_im)
 # with open(path_to_save_sum+"b_band.npy", 'wb') as f:
 #     np.save(f, b_im)
 with open(path_to_save_sum+"A_band.npy", 'wb') as f:
