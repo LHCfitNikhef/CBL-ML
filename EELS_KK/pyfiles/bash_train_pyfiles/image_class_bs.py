@@ -1656,7 +1656,7 @@ class Spectral_image():
             plt.ylabel(ylab)
         plt.show()
 
-    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', discrete_colormap=False, sig=2,
+    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', discrete_colormap=False, sig=2, n_xticks=10, n_yticks=10,
                      save_as=False, color_bin_size=None, equal_axis=True, **kwargs):
         """
         INPUT:
@@ -1717,22 +1717,26 @@ class Spectral_image():
 
                 # print("spacing", spacing, "vmax", kwargs['vmax'], "vmin", kwargs['vmin'])
         if equal_axis:
-            plt.axis('equal')
+            plt.axis('scaled')
         if hasattr(self, 'pixelsize'):
             plt.xlabel("[m]")
             plt.ylabel("[m]")
-            xticks, yticks = self.get_ticks(sig=2)#sig)
-            ax = sns.heatmap(data, xticklabels=xticks, yticklabels=yticks, cmap=cmap, **kwargs)
+            xticks, yticks = self.get_ticks(sig=2, n_xticks=n_xticks, n_yticks=n_yticks)#sig)
+            ax = sns.heatmap(data, cmap=cmap, **kwargs)
+            ax.xaxis.set_ticks(np.arange(0, len(data[0,:]), math.floor(len(data[0,:]) / n_xticks)))
+            ax.yaxis.set_ticks(np.arange(0, len(data[:,0]), math.floor(len(data[:,0]) / n_yticks)))
+            ax.set_xticklabels(xticks, rotation=0)
+            ax.set_yticklabels(yticks)
         else:
             ax = sns.heatmap(data, **kwargs)
         if xlab is not None:
             plt.xlabel(xlab)
         else:
-            plt.xlabel('[micron]')
+            plt.xlabel('[\u03BCm]')
         if ylab is not None:
             plt.ylabel(ylab)
         else:
-            plt.ylabel('[micron]')
+            plt.ylabel('[\u03BCm]')
         
         colorbar = ax.collections[0].colorbar
         if discrete_colormap:
@@ -1783,9 +1787,9 @@ class Spectral_image():
             save_as += '.pdf'
             plt.savefig(save_as)
 
-    def get_ticks(self, sig=2, n_tick=10):
+    def get_ticks(self, sig=2, n_xticks=10, n_yticks=10):
         """
-        Generates ticks of (spatial) x- and y axis for plotting perposes.
+        Generates ticks of (spatial) x- and y axis for plotting purposes.
 
         Parameters
         ----------
@@ -1801,18 +1805,24 @@ class Spectral_image():
 
         """
         fmt = '%.' + str(sig) + 'g'
-        xlabels = np.zeros(self.x_axis.shape, dtype=object)
+        
+        each_n_pixels = math.floor(self.x_axis.shape[0] / n_xticks)
+        xlabels = np.zeros(len(np.arange(0, self.x_axis.shape[0], each_n_pixels)), dtype=object)
         xlabels[:] = ""
-        each_n_pixels = math.floor(len(xlabels) / n_tick)
-        for i in range(len(xlabels)):
+        n=0
+        for i in range(self.x_axis.shape[0]):
             if i % each_n_pixels == 0:
-                xlabels[i] = '%s' % float(fmt % self.x_axis[i])
-        ylabels = np.zeros(self.y_axis.shape, dtype=object)
+                xlabels[n] = '%s' % float(fmt % self.x_axis[i])
+                n+=1
+        
+        each_n_pixels = math.floor(self.y_axis.shape[0] / n_yticks)
+        ylabels = np.zeros(len(np.arange(0, self.y_axis.shape[0], each_n_pixels)), dtype=object)
         ylabels[:] = ""
-        each_n_pixels = math.floor(len(ylabels) / n_tick)
-        for i in range(len(ylabels)):
+        n=0
+        for i in range(self.y_axis.shape[0]):
             if i % each_n_pixels == 0:
-                ylabels[i] = '%s' % float(fmt % self.y_axis[i])
+                ylabels[n] = '%s' % float(fmt % self.y_axis[i])
+                n+=1
         return xlabels, ylabels
 
     def plot_all(self, same_image=True, normalize=False, legend=False,
