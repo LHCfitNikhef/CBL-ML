@@ -1656,16 +1656,43 @@ class Spectral_image():
             plt.ylabel(ylab)
         plt.show()
 
-    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', discrete_colormap=False, sig=2, n_xticks=10, n_yticks=10,
-                     save_as=False, color_bin_size=None, equal_axis=True, **kwargs):
+    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', discrete_colormap=False, discrete_interval = None,
+                     sig_cbar=3, save_as=False, color_bin_size=None, equal_axis=True,
+                     sig_ticks=2, npix_xtick=10, npix_ytick=10, scale_ticks=1, tick_int=False, **kwargs):
         """
-        INPUT:
-            self -- spectral image 
-            title -- str, delfault = None, title of plot
-            xlab -- str, default = None, x-label
-            ylab -- str, default = None, y-label
-        OUTPUT:
-        Plots the summation over the intensity for each pixel in a heatmap.
+        Generates a heatmap of the summation over the intensity for each pixel.
+        
+        Parameters
+        ----------
+        :param data: Data used for plotting
+        :type data: TYPE
+        :param title: Title of the heatmap, defaults to None
+        :type title: str, optional
+        :param xlab: Label of the x-axis, defaults to None
+        :type xlab: str, optional
+        :param ylab: Label of the y-axis, defaults to None
+        :type ylab: str, optional
+        :param cmap: Colour of the heatmap, defaults to 'coolwarm'
+        :type cmap: str, optional
+        :param discrete_colormap: Enable discreet colormap, defaults to False
+        :type discrete_colormap: bool, optional
+        :param sig: Significant numbers displayed in colorbar, defaults to 2
+        :type sig: int, optional
+        :param n_xticks: Amount of xticks displayed on x-axis, defaults to 10
+        :type n_xticks: int, optional
+        :param n_yticks: Amount of yticks displayed on y-axis, defaults to 10
+        :type n_yticks: int, optional
+        :param save_as: auto save the heatmap, defaults to False
+        :type save_as: bool, optional
+        :param color_bin_size: Set size of the color bin, best used in conjunction with discreet colormap, defaults to None
+        :type color_bin_size: str, optional
+        :param equal_axis: Enable square pixels to change aspect ratio, defaults to True
+        :type equal_axis: bool, optional
+        :param **kwargs: DESCRIPTION
+        :type **kwargs: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         # TODO: invert colours
         
@@ -1688,7 +1715,7 @@ class Spectral_image():
         if discrete_colormap:
 
             unique_data_points = np.unique(data[~mask])
-
+            
             if 'vmax' in kwargs:
                 dis_max = kwargs['vmax']
                 if len(unique_data_points[unique_data_points > kwargs['vmax']]) > 0:
@@ -1721,12 +1748,12 @@ class Spectral_image():
         if hasattr(self, 'pixelsize'):
             plt.xlabel("[m]")
             plt.ylabel("[m]")
-            xticks, yticks = self.get_ticks(sig=2, n_xticks=n_xticks, n_yticks=n_yticks)#sig)
             ax = sns.heatmap(data, cmap=cmap, **kwargs)
-            ax.xaxis.set_ticks(np.arange(0, len(data[0,:]), math.floor(len(data[0,:]) / n_xticks)))
-            ax.yaxis.set_ticks(np.arange(0, len(data[:,0]), math.floor(len(data[:,0]) / n_yticks)))
-            ax.set_xticklabels(xticks, rotation=0)
-            ax.set_yticklabels(yticks)
+            xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
+            ax.xaxis.set_ticks(xticks)
+            ax.yaxis.set_ticks(yticks)
+            ax.set_xticklabels(xticks_labels, rotation=0)
+            ax.set_yticklabels(yticks_labels)
         else:
             ax = sns.heatmap(data, **kwargs)
         if xlab is not None:
@@ -1740,16 +1767,21 @@ class Spectral_image():
         
         colorbar = ax.collections[0].colorbar
         if discrete_colormap:
-            # TODO: even space in colorbar
+            # TODO: even space in colorbar 
+            # Colorbar is already evenly spaced
             if data.dtype == int:
                 colorbar.set_ticks(np.unique(data[~mask]))
             else:
                 colorbar.set_ticks(np.unique(data[~mask]))#cbar_ticks)
                 cbar_ticks_labels = []
                 for tick in np.unique(data[~mask]):
+                    if tick >= 1:
+                        cbar_ticks_labels.append(round_scientific(tick, sig_cbar+len(str(abs(int(math.floor(tick)))))))
+                    else:
+                        cbar_ticks_labels.append(round_scientific(tick, sig_cbar))
                     # fmt = '%.' + str(sig) + 'g'
                     # cbar_ticks.append('%s' % float(fmt % tick))
-                    cbar_ticks_labels.append(round_scientific(tick, sig))
+                    
                 colorbar.ax.set_yticklabels(cbar_ticks_labels)
                 # colorbar.set_ticks(cbar_ticks)
         if (('vmin' in kwargs) and not discrete_colormap) or (dis_min is not None):
@@ -1772,12 +1804,11 @@ class Spectral_image():
                         tick = colorbar.ax.get_yticks()[loc] + color_bin_size
                         cbar_ticks_values[loc+1] = tick
                         colorbar.ax.set_yticks(cbar_ticks)
-                        cbar_ticks_labels[loc+1] = round_scientific(tick, sig)
+                        cbar_ticks_labels[loc+1] = round_scientific(tick, sig_cbar)
                         colorbar.ax.set_yticklabels(cbar_ticks_labels)
                         loc += 1
                 cbar_ticks[loc] = r'$\geq$' + cbar_ticks[loc].get_text()
                 colorbar.ax.set_yticklabels(cbar_ticks)
-        plt.show()
         if save_as:
             if type(save_as) != str:
                 if hasattr(self, 'name'):
@@ -1785,9 +1816,11 @@ class Spectral_image():
             if 'mask' in kwargs:
                 save_as += '_masked'
             save_as += '.pdf'
-            plt.savefig(save_as)
-
-    def get_ticks(self, sig=2, n_xticks=10, n_yticks=10):
+            plt.savefig(save_as, bbox_inches='tight')
+        plt.show()
+ 
+    
+    def get_ticks(self, sig_ticks=2, npix_xtick=10, npix_ytick=10, scale_ticks=1, tick_int=False):
         """
         Generates ticks of (spatial) x- and y axis for plotting purposes.
 
@@ -1795,8 +1828,8 @@ class Spectral_image():
         ----------
         sig : int, optional
             Scientific signifance of ticsk. The default is 2.
-        n_tick : int, optional
-            desired number of ticks. The default is 10.
+        n_xticks, n_yticks : int, optional
+            desired number of x or y ticks. The default is 10.
 
         Returns
         -------
@@ -1804,27 +1837,38 @@ class Spectral_image():
         ylabels : np.array of type object
 
         """
+        xticks = np.arange(0, self.x_axis.shape[0], npix_xtick)
+        yticks = np.arange(0, self.y_axis.shape[0], npix_ytick) 
+        if tick_int == True:
+            xticks_labels = (xticks * round_scientific(self.pixelsize[1] * scale_ticks, sig_ticks)).astype(int)
+            yticks_labels = (yticks * round_scientific(self.pixelsize[0] * scale_ticks, sig_ticks)).astype(int)
+        else:
+            xticks_labels = trunc(xticks * round_scientific(self.pixelsize[1] * scale_ticks, sig_ticks), sig_ticks)
+            yticks_labels = trunc(yticks * round_scientific(self.pixelsize[0] * scale_ticks, sig_ticks), sig_ticks)        
+        """
         fmt = '%.' + str(sig) + 'g'
-        
         each_n_pixels = math.floor(self.x_axis.shape[0] / n_xticks)
         xlabels = np.zeros(len(np.arange(0, self.x_axis.shape[0], each_n_pixels)), dtype=object)
         xlabels[:] = ""
+        x_axis_scaled = self.x_axis*scaling
         n=0
         for i in range(self.x_axis.shape[0]):
             if i % each_n_pixels == 0:
-                xlabels[n] = '%s' % float(fmt % self.x_axis[i])
+                xlabels[n] = '%s' % float(fmt % (x_axis_scaled[i]))
                 n+=1
         
         each_n_pixels = math.floor(self.y_axis.shape[0] / n_yticks)
         ylabels = np.zeros(len(np.arange(0, self.y_axis.shape[0], each_n_pixels)), dtype=object)
         ylabels[:] = ""
+        y_axis_scaled = self.y_axis*scaling
         n=0
         for i in range(self.y_axis.shape[0]):
             if i % each_n_pixels == 0:
-                ylabels[n] = '%s' % float(fmt % self.y_axis[i])
+                ylabels[n] = '%s' % int(float(fmt % (y_axis_scaled[i])))
                 n+=1
-        return xlabels, ylabels
-
+        """
+        return xticks, yticks, xticks_labels, yticks_labels
+    
     def plot_all(self, same_image=True, normalize=False, legend=False,
                  range_x=None, range_y=None, range_E=None, signal="EELS", log=False):
         # TODO: add titles and such
@@ -2089,3 +2133,9 @@ def round_scientific(value, n_sig):
     scale = int(math.floor(math.log10(abs(value))))
     num = round(value, n_sig - scale - 1)
     return num
+
+def trunc(values, decs=0):
+    return np.trunc(values*10**decs)/(10**decs)
+
+def round_to_nearest(value, base=5):
+    return base * round(float(value) / base)
