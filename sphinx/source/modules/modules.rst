@@ -11,14 +11,14 @@ Documentation
 The ``SpectralImage`` class
 ************************
 
-.. autoclass:: image_class_bs.Spectral_image
+.. autoclass:: spectral_image.SpectralImage
     :members:
     :show-inheritance:
 
 The ``Training`` module
 ************************
 
-.. automodule:: train_nn_torch_bs
+.. automodule:: training
     :members:
     :undoc-members:
     :show-inheritance:

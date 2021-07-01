@@ -67,7 +67,7 @@ def k_means(values, n_clusters=3, n_iterations = 30, n_times = 5):
     n_clusters : int, optional
         The desired number of clusters. The default is 3.
     n_iterations : int, optional
-        number of iterations in the clustering algoritm. The default is 30.
+        number of iterations in the clustering algorithm. The default is 30.
     n_times : TYPE, optional
         number of times the complete algoritm is run. The eventaul outcome that is returned is the outcome \
         with the lowest overall distance. The default is 5.

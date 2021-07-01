@@ -32,40 +32,39 @@ from train_nn_torch_bs import train_nn_scaled
 _logger = logging.getLogger(__name__)
 
 
-class Spectral_image():
-
+class SpectralImage:
     """
-            This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak
-            subtracted.
+    This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak
+    subtracted.
 
-            Parameters
-            ----------
-            data: ndarray
-                Spectral image data as 3D numpy array (x-axis, y-axis, energy loss)
-            deltadeltaE: float
-                Binwidth in energy loss spectrum
-            pixelsize: float, optional
-                Width of pixels (the default is None, which implies ...)
-            beam_energy: float, optional
-                Energy of electron beam [eV] (default is None, which implies ...)
-            collection_angle: float, optional
-                Collection angle of STEM [rad] (default is None, which implies ...)
-            name: str, optional
-                Title of the plots (default is None, in which case no title is passed)
-            dielectric_function_im_avg
-                average dielectric function for each pixel
-            dielectric_function_im_std
-                standard deviation of the dielectric function at each energy for each pixel
-            S_s_avg
-                average surface scattering distribution for each pixel
-            S_s_std
-                standard deviation of the surface scattering distribution at each energy for each pixel
-            thickness_avg
-                average thickness for each pixel
-            IEELS_avg
-                average bulk scattering distribution for each pixel
-            IEELS_std
-                standard deviation of the bulk scattering distribution at each energy for each pixel
+    Parameters
+    ----------
+    data: array_like
+        Array containing the 3-D spectral image. The axes correspond to the x-axis, y-axis and energy-loss.
+    deltadeltaE: float
+        bin width in energy loss spectrum
+    pixelsize: float, optional
+        Width of pixels
+    beam_energy: float, optional
+        Energy of electron beam in eV
+    collection_angle: float, optional
+        Collection angle of STEM in rad
+    name: str, optional
+        Title of the plots
+    dielectric_function_im_avg
+        average dielectric function for each pixel
+    dielectric_function_im_std
+        standard deviation of the dielectric function at each energy per pixel
+    S_s_avg
+        average surface scattering distribution for each pixel
+    S_s_std
+        standard deviation of the surface scattering distribution at each energy for each pixel
+    thickness_avg
+        average thickness for each pixel
+    IEELS_avg
+        average bulk scattering distribution for each pixel
+    IEELS_std
+        standard deviation of the bulk scattering distribution at each energy for each pixel
     """
 
 
@@ -91,11 +90,11 @@ class Spectral_image():
     def __init__(self, data, deltadeltaE, pixelsize=None, beam_energy=None, collection_angle=None, name=None,
                  dielectric_function_im_avg=None, dielectric_function_im_std=None,S_s_avg=None, S_s_std=None,
                  thickness_avg=None,thickness_std=None, IEELS_avg=None, IEELS_std=None, **kwargs):
-        """Constructor method"""
 
         self.data = data
         self.ddeltaE = deltadeltaE
         self.determine_deltaE()
+
         if pixelsize is not None:
             self.pixelsize = pixelsize * 1E6
         self.calc_axes()
@@ -235,6 +234,8 @@ class Spectral_image():
         ddeltaE *= cls.get_prefix(energyUnit, 'eV')
         pixelUnit = dmfile['pixelUnit'][1]
         pixelsize *= cls.get_prefix(pixelUnit, 'm')
+        import pdb
+        pdb.set_trace()
         image = cls(data, ddeltaE, pixelsize=pixelsize, name=path_to_dmfile[:-4])
         if load_additional_data:
             image.additional_data = additional_data
@@ -867,6 +868,8 @@ class Spectral_image():
         return (check<threshold)
     
     def train_ZLPs(self, n_clusters = None, conf_interval = 1, clusters = None, signal = 'EELS', **kwargs):
+        import pdb
+        pdb.set_trace()
         if not hasattr(self, "clustered"):
             if n_clusters is not None:
                 self.cluster(n_clusters)
@@ -1063,7 +1066,7 @@ class Spectral_image():
         # We start by the "angular corrections"
         Im = y / (np.log(1 + (beta * tgt / eaxis) ** 2)) / self.ddeltaE  # axis.scale
 
-        K = np.sum(Im / eaxis) * self.ddeltaE
+        K = np.sum(Im/ eaxis) * self.ddeltaE
         K = (K / (np.pi / 2) / (1 - 1. / n ** 2))
         te = (332.5 * K * ke / i0)
 

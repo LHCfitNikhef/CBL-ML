@@ -17,8 +17,8 @@ im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')
 
 
 path_to_models = 'dE1/train_004_ddE1_0_test'
-im.train_ZLPs(n_clusters = 5, n_rep = 500, n_epochs = 10000, path_to_models = path_to_models, \
-              added_dE1= 0, display_step = None)
+im.train_zlp(n_clusters = 5, n_rep = 500, n_epochs = 10000, path_to_models = path_to_models, \
+             added_dE1= 0, display_step = None)
 """    
     
 path_to_models = 'dE1/train_004_ddE1_0_3'

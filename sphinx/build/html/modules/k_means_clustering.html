@@ -186,7 +186,27 @@
 <dl class="py function">
 <dt id="k_means_clustering.k_means">
 <code class="sig-prename descclassname">k_means_clustering.</code><code class="sig-name descname">k_means</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em>, <em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">n_times</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/k_means_clustering.html#k_means"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_means_clustering.k_means" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The k means clustering algorithm. Unsupervised clustering into <cite>n_clusters</cite> clusters, by minimising
+the distance to the cluster means.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>array_like</em>) – Array with values to be clustered.</p></li>
+<li><p><strong>n_clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The desired number of clusters. The default is 3.</p></li>
+<li><p><strong>n_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of iterations in the clustering algorithm. The default is 30.</p></li>
+<li><p><strong>n_times</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of times the clustering algorithm is run. The final outcome that is returned is the one
+with the lowest overall distance. The default is 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>min_clusters</strong> (<em>array_like</em>) – values of the cluster means.</p></li>
+<li><p><strong>min_r</strong> (<em>array_like</em>) – array that assigns each entry in <cite>values</cite> array to one of the clusters</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="k_means_clustering.log">

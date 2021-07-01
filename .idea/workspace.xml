@@ -2,7 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch">
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/k_means_clustering.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/k_means_clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/k_means_clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/training_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/training_images.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/train_nn_torch_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/train_nn_torch_bs.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/conf.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/conf.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/train_nn_torch_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/train_nn_torch_bs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/source/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,7 +43,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="sphinx" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,14 +65,48 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/EELS_KK/code" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/EELS_KK/code" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="training_init" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CBL-ML" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/EELS_KK/code" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EELS_KK/code/training_init.py" />
+      <option name="PARAMETERS" value="1" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.training_init" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -60,6 +125,12 @@
       <workItem from="1619775568481" duration="320000" />
       <workItem from="1619959278836" duration="1000" />
       <workItem from="1620374617416" duration="1137000" />
+      <workItem from="1624026541312" duration="237000" />
+      <workItem from="1624347729494" duration="11000" />
+      <workItem from="1624626929935" duration="922000" />
+      <workItem from="1624897121133" duration="632000" />
+      <workItem from="1624956614523" duration="2237000" />
+      <workItem from="1625141704358" duration="13074000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -159,5 +230,8 @@
     <MESSAGE value="new layout sphinx" />
     <MESSAGE value="linked sphinx doc to master branch" />
     <option name="LAST_COMMIT_MESSAGE" value="linked sphinx doc to master branch" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CBL_ML$training_init.coverage" NAME="training_init Coverage Results" MODIFIED="1625146098852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/code" />
   </component>
 </project>

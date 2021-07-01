@@ -13,7 +13,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../../EELS_KK/pyfiles/bash_train_pyfiles'))
+sys.path.insert(0, os.path.abspath('../../EELS_KK/code'))
 # import pathlib
 
 # source_dir = pathlib.Path('../../EELS_KK/pyfiles').parent
