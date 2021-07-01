@@ -1,6 +1,5 @@
 from scipy.optimize import curve_fit as cv
 from logging import error
-from os import path
 from typing import Tuple
 from ncempy import io
 import numpy as np
@@ -157,7 +156,7 @@ def get_peak_width(frame: np.ndarray, tr_centre: tuple) -> int:
         Width of the peak
     """
     trace = frame[tr_centre[0],tr_centre[1]:tr_centre[1]+100]
-    width = np.argwhere( trace<(frame[tr_centre[0],tr_centre[1]]/15))[0]
+    width = np.argwhere( trace<(frame[tr_centre[0],tr_centre[1]]/3))[0]
     return width
 
 
@@ -246,7 +245,7 @@ def momentum_trans_map(angle_map, dE, E0, e_k):
     return np.sqrt(mom_trans_par**2 + mom_trans_per**2)
 
 
-def radial_integration(r1, frame, radii, r0=0):
+def radial_integration(r1, frame, radii, r0, ringsize):
     """Performs radial integration of the slice from slice_centre outwards.
     sums all values where the distance of those values is greater than r0 and inbetween r1 and r1-ringsize.
     Parameters
@@ -268,7 +267,7 @@ def radial_integration(r1, frame, radii, r0=0):
     """
 
     integration_area = np.where( radii<r1, frame, 0)
-    #integration_area = np.where( radii>(r1-ringsize), integration_area1, 0)
+    integration_area = np.where( radii>(r1-ringsize), integration_area, 0)
 
     entries = np.where( radii<r1, 1, 0)
     #entries = np.where( radii>(r1-ringsize), entries1, 0)
@@ -302,7 +301,7 @@ def line_integration_mom(stack: np.ndarray, radii: np.ndarray, r1: int, ringsize
     return max_mom
 
 
-def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray) -> np.ndarray:
+def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray, ringsize) -> np.ndarray:
     """Integrates along a circle segment from where radii is zero to where radii is radius,
     Uses radii as a mask for selecting the values from stack. Averages EELS spectra at a radius and returns this averaged spectrum
 
@@ -314,22 +313,29 @@ def line_integration_int(radius: int, stack: np.ndarray, radii: np.ndarray) -> n
         EFTEM stack of which the EELS spectra will be averaged
     radii : np.ndarray
         Map of total radius per pixel
+    ringsize : int
+        The thickness of the averaging ring
 
     Returns
     -------
     np.ndarray
         The averaged EELS spectrum
     """
-    integration_area = np.where(radii<radius, stack, 0)
-    entries = np.where((radii<radius), 1, 0)
+    integration_area = np.where((radii<radius) & (radii>radius-ringsize), stack, 0)
+    entries = np.where(integration_area > 0, 1, 0)
     integral = np.sum(integration_area)/np.sum(entries)
     return integral
 
 
 
-def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_frame: int,
-                   forward_peak=None, method='radial',
-                   threads=2) -> Tuple[np.ndarray,np.ndarray]:
+def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int,
+                    preferred_frame: int,
+                    forward_peak=None,
+                    method='radial',
+                    threads=2,
+                    starting_point=None,
+                    peak_width=None) -> Tuple[np.ndarray,np.ndarray]:
+
     """Gets averaged/integrated EELS data per momenta and energy and returns this as a 2D array of size (M,E) with a corresponding 1D array of size (M) containing the corresponding momenta.
     E is the same size as the energy axis of the EFTEM stack.
 
@@ -360,12 +366,15 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
     momentum_qaxis = np.array([])
 
     mr_data_stack.build_axes()
-    mom_y, mom_x = np.meshgrid(mr_data_stack.axis1, mr_data_stack.axis2)
+    mom_y, mom_x = np.meshgrid(mr_data_stack.axis2, mr_data_stack.axis1)
     momentum_map = np.sqrt(mom_y**2 + mom_x**2)
 
-    stack_centre = mr_data_stack.get_centre(preferred_frame)
+    if starting_point is None:
+        stack_centre = mr_data_stack.get_centre(preferred_frame)
+    else:
+        stack_centre = starting_point
 
-    stack_centre = (stack_centre[1], stack_centre[0])
+    #stack_centre = (stack_centre[1], stack_centre[0])
 
     offset_y = stack_centre[0]-int(ysize/2)
     offset_x = stack_centre[1]-int(xsize/2)
@@ -384,15 +393,15 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
 
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
-        for i in tqdm(iterate):
-            momentum_frame_total = radial_integration(i, momentum_map, radii, r0)
+        for i in tqdm(iterate, desc='Momentum axis'):
+            momentum_frame_total = radial_integration(i, momentum_map, radii, r0, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
 
         rs = [i for i in range(r0,r1,ringsize)]
         energies = [ei for ei in range(0, len(mr_data_stack.axis0))]
 
         def part_func(ei):
-            args = (mr_data_stack.stack[ei], radii)
+            args = (mr_data_stack.stack[ei], radii, 0, ringsize)
             tr = np.zeros(len(rs))
             for r in range(len(rs)):
                 tr[r] = radial_integration(rs[r], *args)
@@ -407,13 +416,17 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
 
 
     elif method == 'line':
-        if forward_peak == None:
+        if forward_peak is None:
             print('forward_peak required for line integration')
 
         true_fw_peak = get_true_centres(mr_data_stack.stack[preferred_frame],
-                                        ((forward_peak[0],forward_peak[1]),(forward_peak[0],forward_peak[1])), leeway=50)
-        peak_width = get_peak_width(mr_data_stack.stack[preferred_frame],
-                                    (true_fw_peak[0],true_fw_peak[1]))
+            ((forward_peak[0],forward_peak[1]),
+            (forward_peak[0],forward_peak[1])), leeway=50)
+
+        if peak_width is None:
+            peak_width = get_peak_width(mr_data_stack.stack[preferred_frame],
+                (true_fw_peak[0],true_fw_peak[1]))
+
         angles = np.arctan2((Y-offset_y),(X-offset_x))
         angle_to_centre = np.arctan2((true_fw_peak[0]-stack_centre[0]),(true_fw_peak[1]-stack_centre[1]))
 
@@ -424,7 +437,7 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
 
         iterate = range( r0, r1, ringsize)
         qmap = np.zeros((len(iterate), esize))
-        for i in tqdm(iterate):
+        for i in tqdm(iterate, desc="Momentum axis"):
             momentum_frame_total = line_integration_mom(momentum_map, radii, i, ringsize)
             momentum_qaxis = np.append(momentum_qaxis, momentum_frame_total)
 
@@ -454,7 +467,7 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
                 stack = stack[:, stack_centre[0]:, stack_centre[1]:]
 
         def part_func(e_index):
-            args = (stack[e_index], radii)
+            args = (stack[e_index], radii, ringsize)
             to_return = np.zeros(len(rs))
             for r in range(len(rs)):
                 to_return[r] = line_integration_int(rs[r], *args)
@@ -469,7 +482,7 @@ def get_qeels_data(mr_data_stack: object, r1: int, ringsize: int, preferred_fram
         for i in range(0, len(energies)):
             qmap[:,i] = results[i]
 
-    return qmap, momentum_qaxis
+    return qmap[1:], momentum_qaxis[1:]
 
 
 def get_qeels_slice(data_stack: object, point: tuple,
@@ -612,7 +625,7 @@ def plot_qeels_data(mr_data: object, intensity_qmap: np.ndarray,
 
 
 def transform_axis(DataStack: object, Setup: object) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Transform axes of MomentumResovledDataStack to \omega, ky and kx and return these.
+    """Transform axes of MomentumResovledDataStack to omega, ky and kx and return these.
 
     Parameters
     ----------
@@ -659,7 +672,7 @@ def angle_map(setup: object) -> np.ndarray:
     return angles
 
 
-def batson_correct(eels_obj: object, energy_window: int, qmap: np.ndarray):
+def batson_correct(eels_obj: object, energy_window: int, qmap: np.ndarray, imspec: np.ndarray=None):
     """Performs Batson correction on the QEELS data and returns the corrected QEELS data.
 
     Parameters
@@ -678,12 +691,20 @@ def batson_correct(eels_obj: object, energy_window: int, qmap: np.ndarray):
     """
     eels_obj.build_axes()
 
+    zlp_mask = np.where(
+        (eels_obj.axis0 >= eels_obj.axis0.min()) & (eels_obj.axis0 < 6), True, False)
+
     area = eels_obj.axis_1_steps*eels_obj.axis_2_steps
-    image_spectrum = np.sum(eels_obj.stack, axis=(2,1))/area
-    image_spectrum[image_spectrum <= 0] = 0
+    if imspec is not None:
+        image_spectrum = imspec
+    else:
+        image_spectrum = np.sum(eels_obj.stack, axis=(2,1))/area
 
     def integrate_window_fp(slice, energy_window):
-        slice_max = np.argwhere(slice == slice.max())[0][0]
+        try:
+            slice_max = np.argwhere(slice == slice.max())[0][0]
+        except:
+            return 0
         half_window_len = int(energy_window /2 /eels_obj.axis_0_scale)
         lower_bound = int(slice_max - half_window_len)
         upper_bound = int(slice_max + half_window_len)
@@ -698,12 +719,25 @@ def batson_correct(eels_obj: object, energy_window: int, qmap: np.ndarray):
     im_spec_max_index = np.argwhere(image_spectrum == image_spectrum.max())[0][0]
     batson_map = np.copy(qmap)
 
-    for i in range(1, qmap.shape[0]):
-        slice = qmap[i]
+    idx = np.zeros(qmap.shape[0])
+    for i in range(0, qmap.shape[0]):
+        msk = np.sum(
+            np.where(np.isnan(qmap[i]) | qmap[i].all() == 0, False, True)
+        )
+        idx[i] = msk
+
+    start = np.argwhere(idx)[0][0]
+
+    for i in range(start, qmap.shape[0]):
+        slice = batson_map[i]
         slice_int = integrate_window_fp(slice, energy_window)
         norm_im_spec = np.copy(image_spectrum)
         norm_im_spec *= slice_int/im_spec_int
-        peakshift = im_spec_max_index - np.argwhere(slice == slice.max())[0][0]
+        try:
+            peakshift = im_spec_max_index - np.argwhere(
+                slice[zlp_mask] == slice[zlp_mask].max())[0][0]
+        except:
+            peakshift = 0
         if peakshift > 0:
             slice[0:qmap.shape[1]-peakshift] -= norm_im_spec[0:qmap.shape[1]-peakshift]
         elif peakshift < 0:
@@ -746,7 +780,7 @@ def pool_qmap(qmap: np.ndarray, qaxis: np.ndarray, poolsize: int) -> Tuple[np.nd
     return pooled_qmap, pooled_qaxis
 
 
-def find_peak_in_range(qmap: np.ndarray, centre: int, window_size: int) -> Tuple[np.ndarray, np.ndarray]:
+def find_peak_in_range(qmap: np.ndarray, centre: int, window_size: int, adaptive_range: bool=False) -> Tuple[np.ndarray, np.ndarray]:
     """Tries to find peak in given range determined by windows_size/2 centered around centre, returns index of peak and error estimate.
     error is estimated as energy resolution multiplied by the standard deviation of the multiple peaks.
 
@@ -765,18 +799,29 @@ def find_peak_in_range(qmap: np.ndarray, centre: int, window_size: int) -> Tuple
         peak position and error in peak position
     """
     half_size = window_size // 2
-    search_field = qmap*0
-    search_field[:, centre-half_size:centre+half_size] = qmap[:, centre-half_size:centre+half_size]
+    search_field = qmap
+    #search_field[:, centre-half_size:centre+half_size] = qmap[:, centre-half_size:centre+half_size]
     search_field[np.isnan(search_field)] = 0
 
     ppos = np.array([], dtype='int')
     perr = np.array([])
     for i in range(0,len(search_field[:,0])):
-        search_slice = search_field[i]
-        tmp = np.argwhere(search_slice==search_slice.max())
-        perr = np.append(perr, np.std(tmp))
-        ppos = np.append(ppos, int(np.average(tmp)))
+        search_slice = np.zeros(len(qmap[0]))
+        low = centre-half_size
+        upp = centre+half_size
+        search_slice[low:upp] = search_field[i, low:upp]
+        tmp = np.argwhere(search_slice==np.max(search_slice))
+        perr = np.append(perr, 1/(tmp[0][0]-np.mean(search_slice)))
+        ppos = np.append(ppos, tmp[0][0])
 
+        if adaptive_range == True:
+            centre = int(tmp[0][0])
+
+        #plt.plot(qmap[i])
+        #plt.plot(ppos[i], qmap[i, ppos[i]], marker='1', markersize=5)
+        #wtf = True
+
+    #plt.show()
     return ppos, perr
 
 
@@ -829,9 +874,9 @@ class MomentumResolvedDataStack:
 
     def remove_neg_val(self):
         if self.stack.min() < 0:
-            self.stack += self.stack.min()
+            self.stack -= self.stack.min()
 
-    def get_centre(self, index: int) -> tuple:
+    def get_centre(self, index: int=None) -> tuple:
         if index == None:
             index = self.pref_frame
 
