@@ -1524,12 +1524,13 @@ class SpectralImage:
             plt.ylabel(ylab)
         plt.show()
 
-    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', discrete_colormap=False, discrete_interval = None,
-                     sig_cbar=3, save_as=False, color_bin_size=None, equal_axis=True,
-                     sig_ticks=2, npix_xtick=10, npix_ytick=10, scale_ticks=1, tick_int=False, **kwargs):
+    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', 
+                     discrete_colormap=False, sig_cbar=3, color_bin_size=None, equal_axis=True, 
+                     sig_ticks=2, npix_xtick=10, npix_ytick=10, scale_ticks=1, tick_int=False, 
+                     save_as=False, **kwargs):
         """
-        Plots a heatmap for the given data input.
-        
+        Plots a heatmap for given data input.
+
         Parameters
         ----------
         data : TYPE
@@ -1544,12 +1545,8 @@ class SpectralImage:
             DESCRIPTION. The default is 'coolwarm'.
         discrete_colormap : TYPE, optional
             DESCRIPTION. The default is False.
-        discrete_interval : TYPE, optional
-            DESCRIPTION. The default is None.
         sig_cbar : TYPE, optional
             DESCRIPTION. The default is 3.
-        save_as : TYPE, optional
-            DESCRIPTION. The default is False.
         color_bin_size : TYPE, optional
             DESCRIPTION. The default is None.
         equal_axis : TYPE, optional
@@ -1563,6 +1560,8 @@ class SpectralImage:
         scale_ticks : TYPE, optional
             DESCRIPTION. The default is 1.
         tick_int : TYPE, optional
+            DESCRIPTION. The default is False.
+        save_as : TYPE, optional
             DESCRIPTION. The default is False.
         **kwargs : TYPE
             DESCRIPTION.
@@ -1615,8 +1614,6 @@ class SpectralImage:
             plt.axis('scaled')
             
         if hasattr(self, 'pixelsize'):
-            plt.xlabel("[m]")
-            plt.ylabel("[m]")
             ax = sns.heatmap(data, cmap=cmap, **kwargs)
             xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
             ax.xaxis.set_ticks(xticks)
@@ -1995,3 +1992,9 @@ def round_scientific(value, n_sig):
     scale = int(math.floor(math.log10(abs(value))))
     num = round(value, n_sig - scale - 1)
     return num
+
+def trunc(values, decs=0):
+    return np.trunc(values*10**decs)/(10**decs)
+
+def round_to_nearest(value, base=5):
+    return base * round(float(value) / base)
