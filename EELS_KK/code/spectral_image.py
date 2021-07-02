@@ -58,6 +58,11 @@ class SpectralImage:
         filled with 2D numpy arrays. If save_as_attribute set to True, the cluster data is also saved as attribute
     deltaE: array_like
         shifted array of energy losses such that the zero point corresponds to the point of highest intensity.
+
+    Examples
+    --------
+    >>> im = SpectralImage()
+    >>> im.train_zlp()
     """
 
     #  signal names
@@ -119,11 +124,6 @@ class SpectralImage:
         ----------
         filename : str
             path to save location plus filename. If it does not end on ".pkl", ".pkl" will be added.
-
-        Returns
-        -------
-        None.
-
         """
         if filename[-4:] != '.pkl':
             filename + '.pkl'
@@ -142,10 +142,6 @@ class SpectralImage:
         ----------
         filename : str
             path to save location plus filename. If it does not end on ".pbz2", ".pbz2" will be added.
-
-        Returns
-        -------
-        None.
 
         """
         if filename[-5:] != '.pbz2':
@@ -195,8 +191,13 @@ class SpectralImage:
 
     @property
     def n_spectra(self):
-        """returns number of spectra in specral image"""
-        return np.product(self.image_shape)
+        """
+        Returns
+        -------
+        nspectra: int
+            number of spectra in spectral image"""
+        nspectra = np.product(self.image_shape)
+        return nspectra
 
     @classmethod
     def load_data(cls, path_to_dmfile, load_additional_data=False):
@@ -245,7 +246,7 @@ class SpectralImage:
         return image
 
     @classmethod
-    def load_Spectral_image(cls, path_to_pickle):
+    def load_spectral_image(cls, path_to_pickle):
         """
         Loads spectral image from a pickled file. 
 
@@ -263,8 +264,8 @@ class SpectralImage:
 
         Returns
         -------
-        image : Specral_image
-            Image (i.e. including all atributes) loaded from pickle file.
+        SpectralImage
+            Image (i.e. including all attributes) loaded from pickle file.
 
         """
         if path_to_pickle[-4:] != '.pkl':
@@ -279,7 +280,7 @@ class SpectralImage:
     @classmethod
     def load_compressed_Spectral_image(cls, path_to_compressed_pickle):
         """
-        Loads spectral image from a compressed pickled file. Will take longer than loading from not compressed pickle.
+        Loads spectral image from a compressed pickled file. This will take longer than loading from non compressed pickle.
 
         Parameters
         ----------
@@ -296,9 +297,7 @@ class SpectralImage:
         Returns
         -------
         image : Specral_image
-            Image (i.e. including all atributes) loaded from compressed pickle file.
-
-
+            `SpectralImage` instance loaded from the compressed pickle file.
         """
         if path_to_compressed_pickle[-5:] != '.pbz2':
             raise ValueError(
@@ -326,12 +325,7 @@ class SpectralImage:
             refractive index of sample.
         n_background : float, optional
             if defined: the refractive index of the background/vacuum. This value will automatically be \
-            assigned to pixels belonging to the thinnest cluster. 
-
-        Returns
-        -------
-        None.
-
+            assigned to pixels belonging to the thinnest cluster.
         """
         if type(n) == float or type(n) == int:
             self.n = np.ones(self.n_clusters) * n
@@ -489,23 +483,23 @@ class SpectralImage:
         pass
 
     def smooth(self, window_len=10, window='hanning', keep_original=False):
-        """smooth the data using a window with requested size.
+        """
+        smooth the data using a window with requested size.
         
         This method is based on the convolution of a scaled window with the signal.
         The signal is prepared by introducing reflected copies of the signal 
         (with the window size) in both ends so that transient parts are minimized
         in the begining and end part of the output signal.
         
-        input:
-            x: the input signal 
-            window_len: the dimension of the smoothing window; should be an odd integer
-            window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-                flat window will produce a moving average smoothing.
-    
-        output:
-            the smoothed signal
-    
+        Parameters
+        ----------
+        window_len: int, optional
+            The dimension of the smoothing window; should be an odd integer.
+        window: str, optional
+            the type of window from 'flat', `hanning, `hamming`, `bartlett`, `blackman`.
+            flat window will produce a moving average smoothing.
         """
+
         # TODO: add comnparison
         window_len += (window_len + 1) % 2
         s = np.r_['-1', self.data[:, :, window_len - 1:0:-1], self.data, self.data[:, :, -2:-window_len - 1:-1]]
@@ -523,8 +517,6 @@ class SpectralImage:
         else:
             self.data = np.apply_along_axis(lambda m: np.convolve(m, w / w.sum(), mode='valid'), axis=2, arr=s)[:, :,
                         surplus_data:-surplus_data]
-
-        return  # y[(window_len-1):-(window_len)]
 
     def deconvolute(self, i, j, ZLP, signal='EELS'):
 
@@ -1143,6 +1135,9 @@ class SpectralImage:
     
         * The wrap-around problem when computing the ffts is workarounded by
           padding the signal instead of substracting the reflected tail.
+
+        References
+        ----------
     
         .. [1] Ray Egerton, "Electron Energy-Loss Spectroscopy in the Electron
            Microscope", Springer-Verlag, 2011.
@@ -1322,20 +1317,18 @@ class SpectralImage:
 
         pass
 
-    def im_dielectric_function_bs(self, track_process=False, plot=False, save_index=None, save_path="KK_analysis",
-                                  smooth=False):
+    def im_dielectric_function_bs(self, track_process=False, plot=False, save_index=None, save_path="KK_analysis"):
         """
+        Computes the dielectric function by performing a Kramer-Kronig analysis at each pixel.
 
         Parameters
         ----------
-        track_process: bool
-            default = False, if True: prints for each pixel that program is busy with that pixel.
-        plot: bool
-            default = False, if True, plots all calculated dielectric functions
-        save_index: opt
-        save_path: opt
-        smooth: opt
-
+        track_process: bool, optional
+            default is `False`, if `True`,  outputs for each pixel the program that is busy with that pixel.
+        plot: bool, optional
+            default is `False`, if `True`, plots all calculated dielectric functions
+        save_index: int, optional
+        save_path: str, optional
         """
         # TODO
         # data = self.data[self.deltaE>0, :,:]
@@ -1361,34 +1354,7 @@ class SpectralImage:
         for i in range(self.image_shape[0]):
             for j in range(self.image_shape[1]):
                 if track_process: print("calculating dielectric function for pixel ", i, j)
-                """
-                data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-                ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
-                dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
-                S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
-                ts = np.zeros(ZLPs.shape[0])            
-                IEELSs = np.zeros(ZLPs.shape)
-                for k in range(ZLPs.shape[0]):
-                    ZLP_k = ZLPs[k,:]
-                    N_ZLP = np.sum(ZLP_k)
-                    IEELS = data_ij-ZLP_k
-                    if smooth:
-                        IEELS = smooth_1D(IEELS)
-                    IEELS = self.deconvolute(i, j, ZLP_k)
-                    IEELSs[k,:] = IEELS
-                    if plot: 
-                        #ax1.plot(self.deltaE, IEELS)
-                        plt.figure()
-                        plt.plot(self.deltaE, IEELS)
-                    #TODO: FIX ZLP: now becomes very negative!!!!!!!
-                    #TODO: VERY IMPORTANT
-                    dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
-                    if plot: 
-                        #plt.figure()
-                        plt.plot(self.deltaE[self.deltaE>0], dielectric_functions[k,:]*2)
-                        plt.xlim(0,10)
-                        plt.ylim(-100, 400)
-                    """
+
                 dielectric_functions, ts, S_ss, IEELSs = self.KK_pixel(i, j)
                 # print(ts)
                 self.dielectric_function_im_avg[i, j, :] = np.average(dielectric_functions, axis=0)
@@ -1407,81 +1373,6 @@ class SpectralImage:
                 np.save(f, self.S_s_avg)
             with open(save_path + "thickness_" + str(save_index) + ".npy", 'wb') as f:
                 np.save(f, self.thickness_avg)
-        # return dielectric_function_im_avg, dielectric_function_im_std
-
-    def im_dielectric_function(self, track_process=False, plot=False, save_index=None):
-        """
-        INPUT:
-            self -- the image of which the dielectic functions are calculated
-            track_process -- boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
-            plot -- boolean, default = False, if True, plots all calculated dielectric functions
-        OUTPUT ATRIBUTES:
-            self.dielectric_function_im_avg = average dielectric function for each pixel
-            self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
-            self.S_s_avg = average surface scattering distribution for each pixel
-            self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
-            self.thickness_avg = average thickness for each pixel
-            self.thickness_std = standard deviation thickness for each pixel
-            self.IEELS_avg = average bulk scattering distribution for each pixel
-            self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel
-        """
-        # TODO
-        # data = self.data[self.deltaE>0, :,:]
-        # energies = self.deltaE[self.deltaE>0]
-        if not hasattr(self, 'ZLPs_gen'):
-            self.calc_ZLPs_gen2("iets")
-        self.dielectric_function_im_avg = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
-        self.dielectric_function_im_std = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
-        self.S_s_avg = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
-        self.S_s_std = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
-        self.thickness_avg = np.zeros(self.image_shape)
-        self.thickness_std = np.zeros(self.image_shape)
-        self.IEELS_avg = np.zeros(self.data.shape)
-        self.IEELS_std = np.zeros(self.data.shape)
-        N_ZLPs_calculated = hasattr(self, 'N_ZLPs')
-        # TODO: add N_ZLP saving
-        # if not N_ZLPs_calculated:
-        #    self.N_ZLPs = np.zeros(self.image_shape)
-        if plot:
-            fig1, ax1 = plt.subplots()
-            fig2, ax2 = plt.subplots()
-        for i in range(self.image_shape[0]):
-            for j in range(self.image_shape[1]):
-                if track_process: print("calculating dielectric function for pixel ", i, j)
-                data_ij = self.get_pixel_signal(i, j)  # [self.deltaE>0]
-                ZLPs = self.calc_ZLPs(i, j)  # [:,self.deltaE>0]
-                dielectric_functions = (1 + 1j) * np.zeros(ZLPs[:, self.deltaE > 0].shape)
-                S_ss = np.zeros(ZLPs[:, self.deltaE > 0].shape)
-                ts = np.zeros(ZLPs.shape[0])
-                IEELSs = np.zeros(ZLPs.shape)
-                for k in range(23, 28):  # ZLPs.shape[0]):
-                    ZLP_k = ZLPs[k, :]
-                    N_ZLP = np.sum(ZLP_k)
-                    IEELS = data_ij - ZLP_k
-                    IEELS = self.deconvolute(i, j, ZLP_k)
-                    IEELSs[k, :] = IEELS
-                    if plot:
-                        # ax1.plot(self.deltaE, IEELS)
-                        plt.figure()
-                        plt.plot(self.deltaE, IEELS)
-                    # TODO: FIX ZLP: now becomes very negative!!!!!!!
-                    # TODO: VERY IMPORTANT
-                    dielectric_functions[k, :], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP=N_ZLP, n=3)
-                    if plot:
-                        # plt.figure()
-                        plt.plot(self.deltaE[self.deltaE > 0], dielectric_functions[k, :] * 2)
-                        plt.xlim(0, 10)
-                        plt.ylim(-100, 400)
-
-                # print(ts)
-                self.dielectric_function_im_avg[i, j, :] = np.average(dielectric_functions, axis=0)
-                self.dielectric_function_im_std[i, j, :] = np.std(dielectric_functions, axis=0)
-                self.S_s_avg[i, j, :] = np.average(S_ss, axis=0)
-                self.S_s_std[i, j, :] = np.std(S_ss, axis=0)
-                self.thickness_avg[i, j] = np.average(ts)
-                self.thickness_std[i, j] = np.std(ts)
-                self.IEELS_avg[i, j, :] = np.average(IEELSs, axis=0)
-                self.IEELS_std[i, j, :] = np.std(IEELSs, axis=0)
         # return dielectric_function_im_avg, dielectric_function_im_std
 
     def optical_absorption_coeff_im(self):
@@ -1597,13 +1488,16 @@ class SpectralImage:
     # PLOTTING FUNCTIONS
     def plot_sum(self, title=None, xlab=None, ylab=None):
         """
-        INPUT:
-            self -- spectral image 
-            title -- str, delfault = None, title of plot
-            xlab -- str, default = None, x-label
-            ylab -- str, default = None, y-label
-        OUTPUT:
         Plots the summation over the intensity for each pixel in a heatmap.
+
+        Parameters
+        ----------
+        title: str, optional
+            Title of the plot
+        xlab: str, optional
+            x-label
+        ylab: str, optional
+            y-label
         """
         # TODO: invert colours
         if hasattr(self, 'name'):
@@ -1634,13 +1528,34 @@ class SpectralImage:
                      n_xticks=10, n_yticks=10,
                      save_as=False, color_bin_size=None, equal_axis=True, **kwargs):
         """
-        INPUT:
-            self -- spectral image 
-            title -- str, delfault = None, title of plot
-            xlab -- str, default = None, x-label
-            ylab -- str, default = None, y-label
-        OUTPUT:
         Plots the summation over the intensity for each pixel in a heatmap.
+
+        Parameters
+        ----------
+        data: type
+        title: str, optional
+
+        xlab: type, optional
+
+        ylab: type, optional
+
+        cmap: str, optional
+
+        discrete_colormap: bool, optional
+
+        sig: int, optional
+
+        n_xticks: int, optional
+
+        n_yticks: int, optional
+
+        save_as: bool, optional
+
+        color_bin_size: type, optional
+
+        equal_axis: bool, optional
+
+        kwargs
         """
         # TODO: invert colours
 

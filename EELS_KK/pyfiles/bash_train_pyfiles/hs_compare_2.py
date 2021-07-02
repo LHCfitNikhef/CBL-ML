@@ -43,7 +43,7 @@ if plotim == 'lau':
 
 
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 im.pool(5)
@@ -89,7 +89,7 @@ de = im.deltaE[im.deltaE>0]
 
 eps_hs = np.load("/Users/isabel/Documents/Studie/MEP/CBL-ML/hyperspy/eps_hs_lau.npy")
 path_to_results = "../../KK_results/report/image_KK_lau_clu10_pooled_5_5dE1_06dE1_5iter.pkl"
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 #%%
 
 
@@ -146,7 +146,7 @@ if plotim == 'lau':
 
 
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 im.pool(5)

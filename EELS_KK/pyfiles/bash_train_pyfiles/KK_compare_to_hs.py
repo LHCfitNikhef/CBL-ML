@@ -32,7 +32,7 @@ def bandgap(x, amp, BG,b):
 
 
 path_to_results = "../../KK_results/image_KK.pkl"
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 
 eps_hs = np.load('eps_hs_004.npy')
 t_hs = np.load('t_hs_004.npy')

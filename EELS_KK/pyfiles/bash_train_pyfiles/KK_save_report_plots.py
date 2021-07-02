@@ -34,7 +34,7 @@ path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_ep
 
 
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
 # im.cluster(5, based_upon = 'log')

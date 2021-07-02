@@ -17,7 +17,7 @@ from image_class_bs import Spectral_image
 # im = Spectral_image.load_Spectral_image(path_to_results)
 
 path_to_results = "../../KK_results/image_KK_lau_p_5.pkl"
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
 im.cluster(5, based_upon = 'log')

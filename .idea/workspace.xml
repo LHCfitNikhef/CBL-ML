@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="linked sphinx doc to master branch">
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/k_means_clustering.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="adding more docstrings">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/image_class_bs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/k_means_clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/k_means_clustering.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/training_images_bs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/training_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/training_images.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/conf.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/004_KK_results_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/004_KK_results_plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_compare_to_hs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_compare_to_hs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results_set_for_lau.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results_set_for_lau.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_save_report_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_save_report_plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/hs_compare_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/hs_compare_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/lau_KK_results_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/lau_KK_results_plots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/image_class_bs.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/k_means_clustering.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/train_nn_torch_bs.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/train_nn_torch_bs.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/image_class_bs.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_modules/k_means_clustering.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_modules/train_nn_torch_bs.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/conf.py.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/_sources/modules/modules.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/conf.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/conf.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/image_class_bs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/k_means_clustering.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/train_nn_torch_bs.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/train_nn_torch_bs.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/py-modindex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/source/conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/source/modules/modules.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +114,8 @@
       <workItem from="1624626929935" duration="922000" />
       <workItem from="1624897121133" duration="632000" />
       <workItem from="1624956614523" duration="2237000" />
-      <workItem from="1625141704358" duration="13074000" />
+      <workItem from="1625141704358" duration="14135000" />
+      <workItem from="1625214762676" duration="5074000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -202,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619775797015</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="adding more docstrings">
+      <created>1625155084640</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1625155084640</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,7 +221,8 @@
     <MESSAGE value="added pyc to gitignore" />
     <MESSAGE value="new layout sphinx" />
     <MESSAGE value="linked sphinx doc to master branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="linked sphinx doc to master branch" />
+    <MESSAGE value="adding more docstrings" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding more docstrings" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CBL_ML$training_init.coverage" NAME="training_init Coverage Results" MODIFIED="1625146098852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/code" />

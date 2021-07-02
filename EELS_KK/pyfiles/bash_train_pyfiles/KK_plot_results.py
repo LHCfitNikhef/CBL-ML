@@ -54,7 +54,7 @@ elif plotim == '003':
 
 
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
 # im.cluster(5, based_upon = 'log')

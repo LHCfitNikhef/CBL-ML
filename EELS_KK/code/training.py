@@ -290,7 +290,7 @@ def user_check(dE12, value):
 def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", display_step = 1000):
     """training also on intensity, so only one model per image, instead of one model per cluster"""
     if hasattr(image, "name"):
-        path_to_model = image.name + "_" + path_to_model
+        path_to_model = image.name + "_" + path_to_models
     
     if not os.path.exists(path_to_model):
         Path(path_to_model).mkdir(parents=True, exist_ok=True)
@@ -630,4 +630,62 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, added_d
         with open(path_to_models+ "costs" + str(bs_rep_num) + ".txt", "w") as text_file:
             text_file.write(str(min_loss_test))
         # np.savetxt(path_to_models+ "costs" + str(bs_rep_num) + ".txt", min_loss_test) # loss_test_reps[:epoch])
+
+
+def ewd(x, nbins):
+    """
+    INPUT:
+        x:
+        y:
+        nbins:
+
+    OUTPUT:
+        df_train:
+        cuts1:
+        cuts2:
+
+    Apply Equal Width Discretization (EWD) to x and y data to determine variances
+    """
+    # TODO: I think everything that was here isn't needed?? since x is already sorted, and a 1D array
+    # df_train = np.array(np.c_[x,y])
+    cuts1, cuts2 = pd.cut(x, nbins, retbins=True)
+
+    return cuts1, cuts2
+
+
+def CI_high(data, confidence=0.68):
+    ## remove the lowest and highest 16% of the values
+
+    a = np.array(data)
+    n = len(a)
+    b = np.sort(data)
+
+    highest = np.int((1 - (1 - confidence) / 2) * n)
+    high_a = b[highest]
+
+    return high_a
+
+
+def CI_low(data, confidence=0.68):
+    ## remove the lowest and highest 16% of the values
+
+    a = np.array(data)
+    n = len(a)
+    b = np.sort(data)
+    lowest = np.int(((1 - confidence) / 2) * n)
+    low_a = b[lowest]
+
+    return low_a
+
+
+def get_median(x, y, nbins):
+    # df_train,
+    cuts1, cuts2 = ewd(x, y, nbins)
+    median, edges, binnum = scipy.stats.binned_statistic(x, y, statistic='median',
+                                                         bins=cuts2)  # df_train[:,0], df_train[:,1], statistic='median', bins=cuts2)
+    return median
+
+
+def get_mean(data):
+    return np.mean(data)
 

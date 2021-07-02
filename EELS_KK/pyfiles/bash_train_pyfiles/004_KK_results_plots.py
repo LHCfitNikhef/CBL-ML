@@ -66,7 +66,7 @@ if plotim == '004':
 
 path_to_models += (path_to_models[-1]!='/')*'/'
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 
 im.ieels = None
 im.ieels_p = None
@@ -311,7 +311,7 @@ if plotim == '004':
 
 path_to_models += (path_to_models[-1]!='/')*'/'
 
-im = Spectral_image.load_Spectral_image(path_to_results)
+im = Spectral_image.load_spectral_image(path_to_results)
 
 im.ieels = None
 #im.ieels_p = None
