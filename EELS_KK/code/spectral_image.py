@@ -1524,7 +1524,7 @@ class SpectralImage:
             plt.ylabel(ylab)
         plt.show()
 
-    def plot_heatmap(self, data, title=None, xlab=None, ylab=None, cmap='coolwarm', 
+    def plot_heatmap(self, data, title=None, xlab='[\u03BCm]', ylab='[\u03BCm]', cmap='coolwarm', 
                      discrete_colormap=False, sig_cbar=3, color_bin_size=None, equal_axis=True, 
                      sig_ticks=2, npix_xtick=10, npix_ytick=10, scale_ticks=1, tick_int=False, 
                      save_as=False, **kwargs):
@@ -1533,36 +1533,36 @@ class SpectralImage:
 
         Parameters
         ----------
-        data : TYPE
-            DESCRIPTION.
-        title : TYPE, optional
-            DESCRIPTION. The default is None.
-        xlab : TYPE, optional
-            DESCRIPTION. The default is None.
-        ylab : TYPE, optional
-            DESCRIPTION. The default is None.
-        cmap : TYPE, optional
-            DESCRIPTION. The default is 'coolwarm'.
-        discrete_colormap : TYPE, optional
-            DESCRIPTION. The default is False.
-        sig_cbar : TYPE, optional
-            DESCRIPTION. The default is 3.
-        color_bin_size : TYPE, optional
-            DESCRIPTION. The default is None.
-        equal_axis : TYPE, optional
-            DESCRIPTION. The default is True.
-        sig_ticks : TYPE, optional
-            DESCRIPTION. The default is 2.
-        npix_xtick : TYPE, optional
-            DESCRIPTION. The default is 10.
-        npix_ytick : TYPE, optional
-            DESCRIPTION. The default is 10.
-        scale_ticks : TYPE, optional
-            DESCRIPTION. The default is 1.
-        tick_int : TYPE, optional
-            DESCRIPTION. The default is False.
-        save_as : TYPE, optional
-            DESCRIPTION. The default is False.
+        data : array
+            Input data for heatmap, but be 2 dimensional.
+        title : str, optional
+            Set the title of the heatmap. The default is None.
+        xlab : str, optional
+            Set the label of the x-axis. Micron ([\u03BCm]) are assumed as standard scale. The default is '[\u03BCm]'.
+        ylab : str, optional
+            Set the label of the y-axis. Microns ([\u03BCm]) are assumed as standard scale. The default is '[\u03BCm]'.
+        cmap : str, optional
+            Set the colormap of the heatmap. The default is 'coolwarm'.
+        discrete_colormap : bool, optional
+            Enables the heatmap values to be discretised. Best used in conjuction with color_bin_size. The default is False.
+        sig_cbar : int, optional
+            Set the amount of significant numbers displayed in the colorbar. The default is 3.
+        color_bin_size : float, optional
+            Set the size of the bins used for discretisation. Best used in conjuction discrete_colormap. The default is None.
+        equal_axis : bool, optional
+            Enables the pixels to look square or not. The default is True.
+        sig_ticks : int, optional
+            Set the amount of significant numbers displayed in the ticks. The default is 2.
+        npix_xtick : float, optional
+            Display a tick per n pixels in the x-axis. Note that this value can be a float. The default is 10.
+        npix_ytick : float, optional
+            Display a tick per n pixels in the y-axis. Note that this value can be a float. The default is 10.
+        scale_ticks : float, optional
+            Change the scaling of the numbers displayed in the ticks. Microns ([\u03BCm]) are assumed as standard scale, adjust scaling from there. The default is 1.
+        tick_int : bool, optional
+            Set whether you only want the ticks to display as integers instead of floats. The default is False.
+        save_as : str, optional
+            Set the location and name for the heatmap to be saved to. The default is False.
         **kwargs : TYPE
             DESCRIPTION.
 
@@ -1580,6 +1580,7 @@ class SpectralImage:
                 plt.title(self.name)
         else:
             plt.title(title)
+            
         if 'mask' in kwargs:
             mask = kwargs['mask']
             if mask.all():
@@ -1587,6 +1588,24 @@ class SpectralImage:
                 return
         else:
             mask = np.zeros(data.shape).astype('bool')
+            
+        if equal_axis:
+            plt.axis('scaled')
+            
+        if hasattr(self, 'pixelsize'):
+            ax = sns.heatmap(data, cmap=cmap, **kwargs)
+            xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
+            ax.xaxis.set_ticks(xticks)
+            ax.yaxis.set_ticks(yticks)
+            ax.set_xticklabels(xticks_labels, rotation=0)
+            ax.set_yticklabels(yticks_labels)
+        else:
+            ax = sns.heatmap(data, **kwargs)
+            
+        ax.set_xlabel(xlab)
+        ax.set_ylabel(ylab)    
+        
+        colorbar = ax.collections[0].colorbar
         if discrete_colormap:
 
             unique_data_points = np.unique(data[~mask])
@@ -1610,31 +1629,6 @@ class SpectralImage:
             kwargs['vmax'] = np.max(unique_data_points) + spacing
             kwargs['vmin'] = np.min(unique_data_points) - spacing
             
-        if equal_axis:
-            plt.axis('scaled')
-            
-        if hasattr(self, 'pixelsize'):
-            ax = sns.heatmap(data, cmap=cmap, **kwargs)
-            xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
-            ax.xaxis.set_ticks(xticks)
-            ax.yaxis.set_ticks(yticks)
-            ax.set_xticklabels(xticks_labels, rotation=0)
-            ax.set_yticklabels(yticks_labels)
-        else:
-            ax = sns.heatmap(data, **kwargs)
-            
-        if xlab is not None:
-            plt.xlabel(xlab)
-        else:
-            plt.xlabel('[\u03BCm]')
-            
-        if ylab is not None:
-            plt.ylabel(ylab)
-        else:
-            plt.ylabel('[\u03BCm]')
-        
-        colorbar = ax.collections[0].colorbar
-        if discrete_colormap:
             if data.dtype == int:
                 colorbar.set_ticks(np.unique(data[~mask]))
             else:
@@ -1646,7 +1640,7 @@ class SpectralImage:
                     else:
                         cbar_ticks_labels.append(round_scientific(tick, sig_cbar))
                 colorbar.ax.set_yticklabels(cbar_ticks_labels)
-                
+    
         if 'vmin' in kwargs:
             if np.nanmin(data[~mask]) < kwargs['vmin']:
                 cbar_ticks = colorbar.ax.get_yticklabels()
@@ -1683,29 +1677,29 @@ class SpectralImage:
         
         Parameters
         ----------
-        sig_ticks : TYPE, optional
-            DESCRIPTION. The default is 2.
-        npix_xtick : TYPE, optional
-            DESCRIPTION. The default is 10.
-        npix_ytick : TYPE, optional
-            DESCRIPTION. The default is 10.
-        scale_ticks : TYPE, optional
-            DESCRIPTION. The default is 1.
-        tick_int : TYPE, optional
-            DESCRIPTION. The default is False.
-
+        sig_ticks : int, optional
+            Set the amount of significant numbers displayed in the ticks. The default is 2.
+        npix_xtick : float, optional
+            Display a tick per n pixels in the x-axis. Note that this value can be a float. The default is 10.
+        npix_ytick : float, optional
+            Display a tick per n pixels in the y-axis. Note that this value can be a float. The default is 10.
+        scale_ticks : float, optional
+            Change the scaling of the numbers displayed in the ticks. Microns ([\u03BCm]) are assumed as standard scale, adjust scaling from there. The default is 1.
+        tick_int : bool, optional
+            Set whether you only want the ticks to display as integers instead of floats. The default is False.
+            
         Returns
         -------
-        xticks : TYPE
-            DESCRIPTION.
-        yticks : TYPE
-            DESCRIPTION.
-        xticks_labels : TYPE
-            DESCRIPTION.
-        yticks_labels : TYPE
-            DESCRIPTION.
-
+        xticks : array
+            Array of the xticks positions.
+        yticks : array
+            Array of the yticks positions.
+        xticks_labels : array
+            Array with strings of the xtick labels.
+        yticks_labels : array
+            Array with strings of the ytick labels.
         """
+        
         xticks = np.arange(0, self.x_axis.shape[0], npix_xtick)
         yticks = np.arange(0, self.y_axis.shape[0], npix_ytick) 
         if tick_int == True:
