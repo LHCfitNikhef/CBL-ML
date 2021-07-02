@@ -1591,21 +1591,7 @@ class SpectralImage:
             
         if equal_axis:
             plt.axis('scaled')
-            
-        if hasattr(self, 'pixelsize'):
-            ax = sns.heatmap(data, cmap=cmap, **kwargs)
-            xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
-            ax.xaxis.set_ticks(xticks)
-            ax.yaxis.set_ticks(yticks)
-            ax.set_xticklabels(xticks_labels, rotation=0)
-            ax.set_yticklabels(yticks_labels)
-        else:
-            ax = sns.heatmap(data, **kwargs)
-            
-        ax.set_xlabel(xlab)
-        ax.set_ylabel(ylab)    
-        
-        colorbar = ax.collections[0].colorbar
+
         if discrete_colormap:
 
             unique_data_points = np.unique(data[~mask])
@@ -1628,7 +1614,22 @@ class SpectralImage:
             spacing = color_bin_size / 2
             kwargs['vmax'] = np.max(unique_data_points) + spacing
             kwargs['vmin'] = np.min(unique_data_points) - spacing
+
+        if hasattr(self, 'pixelsize'):
+            ax = sns.heatmap(data, cmap=cmap, **kwargs)
+            xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
+            ax.xaxis.set_ticks(xticks)
+            ax.yaxis.set_ticks(yticks)
+            ax.set_xticklabels(xticks_labels, rotation=0)
+            ax.set_yticklabels(yticks_labels)
+        else:
+            ax = sns.heatmap(data, **kwargs)
             
+        ax.set_xlabel(xlab)
+        ax.set_ylabel(ylab)
+        
+        colorbar = ax.collections[0].colorbar
+        if discrete_colormap:    
             if data.dtype == int:
                 colorbar.set_ticks(np.unique(data[~mask]))
             else:
