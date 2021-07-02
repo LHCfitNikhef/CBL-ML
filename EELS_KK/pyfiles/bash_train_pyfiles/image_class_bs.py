@@ -1721,18 +1721,18 @@ class Spectral_image():
                 return
         else:
             mask = np.zeros(data.shape).astype('bool')
-        dis_max = None
-        dis_min = None
+        #dis_max = None
+        #dis_min = None
         if discrete_colormap:
 
             unique_data_points = np.unique(data[~mask])
             if 'vmax' in kwargs:
-                dis_max = kwargs['vmax']
+                #dis_max = kwargs['vmax']
                 if len(unique_data_points[unique_data_points > kwargs['vmax']]) > 0:
                     unique_data_points = unique_data_points[unique_data_points <= kwargs['vmax']]
 
             if 'vmin' in kwargs:
-                dis_min = kwargs['vmin']
+                #dis_min = kwargs['vmin']
                 if len(unique_data_points[unique_data_points < kwargs['vmin']]) > 0:
                     unique_data_points = unique_data_points[unique_data_points >= kwargs['vmin']]
 
