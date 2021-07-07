@@ -12,7 +12,7 @@ import os
 import scipy
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 import copy
@@ -23,6 +23,10 @@ import torch.nn.functional as F
 import datetime as dt
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
+import sys
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 22})
+rc('text', usetex=True)
 
 class MLP(nn.Module):
 
@@ -50,21 +54,38 @@ class MLP(nn.Module):
 
 def scale(inp, ab):
     """
-    min_inp = inp.min()
-    max_inp = inp.max()
-    
-    outp = inp/(max_inp-min_inp) * (max_out-min_out)
-    outp -= outp.min()
-    outp += min_out
-    
-    return outp
+    Rescale the training data to lie between 0.1 and 0.9
+
+    Parameters
+    ----------
+    inp: array_like
+        training data to be rescaled, e.g. dE
+    ab: array_like
+        scaling parameters, which can be find with `find_scale_var`.
+    Returns
+    -------
+    Rescaled training data
     """
-    
     return inp*ab[0] + ab[1]
-    #pass
 
 def find_scale_var(inp, min_out = 0.1, max_out=0.9):
-    a = (max_out - min_out)/(inp.max()- inp.min())
+    """
+    Computes the scaling parameters needed to rescale the training data to lie between `min_out` and `max_out`.
+
+    Parameters
+    ----------
+    inp: array_like
+        training data to be rescaled
+    min_out: float
+        lower limit. Set to 0.1 by default.
+    max_out: float
+        upper limit. Set to 0.9 by default
+
+    Returns
+    -------
+    list of rescaling parameters `[a, b]`
+    """
+    a = (max_out - min_out)/(inp.max() - inp.min())
     b = min_out - a*inp.min()
     return [a, b]
 
@@ -180,7 +201,7 @@ def derivative_clusters(image, clusters):
     return der_clusters
 
 
-def find_dE1(image, dy_dx, y_smooth):
+def find_min_dE1(image, dy_dx, y_smooth):
     #crossing
     #first positive derivative after dE=0:
     
@@ -193,45 +214,114 @@ def find_dE1(image, dy_dx, y_smooth):
     pos_der = image.deltaE[up]
     return pos_der
 
-def determine_dE1_new(image, dy_dx_clusters, y_smooth_clusters, check_with_user = False):
+
+def determine_dE1(image, dy_dx_clusters, y_smooth_clusters, shift_dE1 = 0.7, check_with_user = False):
+    """
+    Parameters
+    ----------
+    image: SpectralImage
+    dy_dx_clusters: array_like
+        Contains an array for each cluster that subsequently contains the slope of the spectrum at each pixel
+    y_smooth_clusters: array_like
+        Contains an array for each cluster that subsequently contains the spectrum at each pixel
+    shift_dE1: float, optional
+        Shift the location of `dE1` by a factor of `shift_dE1` w.r.t. to the first local minimum.
+    check_with_user: bool, optional
+        If `True`, check the value of dE1 with the user
+
+    Returns
+    -------
+    dE1_clusters: array_like
+        Array with the value of dE1 for each cluster
+    """
     dy_dx_avg = np.zeros((len(y_smooth_clusters), image.l-1))
     dE1_clusters = np.zeros(len(y_smooth_clusters))
     for i in range(len(y_smooth_clusters)):
         dy_dx_avg[i,:] = np.average(dy_dx_clusters[i], axis=0)
         y_smooth_cluster_avg = np.average(y_smooth_clusters[i], axis=0)
-        dE1_clusters[i] = find_dE1(image, dy_dx_avg[i,:], y_smooth_cluster_avg)
+        dE1_clusters[i] = find_min_dE1(image, dy_dx_avg[i,:], y_smooth_cluster_avg)
         
     if not check_with_user:
         return dE1_clusters
     
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     
-    if len(colors) < len(y_smooth_clusters):
-        print("thats too many clusters to effectively plot, man")
-        return dE1_clusters
-        #TODO: be kinder
+    # if len(colors) < len(y_smooth_clusters):
+    #     print("thats too many clusters to effectively plot, man")
+    #     return dE1_clusters
+    #     #TODO: be kinder
     der_deltaE = image.deltaE[:-1]
-    plt.figure()
+    # fig, ax = plt.subplots(figsize=(1.1*10,1.1*6))
+    # for i in range(len(y_smooth_clusters)):
+    #     dx_dy_i_avg = dy_dx_avg[i,:]
+    #     #dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+    #     ci_low = np.nanpercentile(dy_dx_clusters[i],  16, axis=0)
+    #     ci_high = np.nanpercentile(dy_dx_clusters[i],  84, axis=0)
+    #     plt.fill_between(der_deltaE,ci_low, ci_high, color = colors[i], alpha = 0.2)
+    #     plt.vlines(dE1_clusters[i]*shift_dE1, -3E3, 2E3, ls = 'dotted', color= colors[i])
+    #     if i == 0:
+    #         lab = r'$\rm{Vacuum}$'
+    #     else:
+    #         lab = r'$\rm{cluster\;%s}$'%i
+    #     plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
+    # plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
+    # plt.title(r"$\rm{Slope\;of\;EELS\;spectrum\;per\;cluster}$")
+    # plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
+    # plt.ylabel(r"$dI/d\Delta E$")
+    # plt.legend(loc='lower right', frameon=False, fontsize=15)
+    # plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
+    # plt.ylim(-3e3,2e3)
+    # plt.show()
+
+
+
+    ########
+
+    fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
     for i in range(len(y_smooth_clusters)):
-        dx_dy_i_avg = dy_dx_avg[i,:]
-        #dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
-        ci_low = np.nanpercentile(dy_dx_clusters[i],  16, axis=0)
-        ci_high = np.nanpercentile(dy_dx_clusters[i],  84, axis=0)
-        plt.fill_between(der_deltaE,ci_low, ci_high, color = colors[i], alpha = 0.2)
-        plt.vlines(dE1_clusters[i], -3E3, 2E3, ls = 'dotted', color= colors[i])
+
+        # dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+        ci_low = np.nanpercentile(y_smooth_clusters[i], 16, axis=0)
+        ci_high = np.nanpercentile(y_smooth_clusters[i], 84, axis=0)
+        plt.fill_between(image.deltaE, ci_low, ci_high, color=colors[i], alpha=0.2)
+        plt.vlines(dE1_clusters[i]*shift_dE1, 0, 6E3, ls='dotted', color=colors[i])
         if i == 0:
-            lab = "vacuum"
+            lab = r'$\rm{Vacuum}$'
         else:
-            lab = "sample cl." + str(i)
-        plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
-    plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
-    plt.title("derivatives of EELS per cluster, and range of first \npositive derivative of EELSs per cluster")
-    plt.xlabel("energy loss [eV]")
-    plt.ylabel("dy/dx")
-    plt.legend()
-    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
-    plt.ylim(-3e3,2e3)
-    
+            lab = r'$\rm{cluster\;%s}$' % i
+        plt.plot(image.deltaE, np.average(y_smooth_clusters[i], axis=0), color=colors[i], label=lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]], [0, 0], color='black')
+    plt.title(r"$\rm{Position\;of\;}$" + r"$\Delta E_I\;$" +r"$\rm{per\;cluster}$")
+    plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
+    plt.ylabel(r"$I_{\rm{EELS}}$")
+    plt.legend(loc='upper right', frameon=False, fontsize=15)
+    plt.xlim(np.min(dE1_clusters) / 4, np.max(dE1_clusters) * 2)
+    plt.ylim(0, 6e3)
+    plt.xlim(0.2, 2.0)
+    plt.show()
+    sys.exit()
+
+    # fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
+    # for i in range(len(y_smooth_clusters)):
+    #
+    #     # dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+    #     ci_low = np.nanpercentile(y_smooth_clusters[i], 16, axis=0)
+    #     ci_high = np.nanpercentile(y_smooth_clusters[i], 84, axis=0)
+    #     plt.fill_between(der_deltaE, ci_low, ci_high, color=colors[i], alpha=0.2)
+    #     plt.vlines(dE1_clusters[i], -3E3, 2E3, ls='dotted', color=colors[i])
+    #     if i == 0:
+    #         lab = r'$\rm{Vacuum}$'
+    #     else:
+    #         lab = r'$\rm{cluster\;%s}$' % i
+    #     plt.plot(der_deltaE, dx_dy_i_avg, color=colors[i], label=lab)
+    # plt.plot([der_deltaE[0], der_deltaE[-1]], [0, 0], color='black')
+    # plt.title(r"$\rm{Slope\;of\;EELS\;spectrum\;per\;cluster}$")
+    # plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
+    # plt.ylabel(r"$dI/d\Delta E$")
+    # plt.legend(loc='lower right', frameon=False, fontsize=15)
+    # plt.xlim(np.min(dE1_clusters) / 4, np.max(dE1_clusters) * 2)
+    # plt.ylim(-3e3, 2e3)
+
     
     plt.figure()
     for i in range(1,len(y_smooth_clusters)):
@@ -253,7 +343,7 @@ def determine_dE1_new(image, dy_dx_clusters, y_smooth_clusters, check_with_user 
     plt.show()
     print("please review the two auxillary plots on the derivatives of the EEL spectra. \n"+\
           "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
-    
+
     for i in range(len(y_smooth_clusters)):
         name = "sample cluster " + str(i)
         dE1_clusters[i] = user_check("dE1 of " + name, dE1_clusters[i])
@@ -338,7 +428,7 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", di
     #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
     
     added_dE1 = 0.3
-    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
+    dE1 = determine_dE1(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
     
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
@@ -451,24 +541,31 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", di
         np.savetxt(path_to_model+ "/costs.txt", loss_test_reps)
     
 
-def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, added_dE1=0.3, path_to_models="models",
+def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.3, shift_dE2 = 3, path_to_models="models",
                      display_step=1000, bs_rep_num=0):
     """
     Train the ZLP on two input features: the (scaled) log intensity and the (scaled) dE.
-
 
     Parameters
     ----------
     image: SpectralImage
         SpectralImage object
-    spectra
-    n_rep
-    n_epochs
-    lr
-    added_dE1
-    path_to_models
-    display_step
-    bs_rep_num
+    spectra: array_like
+        An array of size `n_clusters`, with each entry being a 2D array that contains all the spectra within the cluster.
+    n_rep: int, optional
+        Number of replicas to train on. Each replica consists of one spectrum from each cluster.
+    n_epochs: int, optional
+        number of epochs. Set to 30000 by default
+    lr: float, optional
+        learning rate. Set to 1e-3 by default.
+    shift_dE1: float, optional
+        Take dE1 to be `shift_dE1` times the first local minimum in the spectrum. Set to 0.3 by default.
+    path_to_models: str, optional
+        Path to where the trained models should be stored
+    display_step: int, optional
+        Number of epochs after which to produce output.
+    bs_rep_num: int, optional
+        For cluster users only: labels the parallel run.
     """
 
     if display_step is None:
@@ -476,48 +573,45 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, added_d
         display_step = 1E6
     else:
         print_progress = True
-    
-    
-    # TODO: something like: os.path.join(*path_to_models.split('/'))
-    path_to_models += (path_to_models[-1] != '/')*'/'
 
     if not os.path.exists(path_to_models):
-        Path(path_to_models).mkdir(parents=True, exist_ok=True)
+        os.mkdir(path_to_models)
     
     num_saving_per_rep = 50
     saving_step = int(n_epochs/num_saving_per_rep)
 
-    for i  in range(len(spectra)):
-        spectra[i][spectra[i]<1] = 1
+    # set all intensities smaller than 1 to 1
+    for i in range(len(spectra)):
+        spectra[i][spectra[i] < 1] = 1
     
     loss_test_reps = np.zeros(n_rep)
 
-    sigma_clusters = np.zeros((image.n_clusters, image.l))
+    sigma_clusters = np.zeros((image.n_clusters, image.l))  # shape = (n_clusters, n dE)
     for cluster in range(image.n_clusters):
-        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
+        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)  # TODO: change this to 95% CL
         ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
         sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
 
     wl1 = round(image.l/20)
     wl2 = wl1*2
+
     spectra_smooth = smooth_clusters(image, spectra, wl1)
     dy_dx = derivative_clusters(image, spectra_smooth)
-    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
-    
-    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth) * added_dE1
+    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)  # shape = (n_clusters, n_pix per cluster, n dE)
 
-    times_dE1 = 3
-    dE2 = times_dE1 *dE1
+    dE1_min = determine_dE1(image, smooth_dy_dx, spectra_smooth, check_with_user=True)  # shape = (n_clusters, )
+    dE1 = determine_dE1(image, smooth_dy_dx, spectra_smooth) * shift_dE1
+    dE2 = shift_dE2 * dE1
     
     if print_progress: print("dE1 & dE2:", np.round(dE1,3), dE2)
 
+    # rescale the dE features
     ab_deltaE = find_scale_var(image.deltaE)
-    deltaE_scaled = scale(image.deltaE,ab_deltaE)
+    deltaE_scaled = scale(image.deltaE, ab_deltaE)
     
     all_spectra  = np.empty((0,image.l))
-    
     for i in range(len(spectra)):
-        all_spectra = np.append(all_spectra, spectra[i],axis=0)
+        all_spectra = np.append(all_spectra, spectra[i], axis=0)
     
     int_log_I = np.log(np.sum(all_spectra, axis=1)).flatten()
     ab_int_log_I = find_scale_var(int_log_I)

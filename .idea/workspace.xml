@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="adding more docstrings">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="finished documenting spectral image class">
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/KK_plot_results_abel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/004_KK_results_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/004_KK_results_plots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_compare_to_hs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_compare_to_hs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results_set_for_lau.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_plot_results_set_for_lau.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_save_report_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_save_report_plots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/hs_compare_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/hs_compare_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/lau_KK_results_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/lau_KK_results_plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
@@ -61,6 +57,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/EELS_KK/code" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/EELS_KK" />
     </key>
   </component>
   <component name="RunManager">
@@ -115,7 +114,9 @@
       <workItem from="1624897121133" duration="632000" />
       <workItem from="1624956614523" duration="2237000" />
       <workItem from="1625141704358" duration="14135000" />
-      <workItem from="1625214762676" duration="5074000" />
+      <workItem from="1625214762676" duration="5714000" />
+      <workItem from="1625585963372" duration="1022000" />
+      <workItem from="1625643274983" duration="17878000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -194,7 +195,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625155084640</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="finished documenting spectral image class">
+      <created>1625220739889</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1625220739889</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,9 +230,28 @@
     <MESSAGE value="new layout sphinx" />
     <MESSAGE value="linked sphinx doc to master branch" />
     <MESSAGE value="adding more docstrings" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding more docstrings" />
+    <MESSAGE value="finished documenting spectral image class" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished documenting spectral image class" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EELS_KK/code/training.py</url>
+          <line>605</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CBL_ML$training_init.coverage" NAME="training_init Coverage Results" MODIFIED="1625146098852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/code" />
+    <SUITE FILE_PATH="coverage/CBL_ML$training_init.coverage" NAME="training_init Coverage Results" MODIFIED="1625673491997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EELS_KK/code" />
   </component>
 </project>

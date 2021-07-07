@@ -16,7 +16,7 @@ import pickle
 import _pickle as cPickle
 
 from k_means_clustering import k_means
-from training import train_zlp_scaled
+import training as train
 
 _logger = logging.getLogger(__name__)
 
@@ -58,11 +58,19 @@ class SpectralImage:
         filled with 2D numpy arrays. If save_as_attribute set to True, the cluster data is also saved as attribute
     deltaE: array_like
         shifted array of energy losses such that the zero point corresponds to the point of highest intensity.
+    x_axis: array_like
+        x-axis of the spectral image
+    y_axis: array_like
+        y-axis of the spectral image
+    clusters: array_like
+        cluster means of each cluster
+    clustered: array_like
+        A 2D array containing the index of the cluster to which each pixel belongs
 
     Examples
     --------
     >>> im = SpectralImage()
-    >>> im.train_zlp()
+    >>> im.train_zlp(n_clusters = 5)
     """
 
     #  signal names
@@ -85,11 +93,11 @@ class SpectralImage:
 
     def __init__(self, data, deltadeltaE, pixelsize=None, beam_energy=None, collection_angle=None, name=None,
                  dielectric_function_im_avg=None, dielectric_function_im_std=None, S_s_avg=None, S_s_std=None,
-                 thickness_avg=None, thickness_std=None, IEELS_avg=None, IEELS_std=None, clusters=None, clustered=None, cluster_data=None, deltaE=None,**kwargs):
+                 thickness_avg=None, thickness_std=None, IEELS_avg=None, IEELS_std=None, clusters=None, clustered=None, cluster_data=None, deltaE=None, x_axis=None, y_axis = None, **kwargs):
 
         self.data = data
         self.ddeltaE = deltadeltaE
-        self.determine_deltaE()
+        self.deltaE = self.determine_deltaE()
 
         if pixelsize is not None:
             self.pixelsize = pixelsize * 1E6
@@ -112,7 +120,8 @@ class SpectralImage:
         self.clusters = clusters
         self.clustered = clustered
         self.cluster_data = cluster_data
-        self.deltaE = deltaE
+        self.x_axis = x_axis
+        self.y_axis = y_axis
 
 
     def save_image(self, filename):
@@ -343,8 +352,8 @@ class SpectralImage:
         """
         data_avg = np.average(self.data, axis=(0, 1))
         ind_max = np.argmax(data_avg)
-        self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
-        # return deltaE
+        deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l - ind_max - 1) * self.ddeltaE, self.l)
+        return deltaE
 
     def calc_axes(self):
         """
@@ -371,8 +380,8 @@ class SpectralImage:
 
         Returns
         -------
-        signal: array_like
-            array with the requested signal from the requested pixel
+        signal : array_like
+            Array with the requested signal from the requested pixel
         """
 
         if signal in self.EELS_NAMES:
@@ -412,9 +421,7 @@ class SpectralImage:
         Returns
         -------
         cluster_data : array_like
-            filled with 2D numpy arrays. Each cell of the super numpy array is filled with the data of all spectra
-            with in one of the requested clusters.
-
+            An array of size `n_clusters`, with each entry being a 2D array that contains all the spectra within the cluster.
         """
         # TODO: check clustering before everything
         if clusters is None:
@@ -844,7 +851,7 @@ class SpectralImage:
             self.cluster()
 
         training_data = self.get_cluster_spectra(conf_interval=conf_interval, clusters=clusters, signal=signal)
-        train_zlp_scaled(self, training_data, **kwargs)
+        train.train_zlp_scaled(self, training_data, **kwargs)
 
     def load_ZLP_models(self, path_to_models="models", threshold_costs=1, name_in_path=True, plotting=False):
         if hasattr(self, "name") and name_in_path:
@@ -1424,9 +1431,9 @@ class SpectralImage:
 
     def cluster(self, n_clusters=5, based_on="log", **kwargs):
         """
-        Clusters image into clusters according to the (log) integrated intensity at each
-        pixel. Cluster means are stored in `clusters` and the index to which each cluster belongs is
-        stored in `clustered`.
+        Clusters the spectral image into clusters according to the (log) integrated intensity at each
+        pixel. Cluster means are stored in the attribute `clusters` and the index to which each cluster belongs is
+        stored in the attribute `clustered`.
 
         Parameters
         ----------
@@ -1437,8 +1444,8 @@ class SpectralImage:
             The default is `log`.
         **kwargs : keyword arguments
             additional keyword arguments to pass to the k_means function.
-
         """
+
         if based_on == "sum":
             values = np.sum(self.data, axis=2).flatten()
         elif based_on == "log":
