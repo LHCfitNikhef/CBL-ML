@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Feb 24 22:24:31 2021
-
-@author: isabe
-"""
-#TRAINING NN IN PYTORCH
 import numpy as np
 import random
 import os
@@ -90,8 +82,15 @@ def find_scale_var(inp, min_out = 0.1, max_out=0.9):
     return [a, b]
 
 
-
 def weight_reset(m):
+    """
+    Reset the weights and biases associated with the model ``m``.
+
+    Parameters
+    ----------
+    m: MLP
+        Model of type :py:meth:`MLP <MLP>`.
+    """
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
         m.reset_parameters()
 
@@ -300,17 +299,17 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.show()
 
 
-def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1 = 0.7):
+def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
     """
-    Computes the hyperparamter `dE1 for every cluster in two ways:
+    Computes the hyperparamter :math:`\Delta E_I` for every cluster in two ways:
 
-    - Take a certain fraction of the location of the first local minimum. The fraction is tuned by `shift_de1`.
-    - Take `dE1` such that only 16% of the replicas have a positive slope.
+    - Take a certain fraction of the location of the first local minimum. The fraction is tuned by ``shift_de1``.
+    - Take :math:`\Delta E_I` such that only 16% of the replicas have a positive slope.
 
     Parameters
     ----------
     image: SpectralImage
-        SpectralImage instance
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object.
     dy_dx_clusters: array_like
         An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
         pixel within the cluster.
@@ -318,12 +317,12 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1 = 0.7):
         An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
         pixel within the cluster.
     shift_de1: float, optional
-        Shift the location of `dE1` by a factor of `shift_dE1` w.r.t. to the first local minimum.
+        Shift the location of :math:`\Delta E_I` by a factor of ``shift_dE1`` w.r.t. to the first local minimum.
 
     Returns
     -------
     dE1_clusters: array_like
-        Array with the value of dE1 for each cluster.
+        Array with the value of :math:`\Delta E_I` for each cluster.
     """
 
     # number of clusters
@@ -360,222 +359,42 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1 = 0.7):
     return de1_prob
 
 
-def user_check(dE12, value):
-    #TODO: opschonen?
-    ans = input("Are you happy with a " + dE12 + " of " + str(round(value, 4)) + "? [y/n/wanted "+dE12+"] \n")
-    if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
-        ans = input("Please respond with either 'yes', 'no', or your wanted " + dE12 + ", otherwise assumed yes: \n")
-    if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
-        print("Stupid, assumed yes, using " + dE12 + " of " + str(round(value, 4)))
-        return value
-    elif ans[0] == 'y':
-        print("Perfect, using " + dE12 + " of " + str(round(value, 4)))
-        return value
-    elif ans[0] == 'n':
-        ans = input("Please input your desired " + dE12 + ": \n")
-    if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
-        ans = input("Last chance, input your desired " + dE12 + ": \n")
-    if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
-        print("Stupid, using old " + dE12 + " of " + str(round(value, 4)))
-        return value
-    else: 
-        try:
-            return (float(ans))
-        except:
-            print("input was invalid number, using original " + dE12)
-            return value
-
-
-
-def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", display_step = 1000):
-    """training also on intensity, so only one model per image, instead of one model per cluster"""
-    if hasattr(image, "name"):
-        path_to_model = image.name + "_" + path_to_models
-    
-    if not os.path.exists(path_to_model):
-        Path(path_to_model).mkdir(parents=True, exist_ok=True)
-    else:
-        ans = input("The directory " + path_to_model + " already exists, if there are trained models " +
-                    "in this folder, they will be overwritten. Do you want to continue? \n"+
-                    "yes [y], no [n], define new path[dp]\n")
-        if ans[0] == 'n':
-            return
-        elif not ans[0] == 'y':
-            path_to_model = input("Please define the new path: \n")
-    
-    spectra = image.get_cluster_spectra()
-    
-    if display_step is None:
-        print_progress = False
-    else:
-        print_progress = True
-    
-    
-    for i  in range(len(spectra)):
-        spectra[i][spectra[i]<1] = 1
-    
-    loss_test_reps = np.zeros(n_rep)
-    n_data = image.l*image.n_clusters
-    
-    #data_sigma = np.zeros((n_data,1))
-    sigma_clusters = np.zeros((image.n_clusters, image.l))
-    for cluster in range(image.n_clusters):
-        #TODO: add log!!!!!!!
-        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
-        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
-        sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
-        #data_sigma[cluster*image.l : (cluster+1)*image.l,0] = np.absolute(ci_high-ci_low)
-    
-    
-    #new??? #TODO
-    wl1 = round(image.l/20)
-    wl2 = wl1*2
-    units_per_bin = 4
-    nbins = round(image.l/units_per_bin)#150
-    spectra_smooth = smooth_clusters(image, spectra, wl1)
-    dy_dx = derivative_clusters(image, spectra_smooth)
-    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
-    #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
-    
-    added_dE1 = 0.3
-    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
-    
-    
-    #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
-    times_dE1 = 8
-    dE2 = times_dE1 *dE1 #determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
-    
-    print("dE1 & dE2:", np.round(dE1,3), dE2)
-    
-    for i in range(n_rep):
-        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
-        data = np.empty((0,1))
-        data_x = np.empty((0,2))
-        data_sigma = np.empty((0,1))
-        
-        for cluster in range(image.n_clusters):
-            n_cluster = len(spectra[cluster])
-            idx = random.randint(0,n_cluster-1)
-            #data[cluster*image.l : (cluster+1)*image.l,0] = np.log(spectra[cluster][idx])
-            select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
-            select2 = len(image.deltaE[image.deltaE>dE2[cluster]])
-            data = np.append(data, np.log(spectra[cluster][idx][:select1]))
-            data = np.append(data, np.ones(select2))
-            
-            pseudo_x = np.ones((select1+select2, 2))
-            pseudo_x[:select1,0] = image.deltaE[:select1]
-            pseudo_x[-select2:,0] = image.deltaE[-select2:]
-            pseudo_x[:,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1 #TODO
-            
-            data_x = np.concatenate((data_x,pseudo_x))#np.append(data_x, pseudo_x)
-            
-            data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
-            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
-            
-            #data_x[cluster*image.l : (cluster+1)*image.l,0] = image.deltaE
-            #data_x[cluster*image.l : (cluster+1)*image.l,1] = np.sum(np.log(spectra[cluster][idx]))*image.ddeltaE*0.1
-        
-        #print(data)
-        #print(data_x)
-        
-        #data = data.reshape(-1,1)
-        
-        
-
-        model = MLP(num_inputs=2, num_outputs=1)
-        model.apply(weight_reset)
-        #optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)
-        optimizer = optim.Adam(model.parameters(), lr=6e-3)
-        """
-        # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py
-        full_y = full_y_reps[:, i].reshape(N_full, 1)
-        train_x, train_y,train_sigma = full_x, full_y, full_sigma
-        train_x = train_x.reshape(N_full, 1)
-        train_y = train_y.reshape(N_full, 1)
-        train_sigma = train_sigma.reshape(N_full, 1)
-        """
-        #full_y = full_y_reps[:, i].reshape(N_full,1)
-        #train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
-        #    train_test_split(full_x, full_y, full_sigma, test_size=.2)
-        
-        
-        #data = data.reshape(n_data, 1)
-        
-        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.2)
-        
-        N_test = len(test_x)
-        N_train = len(train_x)
-        
-        test_x = test_x.reshape(N_test, 2)
-        test_y = test_y.reshape(N_test, 1)
-        train_x = train_x.reshape(N_train, 2)
-        train_y = train_y.reshape(N_train, 1)
-        train_sigma = train_sigma.reshape(N_train, 1)
-        test_sigma = test_sigma.reshape(N_test, 1)
-        
-        train_x = torch.from_numpy(train_x)
-        train_y = torch.from_numpy(train_y)
-        train_sigma = torch.from_numpy(train_sigma)
-        
-        test_x = torch.from_numpy(test_x)
-        test_y = torch.from_numpy(test_y)
-        test_sigma = torch.from_numpy(test_sigma)
-        
-        # train_data_x, train_data_y, train_errors = get_batch(i)
-        #loss_train = np.zeros(n_epochs)
-        loss_test = np.zeros(n_epochs)
-        min_loss_test = 1e6 #big number
-        for epoch in range(1, n_epochs + 1):
-            model.train()
-            output = model(train_x.float())
-            loss_train = loss_fn(output, train_y, train_sigma)
-
-            optimizer.zero_grad()
-            loss_train.backward()
-            optimizer.step()
-
-            #if epoch % display_step == 0:
-            #    print('Rep {}, Epoch {}, Training loss {}'.format(i, epoch, loss_train))
-            
-            model.eval()
-            with torch.no_grad():
-                output_test = model(test_x.float())
-                loss_test[epoch-1] = loss_fn(output_test, test_y, test_sigma)
-                if epoch % display_step == 0 and print_progress:
-                    print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch, loss_train, loss_test[epoch-1]))
-                if loss_test[epoch-1] < min_loss_test:
-                    torch.save(model.state_dict(), path_to_model + "/nn_rep" + str(i))
-                    loss_test_reps[i] = loss_test[epoch-1]
-                    min_loss_test = loss_test_reps[i]
-                    #iets met copy.deepcopy(model)
-        np.savetxt(path_to_model+ "/costs.txt", loss_test_reps)
-    
-
-def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.3, shift_dE2 = 3, path_to_models="models",
+def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.7, shift_dE2 = 3, path_to_models="models",
                      display_step=1000, bs_rep_num=0):
     """
-    Train the ZLP on two input features: the (scaled) log intensity and the (scaled) dE.
+    Trains the ZLP on the (clustered) spectral image.
+
+    One should train on two input features: the (scaled) log intensity :math:`\log I_{\mathrm{EELS}}` and the (scaled) :math:`\Delta E`.
 
     Parameters
     ----------
     image: SpectralImage
-        SpectralImage object
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object.
     spectra: array_like
-        An array of size `n_clusters`, with each entry being a 2D array that contains all the spectra within the cluster.
+        An array of size ``n_clusters``, with each entry being a 2D array that contains all the spectra within the cluster.
     n_rep: int, optional
-        Number of replicas to train on. Each replica consists of one spectrum from each cluster.
+        Number of replicas to train on. Each replica consists of one spectrum from each cluster. Set to 500 by default.
     n_epochs: int, optional
-        number of epochs. Set to 30000 by default
+        Number of epochs. Set to 30000 by default
     lr: float, optional
-        learning rate. Set to 1e-3 by default.
+        Learning rate. Set to :math:`10^{-3}` by default.
     shift_dE1: float, optional
-        Take dE1 to be `shift_dE1` times the first local minimum in the spectrum. Set to 0.3 by default.
+        Set to 0.7 by default. When given, :math:`\Delta E_I` is located at ``shift_dE1`` times the first local minimum in the spectrum.
     path_to_models: str, optional
-        Path to where the trained models should be stored
+        Path to where the trained models should be stored.
     display_step: int, optional
-        Number of epochs after which to produce output.
+        Number of epochs after which to print output.
     bs_rep_num: int, optional
         For cluster users only: labels the parallel run.
+
+    Examples
+    --------
+    To train the ZLP, one can run the following lines of code:
+
+    >>> dm4_path = 'path to dm4 file'
+    >>> im = SpectralImage.load_data(dm4_path)
+    >>> training_data = im.get_cluster_spectra(conf_interval=1, signal='EELS')
+    >>> train_zlp_scaled(im, training_data, n_clusters=5, n_rep=500, n_epochs=1000, path_to_models='path', display_step=10)
     """
 
     if display_step is None:
@@ -609,7 +428,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     dy_dx = derivative_clusters(image, spectra_smooth)
     smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)  # shape = (n_clusters, n_pix per cluster, n dE)
 
-    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth)
+    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1)
     dE2 = shift_dE2 * dE1
     
     if print_progress: print("dE1 & dE2:", np.round(dE1,3), dE2)
@@ -627,10 +446,10 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     del all_spectra
     
     if not os.path.exists(path_to_models + "scale_var.txt"):
-        np.savetxt(path_to_models+ "scale_var.txt", ab_int_log_I)
+        np.savetxt(path_to_models + "scale_var.txt", ab_int_log_I)
     
     if not os.path.exists(path_to_models+ "dE1.txt"):
-        np.savetxt(path_to_models+ "dE1.txt", np.vstack((image.clusters, dE1)))
+        np.savetxt(path_to_models + "dE1.txt", np.vstack((image.clusters, dE1)))
     
     for i in range(n_rep):
         save_idx = i + n_rep*bs_rep_num
@@ -640,7 +459,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         data_sigma = np.empty((0,1))
         
         for cluster in range(image.n_clusters):
-            n_cluster = len(spectra[cluster])
+            n_cluster = len(spectra[cluster]) #  number of spectra in a cluster
             idx = random.randint(0,n_cluster-1)
 
             select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
@@ -657,19 +476,10 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
             data_x = np.concatenate((data_x,pseudo_x))
             data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
             data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
-            
 
         model = MLP(num_inputs=2, num_outputs=1)
         model.apply(weight_reset)
         optimizer = optim.Adam(model.parameters(), lr=lr)
-        """
-        # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py
-        full_y = full_y_reps[:, i].reshape(N_full, 1)
-        train_x, train_y,train_sigma = full_x, full_y, full_sigma
-        train_x = train_x.reshape(N_full, 1)
-        train_y = train_y.reshape(N_full, 1)
-        train_sigma = train_sigma.reshape(N_full, 1)
-        """
 
         train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.4)
         

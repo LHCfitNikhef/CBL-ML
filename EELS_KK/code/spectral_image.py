@@ -839,27 +839,30 @@ class SpectralImage:
 
         return (check < threshold)
 
-    def train_zlp(self, n_clusters=None, conf_interval=1, clusters=None, signal='EELS', **kwargs):
+    def train_zlp(self, n_clusters=5, conf_interval=1, clusters=None, signal='EELS', **kwargs):
         """
-        Train the zero-loss peak
+        Train the ZLP on the spectral image.
+
+        The spectral image is clustered in ``n_clusters`` clusters, according to e.g. the integrated intensity or thickness.
+        A random spectrum is then taken from each cluster, which together defines one replica. The training is initiated
+        by calling :py:meth:`train_zlp_scaled() <training.train_zlp_scaled>`.
 
         Parameters
         ----------
         n_clusters: int, optional
             number of clusters
         conf_interval: int, optional
-            Default is `1`
+            Default is 1
         clusters
-        signal
-        kwargs
+        signal: str, optional
+            Type of spectrum. Set to EELS by default.
+        **kwargs
+            Additional keyword arguments that are passed to the method :py:meth:`train_zlp_scaled() <training.train_zlp_scaled>` in the :py:mod:`training` module.
         """
 
-        if n_clusters is not None:
-            self.cluster(n_clusters)
-        else:
-            self.cluster()
+        self.cluster(n_clusters)
 
-        training_data = self.get_cluster_spectra(conf_interval=conf_interval, clusters=clusters, signal=signal)
+        training_data = self.get_cluster_spectra(conf_interval=conf_interval, signal=signal)
         train.train_zlp_scaled(self, training_data, **kwargs)
 
     def load_ZLP_models(self, path_to_models="models", threshold_costs=1, name_in_path=True, plotting=False):

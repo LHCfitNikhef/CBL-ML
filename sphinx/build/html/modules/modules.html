@@ -476,7 +476,7 @@ based_on value. The default is <cite>1</cite></p></li>
 <dd><p>Calculate the complex
 dielectric function from a single scattering distribution (SSD) using
 the Kramers-Kronig relations.</p>
-<p>It uses the FFT method as in <a href="#id9"><span class="problematic" id="id4">[1]_</span></a>.  The SSD is an
+<p>It uses the FFT method as in <a href="#id7"><span class="problematic" id="id4">[1]_</span></a>.  The SSD is an
 EELSSpectrum instance containing SSD low-loss EELS with no zero-loss
 peak. The internal loop is devised to approximately subtract the
 surface plasmon contribution supposing an unoxidized planar surface and
@@ -553,7 +553,7 @@ the SSD (only when <cite>t</cite> is None)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This method is based in Egerton’s Matlab code <a href="#id10"><span class="problematic" id="id5">[1]_</span></a> with some
+<p>This method is based in Egerton’s Matlab code <a href="#id8"><span class="problematic" id="id5">[1]_</span></a> with some
 minor differences:</p>
 <ul class="simple">
 <li><p>The wrap-around problem when computing the ffts is workarounded by
@@ -766,16 +766,19 @@ flat window will produce a moving average smoothing.</p></li>
 
 <dl class="py method">
 <dt id="spectral_image.SpectralImage.train_zlp">
-<code class="sig-name descname">train_zlp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">conf_interval</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">clusters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.train_zlp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.train_zlp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Train the zero-loss peak</p>
+<code class="sig-name descname">train_zlp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">conf_interval</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">clusters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.train_zlp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.train_zlp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the ZLP on the spectral image.</p>
+<p>The spectral image is clustered in <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> clusters, according to e.g. the integrated intensity or thickness.
+A random spectrum is then taken from each cluster, which together defines one replica. The training is initiated
+by calling <a class="reference internal" href="#training.train_zlp_scaled" title="training.train_zlp_scaled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train_zlp_scaled()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of clusters</p></li>
-<li><p><strong>conf_interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Default is <cite>1</cite></p></li>
+<li><p><strong>conf_interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Default is 1</p></li>
 <li><p><strong>clusters</strong> – </p></li>
-<li><p><strong>signal</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Type of spectrum. Set to EELS by default.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments that are passed to the method <a class="reference internal" href="#training.train_zlp_scaled" title="training.train_zlp_scaled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train_zlp_scaled()</span></code></a> in the <a class="reference internal" href="#module-training" title="training"><code class="xref py py-mod docutils literal notranslate"><span class="pre">training</span></code></a> module.</p></li>
 </ul>
 </dd>
 </dl>
@@ -786,8 +789,6 @@ flat window will produce a moving average smoothing.</p></li>
 </div>
 <div class="section" id="module-training">
 <span id="the-training-module"></span><h2>The <code class="docutils literal notranslate"><span class="pre">Training</span></code> module<a class="headerlink" href="#module-training" title="Permalink to this headline">¶</a></h2>
-<p>Created on Wed Feb 24 22:24:31 2021</p>
-<p>&#64;author: isabe</p>
 <dl class="py function">
 <dt id="training.CI_high">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">CI_high</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="o">=</span><span class="default_value">0.68</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#CI_high"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.CI_high" title="Permalink to this definition">¶</a></dt>
@@ -833,24 +834,24 @@ flat window will produce a moving average smoothing.</p></li>
 <dl class="py function">
 <dt id="training.determine_de1">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">determine_de1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx_clusters</span></em>, <em class="sig-param"><span class="n">y_smooth_clusters</span></em>, <em class="sig-param"><span class="n">shift_de1</span><span class="o">=</span><span class="default_value">0.7</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#determine_de1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.determine_de1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the hyperparamter <a href="#id7"><span class="problematic" id="id8">`</span></a>dE1 for every cluster in two ways:</p>
+<dd><p>Computes the hyperparamter <span class="math notranslate nohighlight">\(\Delta E_I\)</span> for every cluster in two ways:</p>
 <ul class="simple">
-<li><p>Take a certain fraction of the location of the first local minimum. The fraction is tuned by <cite>shift_de1</cite>.</p></li>
-<li><p>Take <cite>dE1</cite> such that only 16% of the replicas have a positive slope.</p></li>
+<li><p>Take a certain fraction of the location of the first local minimum. The fraction is tuned by <code class="docutils literal notranslate"><span class="pre">shift_de1</span></code>.</p></li>
+<li><p>Take <span class="math notranslate nohighlight">\(\Delta E_I\)</span> such that only 16% of the replicas have a positive slope.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – SpectralImage instance</p></li>
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object.</p></li>
 <li><p><strong>dy_dx_clusters</strong> (<em>array_like</em>) – An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
 pixel within the cluster.</p></li>
 <li><p><strong>y_smooth_clusters</strong> (<em>array_like</em>) – An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
 pixel within the cluster.</p></li>
-<li><p><strong>shift_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Shift the location of <cite>dE1</cite> by a factor of <cite>shift_dE1</cite> w.r.t. to the first local minimum.</p></li>
+<li><p><strong>shift_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Shift the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> by a factor of <code class="docutils literal notranslate"><span class="pre">shift_dE1</span></code> w.r.t. to the first local minimum.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dE1_clusters</strong> – Array with the value of dE1 for each cluster.</p>
+<dd class="field-even"><p><strong>dE1_clusters</strong> – Array with the value of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> for each cluster.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like</p>
@@ -998,41 +999,45 @@ window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bar
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="training.train_nn">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">train_nn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#train_nn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.train_nn" title="Permalink to this definition">¶</a></dt>
-<dd><p>training also on intensity, so only one model per image, instead of one model per cluster</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="training.train_zlp_scaled">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">train_zlp_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">spectra</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">shift_dE1</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">shift_dE2</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">bs_rep_num</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#train_zlp_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.train_zlp_scaled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Train the ZLP on two input features: the (scaled) log intensity and the (scaled) dE.</p>
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">train_zlp_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">spectra</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">shift_dE1</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">shift_dE2</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">bs_rep_num</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#train_zlp_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.train_zlp_scaled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains the ZLP on the (clustered) spectral image.</p>
+<p>One should train on two input features: the (scaled) log intensity <span class="math notranslate nohighlight">\(\log I_{\mathrm{EELS}}\)</span> and the (scaled) <span class="math notranslate nohighlight">\(\Delta E\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – SpectralImage object</p></li>
-<li><p><strong>spectra</strong> (<em>array_like</em>) – An array of size <cite>n_clusters</cite>, with each entry being a 2D array that contains all the spectra within the cluster.</p></li>
-<li><p><strong>n_rep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of replicas to train on. Each replica consists of one spectrum from each cluster.</p></li>
-<li><p><strong>n_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of epochs. Set to 30000 by default</p></li>
-<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – learning rate. Set to 1e-3 by default.</p></li>
-<li><p><strong>shift_dE1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Take dE1 to be <cite>shift_dE1</cite> times the first local minimum in the spectrum. Set to 0.3 by default.</p></li>
-<li><p><strong>path_to_models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Path to where the trained models should be stored</p></li>
-<li><p><strong>display_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of epochs after which to produce output.</p></li>
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object.</p></li>
+<li><p><strong>spectra</strong> (<em>array_like</em>) – An array of size <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code>, with each entry being a 2D array that contains all the spectra within the cluster.</p></li>
+<li><p><strong>n_rep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of replicas to train on. Each replica consists of one spectrum from each cluster. Set to 500 by default.</p></li>
+<li><p><strong>n_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of epochs. Set to 30000 by default</p></li>
+<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Learning rate. Set to <span class="math notranslate nohighlight">\(10^{-3}\)</span> by default.</p></li>
+<li><p><strong>shift_dE1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Set to 0.7 by default. When given, <span class="math notranslate nohighlight">\(\Delta E_I\)</span> is located at <code class="docutils literal notranslate"><span class="pre">shift_dE1</span></code> times the first local minimum in the spectrum.</p></li>
+<li><p><strong>path_to_models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Path to where the trained models should be stored.</p></li>
+<li><p><strong>display_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of epochs after which to print output.</p></li>
 <li><p><strong>bs_rep_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – For cluster users only: labels the parallel run.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>To train the ZLP, one can run the following lines of code:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm4_path</span> <span class="o">=</span> <span class="s1">&#39;path to dm4 file&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">im</span> <span class="o">=</span> <span class="n">SpectralImage</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">dm4_path</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">training_data</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_cluster_spectra</span><span class="p">(</span><span class="n">conf_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal</span><span class="o">=</span><span class="s1">&#39;EELS&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_zlp_scaled</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">training_data</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_rep</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">path_to_models</span><span class="o">=</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="n">display_step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
-
-<dl class="py function">
-<dt id="training.user_check">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">user_check</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dE12</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#user_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.user_check" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt id="training.weight_reset">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">weight_reset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#weight_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.weight_reset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reset the weights and biases associated with the model <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<a class="reference internal" href="#training.MLP" title="training.MLP"><em>MLP</em></a>) – Model of type <a class="reference internal" href="#training.MLP" title="training.MLP"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MLP</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="the-clustering-module">
