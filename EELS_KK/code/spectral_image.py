@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 
 class SpectralImage:
     """
-    This is the spectral image class that provides several tools to analyse spectral images with the zero-loss peak
+    The spectral image class that provides several tools to analyse spectral images with the zero-loss peak
     subtracted.
 
     Parameters
@@ -69,8 +69,17 @@ class SpectralImage:
 
     Examples
     --------
-    >>> im = SpectralImage()
-    >>> im.train_zlp(n_clusters = 5)
+    An example how to train and anlyse a spectral image::
+
+        dm4_path = 'path to dm4 file'
+        im = SpectralImage.load_data(dm4_path)
+        im.train_zlp(n_clusters=n_clusters,
+                 n_rep=n_rep,
+                 n_epochs=n_epochs,
+                 bs_rep_num=bs_rep_num,
+                 path_to_models=path_to_models,
+                 display_step=display_step)
+
     """
 
     #  signal names

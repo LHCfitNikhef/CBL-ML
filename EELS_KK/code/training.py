@@ -201,10 +201,19 @@ def derivative_clusters(image, clusters):
     return der_clusters
 
 
-def find_min_dE1(image, dy_dx, y_smooth):
-    #crossing
-    #first positive derivative after dE=0:
-    
+def find_min_de1(image, dy_dx, y_smooth):
+    """
+    Finds the minimum o
+    Parameters
+    ----------
+    image
+    dy_dx
+    y_smooth
+
+    Returns
+    -------
+
+    """
     crossing = (dy_dx > 0)
     if not crossing.any():
         print("shouldn't get here")
@@ -215,68 +224,56 @@ def find_min_dE1(image, dy_dx, y_smooth):
     return pos_der
 
 
-def determine_dE1(image, dy_dx_clusters, y_smooth_clusters, shift_dE1 = 0.7, check_with_user = False):
+def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, de1_shift):
     """
-    Parameters
+    Produces two plots of the locations of `dE1`:
+
+    - The slope of the EELS spectrum for each cluster plus uncertainties.
+    - The log EELS intensity per cluster plus uncertainties.
+
+    Parameters.
     ----------
     image: SpectralImage
-    dy_dx_clusters: array_like
-        Contains an array for each cluster that subsequently contains the slope of the spectrum at each pixel
     y_smooth_clusters: array_like
-        Contains an array for each cluster that subsequently contains the spectrum at each pixel
-    shift_dE1: float, optional
-        Shift the location of `dE1` by a factor of `shift_dE1` w.r.t. to the first local minimum.
-    check_with_user: bool, optional
-        If `True`, check the value of dE1 with the user
-
-    Returns
-    -------
-    dE1_clusters: array_like
-        Array with the value of dE1 for each cluster
+        An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
+        pixel within the cluster.
+    dy_dx_clusters: array_like
+        An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
+        pixel within the cluster.
+    min_clusters: array_like
+        Location of first local minimum for each cluster
+    dE1_prob: array_like
+        Values of dE1 as determined from the 16% replica rule
+    dE1_shift: array_like
+        Values of dE1 as determined from the shifted first local minimum rule
     """
-    dy_dx_avg = np.zeros((len(y_smooth_clusters), image.l-1))
-    dE1_clusters = np.zeros(len(y_smooth_clusters))
-    for i in range(len(y_smooth_clusters)):
-        dy_dx_avg[i,:] = np.average(dy_dx_clusters[i], axis=0)
-        y_smooth_cluster_avg = np.average(y_smooth_clusters[i], axis=0)
-        dE1_clusters[i] = find_min_dE1(image, dy_dx_avg[i,:], y_smooth_cluster_avg)
-        
-    if not check_with_user:
-        return dE1_clusters
-    
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    
-    # if len(colors) < len(y_smooth_clusters):
-    #     print("thats too many clusters to effectively plot, man")
-    #     return dE1_clusters
-    #     #TODO: be kinder
     der_deltaE = image.deltaE[:-1]
-    # fig, ax = plt.subplots(figsize=(1.1*10,1.1*6))
-    # for i in range(len(y_smooth_clusters)):
-    #     dx_dy_i_avg = dy_dx_avg[i,:]
-    #     #dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
-    #     ci_low = np.nanpercentile(dy_dx_clusters[i],  16, axis=0)
-    #     ci_high = np.nanpercentile(dy_dx_clusters[i],  84, axis=0)
-    #     plt.fill_between(der_deltaE,ci_low, ci_high, color = colors[i], alpha = 0.2)
-    #     plt.vlines(dE1_clusters[i]*shift_dE1, -3E3, 2E3, ls = 'dotted', color= colors[i])
-    #     if i == 0:
-    #         lab = r'$\rm{Vacuum}$'
-    #     else:
-    #         lab = r'$\rm{cluster\;%s}$'%i
-    #     plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
-    # plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
-    # plt.title(r"$\rm{Slope\;of\;EELS\;spectrum\;per\;cluster}$")
-    # plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
-    # plt.ylabel(r"$dI/d\Delta E$")
-    # plt.legend(loc='lower right', frameon=False, fontsize=15)
-    # plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
-    # plt.ylim(-3e3,2e3)
-    # plt.show()
 
+    # plot with location of dE1 shown on top of the slope of the raw (smoothened) spectrum
+    fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
+    for i in range(len(y_smooth_clusters)):
 
+        ci_low = np.nanpercentile(dy_dx_clusters[i], 16, axis=0)
+        ci_high = np.nanpercentile(dy_dx_clusters[i], 84, axis=0)
+        if i == 0:
+            lab = r'$\rm{Vacuum}$'
+        else:
+            lab = r'$\rm{cluster\;%s}$' % i
+        plt.fill_between(der_deltaE, ci_low, ci_high, color=colors[i], alpha=0.2, label=lab)
+        plt.vlines(de1_shift[i], -3E3, 2E3, ls='dashdot', color=colors[i])
+        plt.vlines(de1_prob[i], -3E3, 2E3, ls='dotted', color=colors[i])
 
-    ########
+    plt.plot([der_deltaE[0], der_deltaE[-1]], [0, 0], color='black')
+    plt.title(r"$\rm{Slope\;of\;EELS\;spectrum\;per\;cluster}$")
+    plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
+    plt.ylabel(r"$dI/d\Delta E$")
+    plt.legend(loc='lower right', frameon=False, fontsize=15)
+    plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
+    plt.ylim(-3e3, 2e3)
+    plt.show()
 
+    # plot with location of dE1 shown on top of raw (smoothened) spectrum
     fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
     for i in range(len(y_smooth_clusters)):
 
@@ -284,70 +281,83 @@ def determine_dE1(image, dy_dx_clusters, y_smooth_clusters, shift_dE1 = 0.7, che
         ci_low = np.nanpercentile(y_smooth_clusters[i], 16, axis=0)
         ci_high = np.nanpercentile(y_smooth_clusters[i], 84, axis=0)
         plt.fill_between(image.deltaE, ci_low, ci_high, color=colors[i], alpha=0.2)
-        plt.vlines(dE1_clusters[i]*shift_dE1, 0, 6E3, ls='dotted', color=colors[i])
+        plt.vlines(de1_shift[i], 0, 3e4, ls='dotted', color=colors[i])
+        plt.vlines(de1_prob[i], 0, 3e4, ls='dashdot', color=colors[i])
         if i == 0:
             lab = r'$\rm{Vacuum}$'
         else:
             lab = r'$\rm{cluster\;%s}$' % i
         plt.plot(image.deltaE, np.average(y_smooth_clusters[i], axis=0), color=colors[i], label=lab)
     plt.plot([der_deltaE[0], der_deltaE[-1]], [0, 0], color='black')
-    plt.title(r"$\rm{Position\;of\;}$" + r"$\Delta E_I\;$" +r"$\rm{per\;cluster}$")
+    plt.title(r"$\rm{Position\;of\;}$" + r"$\Delta E_I\;$" + r"$\rm{per\;cluster}$")
     plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
-    plt.ylabel(r"$I_{\rm{EELS}}$")
+    plt.ylabel(r"$\log I_{\rm{EELS}}$")
     plt.legend(loc='upper right', frameon=False, fontsize=15)
-    plt.xlim(np.min(dE1_clusters) / 4, np.max(dE1_clusters) * 2)
-    plt.ylim(0, 6e3)
-    plt.xlim(0.2, 2.0)
+    plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
+    plt.ylim(1e2, 3e4)
+    plt.xlim(0.2, 4.0)
+    plt.yscale('log')
     plt.show()
-    sys.exit()
 
-    # fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
-    # for i in range(len(y_smooth_clusters)):
-    #
-    #     # dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
-    #     ci_low = np.nanpercentile(y_smooth_clusters[i], 16, axis=0)
-    #     ci_high = np.nanpercentile(y_smooth_clusters[i], 84, axis=0)
-    #     plt.fill_between(der_deltaE, ci_low, ci_high, color=colors[i], alpha=0.2)
-    #     plt.vlines(dE1_clusters[i], -3E3, 2E3, ls='dotted', color=colors[i])
-    #     if i == 0:
-    #         lab = r'$\rm{Vacuum}$'
-    #     else:
-    #         lab = r'$\rm{cluster\;%s}$' % i
-    #     plt.plot(der_deltaE, dx_dy_i_avg, color=colors[i], label=lab)
-    # plt.plot([der_deltaE[0], der_deltaE[-1]], [0, 0], color='black')
-    # plt.title(r"$\rm{Slope\;of\;EELS\;spectrum\;per\;cluster}$")
-    # plt.xlabel(r"$\rm{Energy\;loss}\;$" + r"$\Delta E\;$" + r"$\rm{[eV]}$")
-    # plt.ylabel(r"$dI/d\Delta E$")
-    # plt.legend(loc='lower right', frameon=False, fontsize=15)
-    # plt.xlim(np.min(dE1_clusters) / 4, np.max(dE1_clusters) * 2)
-    # plt.ylim(-3e3, 2e3)
 
-    
-    plt.figure()
-    for i in range(1,len(y_smooth_clusters)):
-        dx_dy_i_avg = dy_dx_avg[i,:]
-        dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
-        #dx_dy_i_min = np.min(dy_dx_clusters[i], axis = 0)
-        #plt.fill_between(image.deltaE, dx_dy_i_avg-dx_dy_i_std, dx_dy_i_avg+dx_dy_i_std, color = colors[i], alpha = 0.2)
-        #plt.axvspand(dE1_i_avg-dE1_i_std, dE1_i_avg+dE1_i_std, color = colors[i], alpha=0.1)
-        plt.vlines(dE1_clusters[i], -2, 1, ls = 'dotted', color= colors[i])
-        lab = "sample cl." + str(i)
-        plt.plot(der_deltaE, dx_dy_i_avg/dy_dx_avg[0,:], color = colors[i], label = lab)
-    plt.plot([der_deltaE[0], der_deltaE[-1]],[1,1], color = 'black')
-    plt.title("ratio between derivatives of EELS per cluster and the  \nderivative of vacuum cluster, and average of first positive \nderivative of EELSs per cluster")
-    plt.xlabel("energy loss [eV]")
-    plt.ylabel("ratio dy/dx sample and dy/dx vacuum")
-    plt.legend()
-    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
-    plt.ylim(-2,3)
-    plt.show()
-    print("please review the two auxillary plots on the derivatives of the EEL spectra. \n"+\
-          "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
+def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1 = 0.7):
+    """
+    Computes the hyperparamter `dE1 for every cluster in two ways:
 
-    for i in range(len(y_smooth_clusters)):
-        name = "sample cluster " + str(i)
-        dE1_clusters[i] = user_check("dE1 of " + name, dE1_clusters[i])
-    return dE1_clusters
+    - Take a certain fraction of the location of the first local minimum. The fraction is tuned by `shift_de1`.
+    - Take `dE1` such that only 16% of the replicas have a positive slope.
+
+    Parameters
+    ----------
+    image: SpectralImage
+        SpectralImage instance
+    dy_dx_clusters: array_like
+        An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
+        pixel within the cluster.
+    y_smooth_clusters: array_like
+        An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
+        pixel within the cluster.
+    shift_de1: float, optional
+        Shift the location of `dE1` by a factor of `shift_dE1` w.r.t. to the first local minimum.
+
+    Returns
+    -------
+    dE1_clusters: array_like
+        Array with the value of dE1 for each cluster.
+    """
+
+    # number of clusters
+    n_clusters = len(y_smooth_clusters)
+
+    # median EELS spectrum for each cluster
+    y_smooth_clusters_avg = np.array([np.average(y_smooth_clusters[i], axis=0) for i in range(n_clusters)])
+
+    # median slope of the EElS spectrum for each cluster
+    dy_dx_avg = np.array([np.median(dy_dx_clusters[i], axis=0) for i in range(n_clusters)])
+
+    # zeros of the first derivative for each cluster
+    min_clusters = np.array([find_min_de1(image, dy_dx_avg[i], y_smooth_clusters_avg[i]) for i in range(n_clusters)])
+
+    # find the replica such that 16% of the replicas have a steeper slope
+    dy_dx_16_perc = np.array([np.nanpercentile(dy_dx_clusters[i], 84, axis=0) for i in range(n_clusters)])
+
+    # find the index at which 16% of the replicas have a positive slope
+    # and evaluate the corresponding value of deltaE.
+    idx = np.argwhere(np.diff(np.sign(dy_dx_16_perc)))[:, 1][1::2]
+    de1_prob = image.deltaE[idx]
+
+    # find dE1 by taking a certain fraction of the location of the first local minimum.
+    # The fraction is controlled by shift_dE1
+    de1_shift = np.array([min_clusters[i] * shift_de1 for i in range(n_clusters)])
+
+    # number of replicas per cluster
+    n_rep_cluster = np.array([dy_dx_clusters[i].shape[0] for i in range(n_clusters)])
+
+    # display the computed values of dE1 (both methods) together with the raw EELS spectrum
+    plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, de1_shift)
+
+    # return de1_prob, replace by de1_shift it this method is prefered
+    return de1_prob
 
 
 def user_check(dE12, value):
@@ -428,7 +438,7 @@ def train_nn(image, n_rep = 500, n_epochs = 30000, path_to_models = "models", di
     #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
     
     added_dE1 = 0.3
-    dE1 = determine_dE1(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
+    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth) - added_dE1 #dE1s, dy_dx)
     
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
@@ -588,7 +598,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
     sigma_clusters = np.zeros((image.n_clusters, image.l))  # shape = (n_clusters, n dE)
     for cluster in range(image.n_clusters):
-        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)  # TODO: change this to 95% CL
+        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
         ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
         sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
 
@@ -599,8 +609,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     dy_dx = derivative_clusters(image, spectra_smooth)
     smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)  # shape = (n_clusters, n_pix per cluster, n dE)
 
-    dE1_min = determine_dE1(image, smooth_dy_dx, spectra_smooth, check_with_user=True)  # shape = (n_clusters, )
-    dE1 = determine_dE1(image, smooth_dy_dx, spectra_smooth) * shift_dE1
+    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth)
     dE2 = shift_dE2 * dE1
     
     if print_progress: print("dE1 & dE2:", np.round(dE1,3), dE2)
