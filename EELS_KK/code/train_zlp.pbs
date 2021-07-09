@@ -1,0 +1,1 @@
+python /data/theorie/jthoeve/EELSfitter/code/training_init.py ${ARG}

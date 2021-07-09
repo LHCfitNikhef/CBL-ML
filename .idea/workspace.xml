@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="adding train and val loss function per epoch">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding chi2 distribution functionality">
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/submit_training.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EELS_KK/code/train_zlp.pbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
@@ -119,7 +121,7 @@
       <workItem from="1625673833451" duration="81000" />
       <workItem from="1625730360885" duration="15672000" />
       <workItem from="1625773373678" duration="4803000" />
-      <workItem from="1625814667303" duration="17666000" />
+      <workItem from="1625814667303" duration="21592000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -233,7 +235,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625826928780</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Adding chi2 distribution functionality">
+      <created>1625834147340</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1625834147340</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -266,7 +275,8 @@
     <MESSAGE value="adding probabilistic method of finding dE1: first point where 16% of replicas have dI/dE &gt; 0" />
     <MESSAGE value="adding improved docstrings in training.py module" />
     <MESSAGE value="adding train and val loss function per epoch" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding train and val loss function per epoch" />
+    <MESSAGE value="Adding chi2 distribution functionality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding chi2 distribution functionality" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

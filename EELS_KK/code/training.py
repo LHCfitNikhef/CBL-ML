@@ -393,6 +393,7 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
     # display the computed values of dE1 (both methods) together with the raw EELS spectrum
     plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, de1_shift)
 
+    # TODO: insert toggle
     # return de1_prob, replace by de1_shift it this method is prefered
     return de1_prob
 
@@ -436,7 +437,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     >>> train_zlp_scaled(im, training_data, n_clusters=5, n_rep=500, n_epochs=1000, path_to_models='path', display_step=10)
     """
     # TODO: fix the code example: SpectralImage cannot be found from within the current module
-
+    # TODO: dm3 file works as well
 
     if display_step is None:
         print_progress = False
@@ -587,6 +588,8 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
             loss_train.backward()
             optimizer.step()
 
+            #TODO: add min_loss
+
             # set the model to evaluation mode
             model.eval()
             with torch.no_grad():
@@ -627,7 +630,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
             text_file.write("%s\n" % item)
 
     plot_loss_dist(path_to_models)
-
 
 def plot_loss_dist(path):
     tot_bs_rep = 1
