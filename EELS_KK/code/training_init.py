@@ -1,7 +1,7 @@
 from spectral_image import SpectralImage
 import sys
 
-bs_rep_num = int(sys.argv[1])
+bs_rep_num = 0#int(sys.argv[1])
 
 dm4_path = '../dmfiles/h-ws2_eels-SI_003.dm4'
 path_to_models = '/Users/jaco/Documents/CBL-ML/EELS_KK/output/models'

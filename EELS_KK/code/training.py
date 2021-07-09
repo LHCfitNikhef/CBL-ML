@@ -4,7 +4,7 @@ import os
 import scipy
 import pandas as pd
 import matplotlib
-#matplotlib.use('Agg')
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 import copy
@@ -17,8 +17,10 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 import sys
 from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 22})
+
+rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica'], 'size': 22})
 rc('text', usetex=True)
+
 
 class MLP(nn.Module):
 
@@ -58,9 +60,10 @@ def scale(inp, ab):
     -------
     Rescaled training data
     """
-    return inp*ab[0] + ab[1]
+    return inp * ab[0] + ab[1]
 
-def find_scale_var(inp, min_out = 0.1, max_out=0.9):
+
+def find_scale_var(inp, min_out=0.1, max_out=0.9):
     """
     Computes the scaling parameters needed to rescale the training data to lie between `min_out` and `max_out`.
 
@@ -77,8 +80,8 @@ def find_scale_var(inp, min_out = 0.1, max_out=0.9):
     -------
     list of rescaling parameters `[a, b]`
     """
-    a = (max_out - min_out)/(inp.max() - inp.min())
-    b = min_out - a*inp.min()
+    a = (max_out - min_out) / (inp.max() - inp.min())
+    b = min_out - a * inp.min()
     return [a, b]
 
 
@@ -94,8 +97,35 @@ def weight_reset(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
         m.reset_parameters()
 
+
 def loss_fn(output, target, error):
-    loss = torch.mean(torch.square((output - target)/error))
+    r"""
+    The loss function to train the ZLP takes the model ``output``, the raw spectrum ``target`` and
+    the associated ``error``. The latter corresponds to the one sigma spread within a given cluster
+    at fixed :math:`\Delta E`. It returns the cost function :math:`C_{\mathrm{ZLP}}^{(m)}` associated with the replica :math:`m` as
+
+    .. math::
+
+       C_{\mathrm{ZLP}}^{(m)} = \frac{1}{n_{E}}\sum_{k=1}^K \sum_{\ell_k=1}^{n_E^{(k)}} \frac{\left[ I^{(i_{m,k},
+       j_{m,k})}(E_{\ell_k}) - I_{\rm ZLP}^{({\mathrm{ NN}})(m)} \left(E_{\ell_k},\ln \left( N_{\mathrm{ tot}}^{(i_{
+       m,k},j_{m,k})}\right) \right) \right]^2}{\sigma^2_k \left( E_{\ell_k}\right) }.
+
+
+    Parameters
+    ----------
+    output: torch.tensor
+        Neural Network output
+    target: torch.tensor
+        Raw EELS spectrum
+    error: torch.tensor
+        Uncertainty on :math:`\log I_{\mathrm{EELS}}(\Delta E)`.
+
+    Returns
+    -------
+    loss: torch.tensor
+        Loss associated with the model ``output``.
+    """
+    loss = torch.mean(torch.square((output - target) / error))
     return loss
 
 
@@ -104,57 +134,63 @@ def MC_reps(data_avg, data_std, n_rep):
     full_y_reps = np.zeros(shape=(n_full, n_rep))
     for i in range(n_rep):
         full_rep = np.random.normal(0, data_std)
-        full_y_reps[:,i] = (data_avg + full_rep).reshape(n_full)
+        full_y_reps[:, i] = (data_avg + full_rep).reshape(n_full)
     return full_y_reps
 
 
-def binned_statistics(x,y, nbins, stats = None):
+def binned_statistics(x, y, nbins, stats=None):
     """Find the mean, variance and number of counts within the bins described by ewd"""
     if stats is None:
         stats = []
         edges = None
-    
+
     x = np.tile(x, len(y))
     y = y.flatten()
-        
-    
-    
-    #df_train, 
-    cuts1, cuts2 = ewd(x,nbins)
+
+    # df_train,
+    cuts1, cuts2 = ewd(x, nbins)
     result = []
     if "mean" in stats:
-        mean, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='mean', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)
+        mean, edges, binnum = scipy.stats.binned_statistic(x, y, statistic='mean',
+                                                           bins=cuts2)  # df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)
         result.append(mean)
     if "var" in stats:
-        #var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)
-        low, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_low, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
-        high, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_high, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)            
-        var = high-low
+        # var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)
+        low, edges, binnum = scipy.stats.binned_statistic(x, y, statistic=CI_low,
+                                                          bins=cuts2)  # df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
+        high, edges, binnum = scipy.stats.binned_statistic(x, y, statistic=CI_high,
+                                                           bins=cuts2)  # df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)
+        var = high - low
         result.append(var)
     if "count" in stats:
-        count, edges, binnum = scipy.stats.binned_statistic(x,y,statistic='count', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)
+        count, edges, binnum = scipy.stats.binned_statistic(x, y, statistic='count',
+                                                            bins=cuts2)  # df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)
         result.append(count)
     if "low" in stats:
-        low, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_low, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
+        low, edges, binnum = scipy.stats.binned_statistic(x, y, statistic=CI_low,
+                                                          bins=cuts2)  # df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
         result.append(low)
     if "high" in stats:
-        high, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_high, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)
+        high, edges, binnum = scipy.stats.binned_statistic(x, y, statistic=CI_high,
+                                                           bins=cuts2)  # df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)
         result.append(high)
     if "mean2" in stats:
-        mean2, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=get_mean, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=get_mean, bins=cuts2)
+        mean2, edges, binnum = scipy.stats.binned_statistic(x, y, statistic=get_mean,
+                                                            bins=cuts2)  # df_train[:,0], df_train[:,1], statistic=get_mean, bins=cuts2)
         result.append(mean2)
-    
+
     return result, edges
 
+
 def split_test_train(data, test_size=0.2):
-    #TODO: to use if we do not use single complete spectra
-    n_test = round(test_size*data.shape[1])
-    train, test = torch.utils.data.random_split(data, [data.shape[1]-n_test, n_test])
+    # TODO: to use if we do not use single complete spectra
+    n_test = round(test_size * data.shape[1])
+    train, test = torch.utils.data.random_split(data, [data.shape[1] - n_test, n_test])
     return train
     pass
 
 
-def smooth(data, window_len=10,window='hanning', keep_original = False):
+def smooth(data, window_len=10, window='hanning', keep_original=False):
     """smooth the data using a window with requested size.
     
     This method is based on the convolution of a scaled window with the signal.
@@ -172,31 +208,33 @@ def smooth(data, window_len=10,window='hanning', keep_original = False):
         the smoothed signal
 
     """
-    #TODO: add comnparison
-    window_len += (window_len+1)%2
-    s=np.r_['-1', data[:,window_len-1:0:-1],data,data[:,-2:-window_len-1:-1]]
+    # TODO: add comnparison
+    window_len += (window_len + 1) % 2
+    s = np.r_['-1', data[:, window_len - 1:0:-1], data, data[:, -2:-window_len - 1:-1]]
 
-    if window == 'flat': #moving average
-        w=np.ones(window_len,'d')
+    if window == 'flat':  # moving average
+        w = np.ones(window_len, 'd')
     else:
-        w=eval('np.'+window+'(window_len)')
-    
-    #y=np.convolve(w/w.sum(),s,mode='valid')
-    surplus_data = int((window_len-1)*0.5)
-    return np.apply_along_axis(lambda m: np.convolve(m, w/w.sum(), mode='valid'), axis=1, arr=s)[:,surplus_data:-surplus_data]
+        w = eval('np.' + window + '(window_len)')
+
+    # y=np.convolve(w/w.sum(),s,mode='valid')
+    surplus_data = int((window_len - 1) * 0.5)
+    return np.apply_along_axis(lambda m: np.convolve(m, w / w.sum(), mode='valid'), axis=1, arr=s)[:,
+           surplus_data:-surplus_data]
 
 
-def smooth_clusters(image, clusters, window_len = None):
-    smoothed_clusters = np.zeros((len(clusters)), dtype = object)
+def smooth_clusters(image, clusters, window_len=None):
+    smoothed_clusters = np.zeros((len(clusters)), dtype=object)
     for i in range(len(clusters)):
         smoothed_clusters[i] = smooth(clusters[i])
     return smoothed_clusters
 
+
 def derivative_clusters(image, clusters):
     dx = image.ddeltaE
-    der_clusters = np.zeros((len(clusters)), dtype = object)
+    der_clusters = np.zeros((len(clusters)), dtype=object)
     for i in range(len(clusters)):
-        der_clusters[i] = (clusters[i][:,1:]-clusters[i][:,:-1])/dx
+        der_clusters[i] = (clusters[i][:, 1:] - clusters[i][:, :-1]) / dx
     return der_clusters
 
 
@@ -216,9 +254,9 @@ def find_min_de1(image, dy_dx, y_smooth):
     crossing = (dy_dx > 0)
     if not crossing.any():
         print("shouldn't get here")
-        up = np.argmin(np.absolute(dy_dx)[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+        up = np.argmin(np.absolute(dy_dx)[np.argmax(y_smooth) + 1:]) + np.argmax(y_smooth) + 1
     else:
-        up = np.argmax(crossing[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+        up = np.argmax(crossing[np.argmax(y_smooth) + 1:]) + np.argmax(y_smooth) + 1
     pos_der = image.deltaE[up]
     return pos_der
 
@@ -359,7 +397,8 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
     return de1_prob
 
 
-def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.7, shift_dE2 = 3, path_to_models="models",
+def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.7, shift_dE2=3,
+                     path_to_models="models",
                      display_step=1000, bs_rep_num=0):
     """
     Trains the ZLP on the (clustered) spectral image.
@@ -396,6 +435,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     >>> training_data = im.get_cluster_spectra(conf_interval=1, signal='EELS')
     >>> train_zlp_scaled(im, training_data, n_clusters=5, n_rep=500, n_epochs=1000, path_to_models='path', display_step=10)
     """
+    # TODO: fix the code example: SpectralImage cannot be found from within the current module
 
     if display_step is None:
         print_progress = False
@@ -405,94 +445,114 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
     if not os.path.exists(path_to_models):
         os.mkdir(path_to_models)
-    
+
     num_saving_per_rep = 50
-    saving_step = int(n_epochs/num_saving_per_rep)
+    saving_step = int(n_epochs / num_saving_per_rep)
 
     # set all intensities smaller than 1 to 1
-    for i in range(len(spectra)):
+    for i in range(image.n_clusters):
         spectra[i][spectra[i] < 1] = 1
-    
+
     loss_test_reps = np.zeros(n_rep)
 
     sigma_clusters = np.zeros((image.n_clusters, image.l))  # shape = (n_clusters, n dE)
     for cluster in range(image.n_clusters):
-        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis= 0)
-        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis= 0)
-        sigma_clusters[cluster, :] = np.absolute(ci_high-ci_low)
+        ci_low = np.nanpercentile(np.log(spectra[cluster]), 16, axis=0)
+        ci_high = np.nanpercentile(np.log(spectra[cluster]), 84, axis=0)
+        sigma_clusters[cluster, :] = np.absolute(ci_high - ci_low)
 
-    wl1 = round(image.l/20)
-    wl2 = wl1*2
+    wl1 = round(image.l / 20)
+    wl2 = wl1 * 2
 
+    # arrays with image.n_clusters sub-arrays, each having shape (n_spectra in cluster, n dE)
     spectra_smooth = smooth_clusters(image, spectra, wl1)
     dy_dx = derivative_clusters(image, spectra_smooth)
-    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)  # shape = (n_clusters, n_pix per cluster, n dE)
+    smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
 
+    # hyperparameters: discard training data > dE1 and add pseudo data after dE2
     dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1)
     dE2 = shift_dE2 * dE1
-    
-    if print_progress: print("dE1 & dE2:", np.round(dE1,3), dE2)
 
-    # rescale the dE features
+    if print_progress:
+        print("dE1 & dE2:", np.round(dE1, 3), dE2)
+
+    # rescale the dE features to [0.1, 0.9]
     ab_deltaE = find_scale_var(image.deltaE)
     deltaE_scaled = scale(image.deltaE, ab_deltaE)
-    
-    all_spectra  = np.empty((0,image.l))
+
+    # collect all spectra from all clusters into a single array
+    all_spectra = np.empty((0, image.l))
     for i in range(len(spectra)):
         all_spectra = np.append(all_spectra, spectra[i], axis=0)
-    
+
+    # the total integrated intensity for all pixels and rescale
     int_log_I = np.log(np.sum(all_spectra, axis=1)).flatten()
     ab_int_log_I = find_scale_var(int_log_I)
     del all_spectra
-    
-    if not os.path.exists(path_to_models + "scale_var.txt"):
-        np.savetxt(path_to_models + "scale_var.txt", ab_int_log_I)
-    
-    if not os.path.exists(path_to_models+ "dE1.txt"):
-        np.savetxt(path_to_models + "dE1.txt", np.vstack((image.clusters, dE1)))
-    
-    for i in range(n_rep):
-        save_idx = i + n_rep*bs_rep_num
-        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
-        data = np.empty((0,1))
-        data_x = np.empty((0,2))
-        data_sigma = np.empty((0,1))
-        
-        for cluster in range(image.n_clusters):
-            n_cluster = len(spectra[cluster]) #  number of spectra in a cluster
-            idx = random.randint(0,n_cluster-1)
 
-            select1 = len(image.deltaE[image.deltaE<dE1[cluster]])
-            select2 = len(image.deltaE[image.deltaE>dE2[cluster]])
-            data = np.append(data, np.log(spectra[cluster][idx][:select1]))
-            data = np.append(data, np.zeros(select2))
-            
-            pseudo_x = np.ones((select1+select2, 2))
-            pseudo_x[:select1,0] = deltaE_scaled[:select1]
-            pseudo_x[-select2:,0] = deltaE_scaled[-select2:]
+    path_scale_var = os.path.join(path_to_models, "scale_var.txt")
+    if not os.path.exists(path_scale_var):
+        np.savetxt(path_scale_var, ab_int_log_I)
+
+    path_dE1 = os.path.join(path_to_models, "dE1.txt")
+    if not os.path.exists(path_dE1):
+        np.savetxt(path_dE1, np.vstack((image.clusters, dE1)))
+
+    for i in range(n_rep):
+        save_idx = i + n_rep * bs_rep_num
+        nn_rep_path = os.path.join(path_to_models, "nn_rep_{}".format(save_idx))
+        cost_path = os.path.join(path_to_models, "costs_{}.txt".format(bs_rep_num))
+
+        if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
+        data_y = np.empty((0, 1))
+        data_x = np.empty((0, 2))
+        data_sigma = np.empty((0, 1))
+
+        for cluster in range(image.n_clusters):
+            n_cluster = len(spectra[cluster])  # number of spectra in a cluster
+
+            # select a random spectrum from the cluster
+            idx = random.randint(0, n_cluster - 1)
+
+            # create slicing indices for the regions I, II and III
+            select1 = len(image.deltaE[image.deltaE < dE1[cluster]])
+            select2 = len(image.deltaE[image.deltaE > dE2[cluster]])
+
+            # Only use the log intensity up to dE1 as data. Do this for a random spectrum for each cluster.
+            data_y = np.append(data_y, np.log(spectra[cluster][idx][:select1]))
+            # The log intensity is set to zero in region III
+            data_y = np.append(data_y, np.zeros(select2))
+
+            # pseudo_x contains the two input features: log integrated I and deltaE
+            features = np.ones((select1 + select2, 2))
+            features[:select1, 0] = deltaE_scaled[:select1]
+            features[-select2:, 0] = deltaE_scaled[-select2:]
+
+            # rescale the integrated intensity
             int_log_I_idx_scaled = scale(np.log(np.sum(spectra[cluster][idx])), ab_int_log_I)
-            pseudo_x[:,1] = int_log_I_idx_scaled
-            
-            data_x = np.concatenate((data_x,pseudo_x))
+            features[:, 1] = int_log_I_idx_scaled
+
+            data_x = np.concatenate((data_x, features))
             data_sigma = np.append(data_sigma, sigma_clusters[cluster][:select1])
-            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2))
+            data_sigma = np.append(data_sigma, 0.8 * np.ones(select2)) # TODO: explain the number 0.8 in the paper
 
         model = MLP(num_inputs=2, num_outputs=1)
         model.apply(weight_reset)
         optimizer = optim.Adam(model.parameters(), lr=lr)
 
-        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data, data_sigma, test_size=0.4)
-        
-        N_test = len(test_x)
-        N_train = len(train_x)
-        
-        test_x = test_x.reshape(N_test, 2)
-        test_y = test_y.reshape(N_test, 1)
-        train_x = train_x.reshape(N_train, 2)
-        train_y = train_y.reshape(N_train, 1)
-        train_sigma = train_sigma.reshape(N_train, 1)
-        test_sigma = test_sigma.reshape(N_test, 1)
-        
+        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(data_x, data_y, data_sigma,
+                                                                                     test_size=0.4)
+
+        n_test = len(test_x)
+        n_train = len(train_x)
+
+        test_x = test_x.reshape(n_test, 2)
+        test_y = test_y.reshape(n_test, 1)
+        train_x = train_x.reshape(n_train, 2)
+        train_y = train_y.reshape(n_train, 1)
+        train_sigma = train_sigma.reshape(n_train, 1)
+        test_sigma = test_sigma.reshape(n_test, 1)
+
         train_x = torch.from_numpy(train_x)
         train_y = torch.from_numpy(train_y)
         train_sigma = torch.from_numpy(train_sigma)
@@ -500,50 +560,64 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         test_y = torch.from_numpy(test_y)
         test_sigma = torch.from_numpy(test_sigma)
 
-        loss_test = np.zeros(n_epochs)
+        loss_test_n = np.zeros(n_epochs)
         loss_train_n = np.zeros(n_epochs)
-        min_loss_test = 1e6 #big number
+
         n_stagnant = 0
         n_stagnant_max = 5
         for epoch in range(1, n_epochs + 1):
+
+            # set the model to training mode
             model.train()
             output = model(train_x.float())
             loss_train = loss_fn(output, train_y, train_sigma)
-            loss_train_n[epoch-1] = loss_train.item()
-            
-            
+            loss_train_n[epoch - 1] = loss_train.item()
+
             optimizer.zero_grad()
             loss_train.backward()
             optimizer.step()
 
-            
+            # set the model to evaluation mode
             model.eval()
             with torch.no_grad():
                 output_test = model(test_x.float())
-                loss_test[epoch-1] = loss_fn(output_test, test_y, test_sigma).item()
+                loss_test = loss_fn(output_test, test_y, test_sigma)
+                loss_test_n[epoch - 1] = loss_test.item()
                 if epoch % display_step == 0 and print_progress:
-                    print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch, round(loss_train.item(),3), round(loss_test[epoch-1],3)))
-                    if round(loss_test[epoch-1],3) >= round(loss_test[epoch-1-display_step],3):
+                    print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch,
+                                                                                       round(loss_train.item(), 3),
+                                                                                       round(loss_test_n[epoch - 1], 3)))
+                    if round(loss_test_n[epoch - 1], 3) >= round(loss_test_n[epoch - 1 - display_step], 3):
                         n_stagnant += 1
                     else:
                         n_stagnant = 0
                     if n_stagnant >= n_stagnant_max:
-                        if print_progress: print("detected stagnant training, breaking")
+                        if print_progress:
+                            print("detected stagnant training, breaking")
                         break
-                if loss_test[epoch-1] < min_loss_test:
-                    loss_test_reps[i] = loss_test[epoch-1]
-                    min_loss_test = loss_test_reps[i]
-                    min_model = copy.deepcopy(model)
-                    #iets met copy.deepcopy(model)
-                if epoch % saving_step == 0:
-                    torch.save(min_model.state_dict(), path_to_models + "nn_rep" + str(save_idx))
-                    with open(path_to_models+ "costs" + str(bs_rep_num) + ".txt", "w") as text_file:
-                        text_file.write(str(min_loss_test))
-        torch.save(min_model.state_dict(), path_to_models + "nn_rep" + str(save_idx))
-        with open(path_to_models+ "costs" + str(bs_rep_num) + ".txt", "w") as text_file:
-            text_file.write(str(min_loss_test))
-        # np.savetxt(path_to_models+ "costs" + str(bs_rep_num) + ".txt", min_loss_test) # loss_test_reps[:epoch])
 
+                # store the loss for each replica
+                loss_test_reps[i] = loss_test_n[epoch - 1]
+                min_model = copy.deepcopy(model)
+
+                # save the NN parameters and the loss after saving_step epochs
+                if epoch % saving_step == 0:
+                    torch.save(min_model.state_dict(), nn_rep_path)
+                    with open(cost_path, "w") as text_file:
+                        text_file.write(str(loss_test_n[epoch - 1]))
+
+        torch.save(min_model.state_dict(), nn_rep_path)
+
+        training_report(i, loss_train_n, loss_test_n)
+
+        # store the loss after the final epoch
+        with open(cost_path, "w") as text_file:
+            text_file.write(str(loss_test_reps))
+
+def training_report(rep_n, loss_train, loss_test):
+    plt.plot(loss_train)
+    plt.plot(loss_test)
+    plt.show()
 
 def ewd(x, nbins):
     """
@@ -601,4 +675,3 @@ def get_median(x, y, nbins):
 
 def get_mean(data):
     return np.mean(data)
-

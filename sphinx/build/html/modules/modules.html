@@ -918,7 +918,29 @@ cuts2:</p>
 <dl class="py function">
 <dt id="training.loss_fn">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">loss_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">error</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#loss_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.loss_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The loss function to train the ZLP takes the model <code class="docutils literal notranslate"><span class="pre">output</span></code>, the raw spectrum <code class="docutils literal notranslate"><span class="pre">target</span></code> and
+the associated <code class="docutils literal notranslate"><span class="pre">error</span></code>. The latter corresponds to the one sigma spread within a given cluster
+at fixed <span class="math notranslate nohighlight">\(\Delta E\)</span>. It returns the cost function <span class="math notranslate nohighlight">\(C_{\mathrm{ZLP}}^{(m)}\)</span> associated with the replica <span class="math notranslate nohighlight">\(m\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[C_{\mathrm{ZLP}}^{(m)} = \frac{1}{n_{E}}\sum_{k=1}^K \sum_{\ell_k=1}^{n_E^{(k)}} \frac{\left[ I^{(i_{m,k},
+j_{m,k})}(E_{\ell_k}) - I_{\rm ZLP}^{({\mathrm{ NN}})(m)} \left(E_{\ell_k},\ln \left( N_{\mathrm{ tot}}^{(i_{
+m,k},j_{m,k})}\right) \right) \right]^2}{\sigma^2_k \left( E_{\ell_k}\right) }.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<em>torch.tensor</em>) – Neural Network output</p></li>
+<li><p><strong>target</strong> (<em>torch.tensor</em>) – Raw EELS spectrum</p></li>
+<li><p><strong>error</strong> (<em>torch.tensor</em>) – Uncertainty on <span class="math notranslate nohighlight">\(\log I_{\mathrm{EELS}}(\Delta E)\)</span>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>loss</strong> – Loss associated with the model <code class="docutils literal notranslate"><span class="pre">output</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.tensor</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.plot_dE1">
