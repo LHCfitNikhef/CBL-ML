@@ -7,8 +7,8 @@ dm4_path = '../dmfiles/h-ws2_eels-SI_003.dm4'
 path_to_models = '/Users/jaco/Documents/CBL-ML/EELS_KK/output/models'
 
 n_clusters = 5  # number of cluster
-n_rep = 2  # number of replicas
-n_epochs = 1000  # number of epochs
+n_rep = 5  # number of replicas
+n_epochs = 10000  # number of epochs
 display_step = 10
 
 im = SpectralImage.load_data(dm4_path)

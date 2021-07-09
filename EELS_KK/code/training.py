@@ -437,6 +437,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     """
     # TODO: fix the code example: SpectralImage cannot be found from within the current module
 
+
     if display_step is None:
         print_progress = False
         display_step = 1E6
@@ -454,6 +455,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         spectra[i][spectra[i] < 1] = 1
 
     loss_test_reps = np.zeros(n_rep)
+    loss_train_reps = np.zeros(n_rep)
 
     sigma_clusters = np.zeros((image.n_clusters, image.l))  # shape = (n_clusters, n dE)
     for cluster in range(image.n_clusters):
@@ -498,10 +500,17 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     if not os.path.exists(path_dE1):
         np.savetxt(path_dE1, np.vstack((image.clusters, dE1)))
 
+    # path to file that keeps track of the cost function after training for each replica
+    train_cost_path = os.path.join(path_to_models, "costs_train_{}.txt".format(bs_rep_num))
+    test_cost_path = os.path.join(path_to_models, "costs_test_{}.txt".format(bs_rep_num))
+
     for i in range(n_rep):
         save_idx = i + n_rep * bs_rep_num
         nn_rep_path = os.path.join(path_to_models, "nn_rep_{}".format(save_idx))
-        cost_path = os.path.join(path_to_models, "costs_{}.txt".format(bs_rep_num))
+
+        training_report_path = os.path.join(path_to_models, 'rep_{}'.format(save_idx))
+        if not os.path.exists(training_report_path):
+            os.makedirs(training_report_path)
 
         if print_progress: print("Started training on replica number {}".format(i) + ", at time ", dt.datetime.now())
         data_y = np.empty((0, 1))
@@ -560,8 +569,9 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         test_y = torch.from_numpy(test_y)
         test_sigma = torch.from_numpy(test_sigma)
 
-        loss_test_n = np.zeros(n_epochs)
-        loss_train_n = np.zeros(n_epochs)
+        # store the test and train loss per epoch
+        loss_test_n = []
+        loss_train_n = []
 
         n_stagnant = 0
         n_stagnant_max = 5
@@ -571,7 +581,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
             model.train()
             output = model(train_x.float())
             loss_train = loss_fn(output, train_y, train_sigma)
-            loss_train_n[epoch - 1] = loss_train.item()
+            loss_train_n.append(loss_train.item())
 
             optimizer.zero_grad()
             loss_train.backward()
@@ -582,7 +592,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
             with torch.no_grad():
                 output_test = model(test_x.float())
                 loss_test = loss_fn(output_test, test_y, test_sigma)
-                loss_test_n[epoch - 1] = loss_test.item()
+                loss_test_n.append(loss_test.item())
                 if epoch % display_step == 0 and print_progress:
                     print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch,
                                                                                        round(loss_train.item(), 3),
@@ -594,30 +604,84 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
                     if n_stagnant >= n_stagnant_max:
                         if print_progress:
                             print("detected stagnant training, breaking")
+                        # save the optimal model
+                        torch.save(model.state_dict(), nn_rep_path)
                         break
 
-                # store the loss for each replica
-                loss_test_reps[i] = loss_test_n[epoch - 1]
-                min_model = copy.deepcopy(model)
+                # update the test and train loss of the replica
+                loss_test_reps[i] = loss_test.item()
+                loss_train_reps[i] = loss_train.item()
 
-                # save the NN parameters and the loss after saving_step epochs
-                if epoch % saving_step == 0:
-                    torch.save(min_model.state_dict(), nn_rep_path)
-                    with open(cost_path, "w") as text_file:
-                        text_file.write(str(loss_test_n[epoch - 1]))
+        # save the model state when the maximum number of allowed epochs has been reached
+        torch.save(model.state_dict(), nn_rep_path)
 
-        torch.save(min_model.state_dict(), nn_rep_path)
+        # make a training report for each replica
+        training_report(training_report_path, i, loss_train_n, loss_test_n)
 
-        training_report(i, loss_train_n, loss_test_n)
+    with open(train_cost_path, "w") as text_file:
+        for item in loss_train_reps:
+            text_file.write("%s\n" % item)
 
-        # store the loss after the final epoch
-        with open(cost_path, "w") as text_file:
-            text_file.write(str(loss_test_reps))
+    with open(test_cost_path, "w") as text_file:
+        for item in loss_test_reps:
+            text_file.write("%s\n" % item)
 
-def training_report(rep_n, loss_train, loss_test):
-    plt.plot(loss_train)
-    plt.plot(loss_test)
+    plot_loss_dist(path_to_models)
+
+
+def plot_loss_dist(path):
+    tot_bs_rep = 1
+    cost_test_best = []
+    cost_train_best = []
+
+    for bs_rep in range(tot_bs_rep):
+        with open(os.path.join(path, 'costs_test_{}.txt'.format(bs_rep))) as f:
+            for line in f:
+                cost_test_best.append(float(line.strip()))
+        with open(os.path.join(path, 'costs_train_{}.txt'.format(bs_rep))) as f:
+            for line in f:
+                cost_train_best.append(float(line.strip()))
+
+    plt.figure(figsize=(1.2*10, 1.2*6))
+    plt.hist(cost_train_best, label=r'$\rm{Training}$', alpha=0.4)
+    plt.hist(cost_test_best, label=r'$\rm{Validation}$', alpha=0.4)
+    plt.title(r'$\chi^2\;\rm{distribution}$')
+    plt.xlabel(r'$\chi^2$')
+    plt.legend(frameon=False, loc='upper right')
     plt.show()
+
+
+
+
+
+def training_report(path, rep_n, loss_train, loss_test):
+    """
+    Produce a training report
+
+    Parameters
+    ----------
+    path
+    rep_n
+    loss_train
+    loss_test
+    """
+    training_loss_path = os.path.join(path, 'training_loss.txt')
+    with open(training_loss_path, 'w') as f:
+        for item in loss_train:
+            f.write("%s\n" % item)
+
+    test_loss_path = os.path.join(path, 'test_loss.txt')
+    with open(test_loss_path, 'w') as f:
+        for item in loss_test:
+            f.write("%s\n" % item)
+
+    fig, ax = plt.subplots(figsize=(1.1*10, 1.1*6))
+    plt.plot(loss_train, label=r"$\rm{Training\;loss}$")
+    plt.plot(loss_test, label=r"$\rm{Validation\;loss}$")
+    plt.xlabel(r"$\rm{Epochs}$")
+    plt.ylabel(r"$\rm{Loss}$")
+    plt.legend(loc='best', frameon=False)
+    fig.savefig(os.path.join(path, 'loss.pdf'))
 
 def ewd(x, nbins):
     """
