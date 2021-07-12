@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding chi2 distribution functionality">
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/submit_training.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EELS_KK/code/train_zlp.pbs" afterDir="false" />
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding cluster scripts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +118,10 @@
       <workItem from="1625673833451" duration="81000" />
       <workItem from="1625730360885" duration="15672000" />
       <workItem from="1625773373678" duration="4803000" />
-      <workItem from="1625814667303" duration="21592000" />
+      <workItem from="1625814667303" duration="21750000" />
+      <workItem from="1625843659687" duration="129000" />
+      <workItem from="1626076505763" duration="3559000" />
+      <workItem from="1626080754868" duration="182000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -242,7 +242,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625834147340</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Adding cluster scripts">
+      <created>1625843567424</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1625843567424</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,7 +283,8 @@
     <MESSAGE value="adding improved docstrings in training.py module" />
     <MESSAGE value="adding train and val loss function per epoch" />
     <MESSAGE value="Adding chi2 distribution functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding chi2 distribution functionality" />
+    <MESSAGE value="Adding cluster scripts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding cluster scripts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

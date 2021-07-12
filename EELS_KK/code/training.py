@@ -631,8 +631,9 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
     plot_loss_dist(path_to_models)
 
+
 def plot_loss_dist(path):
-    tot_bs_rep = 1
+    tot_bs_rep = 10
     cost_test_best = []
     cost_train_best = []
 
@@ -644,16 +645,14 @@ def plot_loss_dist(path):
             for line in f:
                 cost_train_best.append(float(line.strip()))
 
+    fig, ax = plt.subplots(figsize=(1.1*10, 1.1*6))
     plt.figure(figsize=(1.2*10, 1.2*6))
     plt.hist(cost_train_best, label=r'$\rm{Training}$', alpha=0.4)
     plt.hist(cost_test_best, label=r'$\rm{Validation}$', alpha=0.4)
     plt.title(r'$\chi^2\;\rm{distribution}$')
     plt.xlabel(r'$\chi^2$')
     plt.legend(frameon=False, loc='upper right')
-    plt.show()
-
-
-
+    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
 
 
 def training_report(path, rep_n, loss_train, loss_test):
