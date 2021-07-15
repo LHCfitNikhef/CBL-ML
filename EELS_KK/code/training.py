@@ -474,8 +474,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
     # hyperparameters: discard training data > dE1 and add pseudo data after dE2
     dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1)
-    import pdb
-    pdb.set_trace()
     dE2 = shift_dE2 * dE1
 
     if print_progress:
