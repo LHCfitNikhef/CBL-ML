@@ -959,54 +959,99 @@ class SpectralImage:
 
         if idx is not None:
             with torch.no_grad():
-                model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(idx)))
+                model.load_state_dict(torch.load(path_to_models + "/nn_rep_" + str(idx)))
             self.ZLP_models.append(copy.deepcopy(model))
             return
 
-        path_costs = "costs"
+        path_costs = "costs_test_"
         files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
-        idx_costs = np.array([int(s.replace(path_costs, "").replace(".txt", "")) for s in files_costs])
-        path_model_rep = "nn_rep"
-        files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
-        idx_models = np.array([int(s.replace(path_model_rep, "").replace(".txt", "")) for s in files_model_rep])
+        #idx_costs = np.array([int(s.replace(path_costs, "").replace(".txt", "")) for s in files_costs])
+        # path_model_rep = "nn_rep_"
+        # files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
+        # idx_models = np.array([int(s.replace(path_model_rep, "").replace(".txt", "")) for s in files_model_rep])
+        #
+        # overlap_idx = np.intersect1d(idx_costs, idx_models)
 
-        overlap_idx = np.intersect1d(idx_costs, idx_models)
-
-        n_rep = len(overlap_idx)
-        costs = np.zeros(n_rep)
-        files_models = np.zeros(n_rep, dtype='U12')  # reads max 999,999 models, you really do not need more.
+        #n_rep = len(overlap_idx)
+        #costs = np.zeros(n_rep)
+        #files_models = np.zeros(n_rep, dtype='U12')  # reads max 999,999 models, you really do not need more.
 
         # for i in range(n_rep):
         #     file = files_costs[i]
         #     costs[i] =  np.loadtxt(path_to_models + file)
 
-        for i in range(n_rep):
-            j = overlap_idx[i]
-            idx_cost = np.argwhere(idx_costs == j)[0, 0]
-            idx_model = np.argwhere(idx_models == j)[0, 0]
+        bs_rep_num = len(files_costs)
 
-            file = files_costs[idx_cost]
-            costs[i] = np.loadtxt(path_to_models + file)
+        cost_tests = []
+        cost_trains = []
+        for i in range(1, bs_rep_num + 1):
+            path_tests = os.path.join(path_to_models, 'costs_test_{}.txt'.format(i))
+            path_trains = os.path.join(path_to_models, 'costs_train_{}.txt'.format(i))
+            with open(path_tests) as f:
+                for line in f:
+                    cost_tests.append(float(line.strip()))
 
-            files_models[i] = files_model_rep[idx_model]
+            with open(path_trains) as f:
+                for line in f:
+                    cost_trains.append(float(line.strip()))
 
-        self.costs = costs[costs < threshold_costs]
+        cost_tests = np.array(cost_tests)
+        cost_tests_mean = np.mean(cost_tests)
+        cost_tests_std = np.percentile(cost_tests, 68)
+        threshold_costs_tests = cost_tests_mean + 5 * cost_tests_std
+        cost_tests = cost_tests[cost_tests < threshold_costs_tests]
 
+        cost_trains = np.array(cost_trains)
+        cost_trains_mean = np.mean(cost_trains)
+        cost_trains_std = np.percentile(cost_trains, 68)
+        threshold_costs_trains = cost_trains_mean + 5 * cost_trains_std
+        cost_trains = cost_trains[cost_trains < threshold_costs_trains]
+
+        # plot the chi2 distributions
+        # TODO: add option to function call whether to plot or not
         if plotting:
-            plt.figure()
-            plt.title("chi^2 distribution of models")
-            plt.hist(costs[costs < threshold_costs * 3], bins=20)
-            plt.xlabel("chi^2")
-            plt.ylabel("number of occurence")
+            fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
+            plt.hist(cost_trains, label=r'$\rm{Training}$', bins=40, range=(0, 5* cost_tests_std), alpha=0.4)
+            plt.hist(cost_tests, label=r'$\rm{Validation}$', bins=40, range= (0, 5* cost_tests_std), alpha=0.4)
+            plt.title(r'$\chi^2\;\rm{distribution}$')
+            plt.xlabel(r'$\chi^2$')
+            plt.legend(frameon=False, loc='upper right')
+            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
 
-        for j in range(n_rep):
-            if costs[j] < threshold_costs:
-                file = files_models[j]
-                if os.path.getsize(path_to_models + file) > 0:
-                    with torch.no_grad():
-                        model.load_state_dict(torch.load(path_to_models + file))
-                    if self.check_model(model):
-                        self.ZLP_models.append(copy.deepcopy(model))
+        # cost = np.zeros(n_rep)
+        # for i in range(n_rep):
+        #
+        #
+        #     cost[i] = np.loadtxt(path_to_models + file)
+        #
+        #     j = overlap_idx[i]
+        #     idx_cost = np.argwhere(idx_costs == j)[0, 0]
+        #     idx_model = np.argwhere(idx_models == j)[0, 0]
+        #
+        #     file = files_costs[idx_cost]
+        #     costs[i] = np.loadtxt(path_to_models + file)
+        #
+        #     files_models[i] = files_model_rep[idx_model]
+        #
+        # self.costs = costs[costs < threshold_costs]
+
+        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
+        for idx in nn_rep_idx.flatten():
+            path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
+            model.load_state_dict(torch.load(path))
+            self.ZLP_models.append(copy.deepcopy(model))
+
+        import pdb
+        pdb.set_trace()
+        #
+        # for j in range(n_rep):
+        #     if costs[j] < threshold_costs:
+        #         file = files_models[j]
+        #         if os.path.getsize(path_to_models + file) > 0:
+        #             with torch.no_grad():
+        #                 model.load_state_dict(torch.load(path_to_models + file))
+        #             if self.check_model(model):
+        #                 self.ZLP_models.append(copy.deepcopy(model))
 
     # METHODS ON DIELECTRIC FUNCTIONS
     def calc_thickness(self, spect, n, N_ZLP=1):
