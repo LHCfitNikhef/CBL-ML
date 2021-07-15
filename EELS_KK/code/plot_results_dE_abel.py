@@ -140,8 +140,8 @@ for i in np.arange(0, 31,30):
             ax3.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
             ax3.set_xlabel("Energy loss [eV]")
             ax3.set_ylabel("Intensity [a.u.]")
-            ax3.set_ylim(0, 60000)
-            ax3.set_xlim(0, 7)
+            ax3.set_ylim(0, 3000)
+            ax3.set_xlim(0, im.deltaE[-1])
             
             ax3.plot(im.deltaE, signal, label = "Signal", color='black')
             #for k in range(300):
@@ -150,9 +150,9 @@ for i in np.arange(0, 31,30):
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
             #    ax3.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
-            ax3.vlines(dE1,0,100000, color='C4')
-            ax3.vlines(dE2,0,100000, color='C4')
-            ax3.axvspan(dE1, dE2, alpha=0.5, color='C4')
+            ax3.vlines(dE1,0,100000, color='C3', linestyle='--')
+            ax3.vlines(dE2,0,100000, color='C3', linestyle='--')
+            ax3.axvspan(dE1, dE2, alpha=0.1, color='C3')
             ax3.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
             ax3.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
             ax3.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
@@ -168,7 +168,7 @@ for i in np.arange(0, 31,30):
             ax4.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
             ax4.set_xlabel("Energy loss [eV]")
             ax4.set_ylabel("Intensity [a.u.]")
-            ax4.set_ylim(0,500)
+            ax4.set_ylim(0,600)
             ax4.set_xlim(1,7)
             
             ax4.plot(im.deltaE, signal, label = "Signal", color='black')
@@ -178,9 +178,9 @@ for i in np.arange(0, 31,30):
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
             #    ax4.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
-            ax4.vlines(dE1,0,100000, color='C4')
-            ax4.vlines(dE2,0,100000, color='C4')
-            ax4.axvspan(dE1, dE2, alpha=0.5, color='C4')
+            ax4.vlines(dE1,0,100000, color='C3', linestyle='--')
+            ax4.vlines(dE2,0,100000, color='C3', linestyle='--')
+            ax4.axvspan(dE1, dE2, alpha=0.1, color='C3')
             ax4.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
             ax4.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
             ax4.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
