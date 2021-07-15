@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="removing pdb lines">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="fixed issue: now correct mapping between costs and nn_rep">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +125,8 @@
       <workItem from="1626080754868" duration="890000" />
       <workItem from="1626088600547" duration="5329000" />
       <workItem from="1626247139269" duration="25928000" />
-      <workItem from="1626369075541" duration="4157000" />
+      <workItem from="1626369075541" duration="7526000" />
+      <workItem from="1626380260982" duration="4000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -296,7 +296,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626373513134</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="fixed issue: now correct mapping between costs and nn_rep">
+      <created>1626376531476</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1626376531476</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -348,7 +355,8 @@
     <MESSAGE value="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs" />
     <MESSAGE value="count variable in calc_gen_ZLPs gives the number of ZLPs replicas" />
     <MESSAGE value="removing pdb lines" />
-    <option name="LAST_COMMIT_MESSAGE" value="removing pdb lines" />
+    <MESSAGE value="fixed issue: now correct mapping between costs and nn_rep" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed issue: now correct mapping between costs and nn_rep" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

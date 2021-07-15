@@ -13,6 +13,10 @@ import numpy as np
 from spectral_image import SpectralImage
 #from train_nn_torch_bs import train_nn_scaled, MC_reps, binned_statistics
 import torch
+from matplotlib import rc
+
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 22})
+rc('text', usetex=True)
 
 plt.rcParams.update({'font.size': 10})
 
@@ -58,20 +62,20 @@ def select_ZLPs(image, ZLPs):
     
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4')
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/h-ws2_eels-SI_004.dm4')
-im = SpectralImage.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
+im = SpectralImage.load_data('/data/theorie/abelbk/WS2/area03-eels-SI-aligned.dm4')
 # im.cluster(5)
 #im=im
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_09/'
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_h-ws2_SI-004/E1_05/'
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
+path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
 
 
 
 im.pool(5)
 im.cluster(5)
 sig = "pooled"
-title_specimen = 'WS2 nanoflower'#'InSe'
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_new"
+title_specimen = r'$\rm{WS_2\;nanoflower\;}$'#'InSe'
+save_loc = "/data/theorie/jthoeve/EELSfitter/output"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
@@ -115,7 +119,7 @@ for i in np.arange(0, 31,30):
             pixy = j
             dE1 = im.dE1[1, int(im.clustered[pixy,pixx])]
             dE2 = 3 * dE1
-            
+
             signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             
             ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal = sig, select_ZLPs=True)
@@ -143,55 +147,55 @@ for i in np.arange(0, 31,30):
             ax3.set_ylim(0, 3000)
             ax3.set_xlim(0, im.deltaE[-1])
             
-            ax3.plot(im.deltaE, signal, label = "Signal", color='black')
+            ax3.plot(im.deltaE, signal, label = r"$\rm{Signal}$", color='black')
             #for k in range(300):
             #    zlp_idx = np.random.randint(0, len(ZLPs_gen))
-            #    ax3.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0') 
+            #    ax3.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0')
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
             #    ax3.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
-            ax3.vlines(dE1,0,100000, color='C3', linestyle='--')
-            ax3.vlines(dE2,0,100000, color='C3', linestyle='--')
+            ax3.axvline(dE1,0,1, color='C3', linestyle='--')
+            ax3.axvline(dE2,0,1, color='C3', linestyle='--')
             ax3.axvspan(dE1, dE2, alpha=0.1, color='C3')
             ax3.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
-            ax3.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
+            ax3.plot(im.deltaE, mean_gen, label = r"$\rm{Model\;prediction\;}$" + "$I_{ZLP}$")
             ax3.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
-            ax3.plot(im.deltaE, mean_match, label = "Matched $I_{ZLP}$")
+            ax3.plot(im.deltaE, mean_match, label = r"$\rm{Matched\;}$" + "$I_{ZLP}$")
             ax3.fill_between(im.deltaE, signal - low_match, signal - high_match, alpha = 0.2)
-            ax3.plot(im.deltaE, signal - mean_match, label = "$I_{inel}$")
+            ax3.plot(im.deltaE, signal - mean_match, label = "$I_{\mathrm{inel}}$")
             
-            ax3.legend(loc=1)
+            ax3.legend(loc=1, frameon=False)
             
             plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
             
             fig4, ax4 = plt.subplots(dpi=200)
-            ax4.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
-            ax4.set_xlabel("Energy loss [eV]")
-            ax4.set_ylabel("Intensity [a.u.]")
+            ax4.set_title(title_specimen + r"$\rm{specimen}$" +"\n" + r"$\rm{ZLP\;matching\;result\;at\;pixel[%d,%d]}$"%(pixx, pixy))
+            ax4.set_xlabel(r"$\rm{Energy\;loss\;[eV]}$")
+            ax4.set_ylabel(r"$\rm{Intensity\;[a.u.]}$")
             ax4.set_ylim(0,600)
             ax4.set_xlim(1,7)
-            
-            ax4.plot(im.deltaE, signal, label = "Signal", color='black')
+
+            ax4.plot(im.deltaE, signal, label = r"$\rm{Signal}$", color='black')
             #for k in range(300):
             #    zlp_idx = np.random.randint(0, len(ZLPs_gen))
-            #    ax4.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0') 
+            #    ax4.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0')
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
-            #    ax4.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
+            #    ax4.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1')
             ax4.vlines(dE1,0,100000, color='C3', linestyle='--')
             ax4.vlines(dE2,0,100000, color='C3', linestyle='--')
             ax4.axvspan(dE1, dE2, alpha=0.1, color='C3')
             ax4.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
-            ax4.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
+            ax4.plot(im.deltaE, mean_gen, label = r"$\rm{Model\;prediction\;}$" + "$I_{ZLP}$")
             ax4.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
-            ax4.plot(im.deltaE, mean_match, label = "Matched $I_{ZLP}$")
+            ax4.plot(im.deltaE, mean_match, label = r"$\rm{Matched\;}$" + "$I_{ZLP}$")
             ax4.fill_between(im.deltaE, signal - low_match, signal - high_match, alpha = 0.2)
-            ax4.plot(im.deltaE, signal - mean_match, label = "$I_{inel}$")
-            
-            ax4.legend(loc=1)
-            
-            plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
+            ax4.plot(im.deltaE, signal - mean_match, label = "$I_{\mathrm{inel}}$")
 
+            ax4.legend(loc=1, frameon=False)
+
+            #plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
+            plt.savefig(save_loc +'/ZLP_WS2_30_30.pdf' )
             """
             #Plotting random ZLPs
             fig5, ax5 = plt.subplots()
