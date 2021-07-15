@@ -970,6 +970,11 @@ pixel within the cluster.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="training.plot_loss_dist">
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">plot_loss_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#plot_loss_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.plot_loss_dist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="training.scale">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em>, <em class="sig-param"><span class="n">ab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rescale the training data to lie between 0.1 and 0.9</p>
@@ -1048,6 +1053,22 @@ window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bar
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train_zlp_scaled</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">training_data</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_rep</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_epochs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">path_to_models</span><span class="o">=</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="n">display_step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="training.training_report">
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">training_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">rep_n</span></em>, <em class="sig-param"><span class="n">loss_train</span></em>, <em class="sig-param"><span class="n">loss_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#training_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.training_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a training report</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – </p></li>
+<li><p><strong>rep_n</strong> – </p></li>
+<li><p><strong>loss_train</strong> – </p></li>
+<li><p><strong>loss_test</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

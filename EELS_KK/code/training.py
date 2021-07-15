@@ -474,6 +474,8 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
     # hyperparameters: discard training data > dE1 and add pseudo data after dE2
     dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1)
+    import pdb
+    pdb.set_trace()
     dE2 = shift_dE2 * dE1
 
     if print_progress:
@@ -654,7 +656,7 @@ def plot_loss_dist(path):
     plt.legend(frameon=False, loc='upper right')
     fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
 
-plot_loss_dist('/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/')
+#plot_loss_dist('/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/')
 
 
 def training_report(path, rep_n, loss_train, loss_test):

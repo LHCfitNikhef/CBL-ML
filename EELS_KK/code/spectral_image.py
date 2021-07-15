@@ -730,11 +730,12 @@ class SpectralImage:
         ### Definition for the matching procedure
         signal = self.get_pixel_signal(i, j, signal)
 
+        # TODO: use the smefit version
         if not hasattr(self, 'ZLP_models'):
             try:
-                self.load_ZLP_models(**kwargs)
+                self.load_ZLP_models_smefit(**kwargs)
             except:
-                self.load_ZLP_models()
+                self.load_ZLP_models_smefit()
         if not hasattr(self, 'ZLP_models'):
             ans = input("No ZLP models found. Please specify directory or train models. \n" +
                         "Do you want to define path to models [p], train models [t] or quit [q]?\n")
@@ -743,9 +744,9 @@ class SpectralImage:
             elif ans[0] == "p":
                 path_to_models = input("Please input path to models: \n")
                 try:
-                    self.load_ZLP_models(**kwargs)
+                    self.load_ZLP_models_smefit(**kwargs)
                 except:
-                    self.load_ZLP_models()
+                    self.load_ZLP_models_smefit()
                 if not hasattr(self, 'ZLP_models'):
                     print("You had your chance. Please locate your models.")
                     return
@@ -756,9 +757,9 @@ class SpectralImage:
                     self.train_zlp()
                 if "path_to_models" in kwargs:
                     path_to_models = kwargs["path_to_models"]
-                    self.load_ZLP_models(path_to_models)
+                    self.load_ZLP_models_smefit(path_to_models)
                 else:
-                    self.load_ZLP_models()
+                    self.load_ZLP_models_smefit()
             else:
                 print("unvalid input, not calculating ZLPs")
                 return
@@ -1018,40 +1019,12 @@ class SpectralImage:
             plt.legend(frameon=False, loc='upper right')
             fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
 
-        # cost = np.zeros(n_rep)
-        # for i in range(n_rep):
-        #
-        #
-        #     cost[i] = np.loadtxt(path_to_models + file)
-        #
-        #     j = overlap_idx[i]
-        #     idx_cost = np.argwhere(idx_costs == j)[0, 0]
-        #     idx_model = np.argwhere(idx_models == j)[0, 0]
-        #
-        #     file = files_costs[idx_cost]
-        #     costs[i] = np.loadtxt(path_to_models + file)
-        #
-        #     files_models[i] = files_model_rep[idx_model]
-        #
-        # self.costs = costs[costs < threshold_costs]
-
         nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
             model.load_state_dict(torch.load(path))
             self.ZLP_models.append(copy.deepcopy(model))
 
-        import pdb
-        pdb.set_trace()
-        #
-        # for j in range(n_rep):
-        #     if costs[j] < threshold_costs:
-        #         file = files_models[j]
-        #         if os.path.getsize(path_to_models + file) > 0:
-        #             with torch.no_grad():
-        #                 model.load_state_dict(torch.load(path_to_models + file))
-        #             if self.check_model(model):
-        #                 self.ZLP_models.append(copy.deepcopy(model))
 
     # METHODS ON DIELECTRIC FUNCTIONS
     def calc_thickness(self, spect, n, N_ZLP=1):
