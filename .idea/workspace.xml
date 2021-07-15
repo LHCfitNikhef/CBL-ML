@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="count variable in calc_gen_ZLPs gives the number of ZLPs replicas">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="removing pdb lines">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +126,7 @@
       <workItem from="1626080754868" duration="890000" />
       <workItem from="1626088600547" duration="5329000" />
       <workItem from="1626247139269" duration="25928000" />
-      <workItem from="1626369075541" duration="1301000" />
+      <workItem from="1626369075541" duration="4157000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -288,7 +289,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626354663354</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="removing pdb lines">
+      <created>1626373513134</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1626373513134</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -339,7 +347,8 @@
     <MESSAGE value="Adding matching nn_rep to costs" />
     <MESSAGE value="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs" />
     <MESSAGE value="count variable in calc_gen_ZLPs gives the number of ZLPs replicas" />
-    <option name="LAST_COMMIT_MESSAGE" value="count variable in calc_gen_ZLPs gives the number of ZLPs replicas" />
+    <MESSAGE value="removing pdb lines" />
+    <option name="LAST_COMMIT_MESSAGE" value="removing pdb lines" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

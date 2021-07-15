@@ -1008,6 +1008,7 @@ class SpectralImage:
         cost_trains_mean = np.mean(cost_trains)
         cost_trains_std = np.percentile(cost_trains, 68)
         threshold_costs_trains = cost_trains_mean + 5 * cost_trains_std
+        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
 
         # plot the chi2 distributions
@@ -1021,7 +1022,7 @@ class SpectralImage:
             plt.legend(frameon=False, loc='upper right')
             fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
 
-        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
+
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
             model.load_state_dict(torch.load(path))
