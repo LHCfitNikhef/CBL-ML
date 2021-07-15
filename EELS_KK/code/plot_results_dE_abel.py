@@ -8,11 +8,13 @@ Created on Fri Mar  5 13:19:40 2021
 #EVALUTING dE1
 
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import numpy as np
-from image_class_bs import Spectral_image
+from spectral_image import SpectralImage
 #from train_nn_torch_bs import train_nn_scaled, MC_reps, binned_statistics
 import torch
+
+plt.rcParams.update({'font.size': 12})
 
 def gen_ZLP_I(image, I):
     deltaE = np.linspace(0.1,0.9, image.l)
@@ -52,28 +54,29 @@ def select_ZLPs(image, ZLPs):
     
     threshold = 0.01
     
-    return [check<threshold]
+    return [check < threshold]
     
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4')
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/h-ws2_eels-SI_004.dm4')
-im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
+im = SpectralImage.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
 # im.cluster(5)
 #im=im
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_09/'
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_h-ws2_SI-004/E1_05/'
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_07/'
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
 
 
 
 im.pool(5)
+im.cluster(5)
 sig = "pooled"
 title_specimen = 'WS2 nanoflower'#'InSe'
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_new"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
 #%%
-
+"""
 fig1, ax1 = plt.subplots(dpi=200)
 fig2, ax2 = plt.subplots(dpi=200)
 ax1.set_title("Predictions for scaled intensities 0.1-0.9 of ")
@@ -90,95 +93,95 @@ for I in [0.1,0.3,0.5,0.7,0.9]:
     if check: ZLPs = ZLPs[tuple(select_ZLPs(im, ZLPs))]
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
-    mean = np.average(ZLPs, axis = 0)
     mean = np.nanpercentile(ZLPs, 50, axis=0)
     #[mean, var, low, high], edges = binned_statistics(im.deltaE, ZLPs, n_bins, ["mean", "var", "low", "high"])
     ax1.fill_between(im.deltaE, low, high, alpha = 0.3)
     ax2.fill_between(im.deltaE, low, high, alpha = 0.3)
-    ax1.plot(im.deltaE, mean, label = "I_scales = " + str(I))
-    ax2.plot(im.deltaE, mean, label = "I_scales = " + str(I))
+    ax1.plot(im.deltaE, mean, label = "I$_{scales}$ = " + str(I))
+    ax2.plot(im.deltaE, mean, label = "I$_{scales}$ = " + str(I))
  
 ax2.set_ylim(0,1e3)
 ax2.set_xlim(0.4,6)
 ax1.legend()
 ax2.legend()
 print("predictions done")
-
+"""
 #%%
 
-for i in np.arange(0,len(im.x_axis),30):
-    for j in np.arange(0,len(im.y_axis),30):
+for i in np.arange(0, 31,30):
+    for j in np.arange(0, 31,30):
         if i != 0 and j != 0:
             pixx = i
             pixy = j
             dE1 = im.dE1[1, int(im.clustered[pixy,pixx])]
+            
+            signal = im.get_pixel_signal(pixy, pixx, signal = sig)
+            
+            ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
+            #if check:
+                #select = select_ZLPs(im, ZLPs_gen)
+                #ZLPs_gen = ZLPs_gen[tuple(select)]
+                
+            low_gen = np.nanpercentile(ZLPs_gen, 16, axis=0)
+            high_gen = np.nanpercentile(ZLPs_gen, 84, axis=0)
+            mean_gen = np.nanpercentile(ZLPs_gen, 50, axis=0)
+                
+            ZLPs_match = im.calc_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
+            #if check: 
+                #select = select_ZLPs(im, ZLPs_match)
+                #ZLPs_match = ZLPs_match[tuple(select)]
+            
+            low_match = np.nanpercentile(ZLPs_match, 16, axis=0)
+            high_match = np.nanpercentile(ZLPs_match, 84, axis=0)
+            mean_match = np.nanpercentile(ZLPs_match, 50, axis=0)
 
             fig3, ax3 = plt.subplots(dpi=200)
             ax3.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
             ax3.set_xlabel("Energy loss [eV]")
             ax3.set_ylabel("Intensity [a.u.]")
-            ax3.set_ylim(0,6000)
-            ax3.set_xlim(0,im.deltaE[-1])
+            ax3.set_ylim(0, 50000)
+            ax3.set_xlim(0, 40)
             
-            signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             ax3.plot(im.deltaE, signal, label = "Signal", color='black')
+            for k in range(100):
+                zlp_idx = np.random.randint(0, len(ZLPs_gen))
+                ax3.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0') 
+            #for k in range(500):
+            #    zlp_idx = np.random.randint(0, len(ZLPs_match))
+            #    ax3.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
             
-            ZLPs = im.calc_gen_ZLPs(pixy, pixx, signal = sig)
-            if check:
-                select = select_ZLPs(im, ZLPs)
-                ZLPs = ZLPs[tuple(select)]
-                low = np.nanpercentile(ZLPs, 16, axis=0)
-                high = np.nanpercentile(ZLPs, 84, axis=0)
-                mean = np.average(ZLPs, axis = 0)
-                mean = np.nanpercentile(ZLPs, 50, axis=0)
-                ax3.fill_between(im.deltaE, low, high, alpha = 0.2)
-                ax3.plot(im.deltaE, mean, label = "Model prediction $I_{ZLP}$")
-        
-            ZLPs = im.calc_ZLPs(pixy, pixx, signal=sig)
-            if check: ZLPs = ZLPs[tuple(select)]
-            low = np.nanpercentile(ZLPs, 16, axis=0)
-            high = np.nanpercentile(ZLPs, 84, axis=0)
-        
-            mean = np.nanpercentile(ZLPs, 50, axis=0)
-            ax3.fill_between(im.deltaE, low, high, alpha = 0.2)
-            ax3.plot(im.deltaE, mean, label = "Matched $I_{ZLP}$")
-            ax3.fill_between(im.deltaE, signal-low, signal-high, alpha = 0.2)
-            ax3.plot(im.deltaE, signal-mean, label = "$I_{inel}$")
+            #ax3.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
+            #ax3.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
+            #ax3.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
+            #ax3.plot(im.deltaE, mean_match, label = "Matched $I_{ZLP}$")
+            #ax3.fill_between(im.deltaE, signal - low_match, signal - high_match, alpha = 0.2)
+            #ax3.plot(im.deltaE, signal - mean_match, label = "$I_{inel}$")
+            
             ax3.legend(loc=1)
             
             plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
-
+            
             fig4, ax4 = plt.subplots(dpi=200)
             ax4.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
             ax4.set_xlabel("Energy loss [eV]")
             ax4.set_ylabel("Intensity [a.u.]")
             ax4.set_ylim(0,600)
-            ax4.set_xlim(0.4,6)
+            ax4.set_xlim(0.4,7)
             
-            signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             ax4.plot(im.deltaE, signal, label = "Signal", color='black')
-            
-            ZLPs = im.calc_gen_ZLPs(pixy, pixx, signal = sig)
-            if check:
-                select = select_ZLPs(im, ZLPs)
-                ZLPs = ZLPs[tuple(select)]
-                low = np.nanpercentile(ZLPs, 16, axis=0)
-                high = np.nanpercentile(ZLPs, 84, axis=0)
-                mean = np.average(ZLPs, axis = 0)
-                mean = np.nanpercentile(ZLPs, 50, axis=0)
-                ax4.fill_between(im.deltaE, low, high, alpha = 0.2)
-                ax4.plot(im.deltaE, mean, label = "Model prediction $I_{ZLP}$")
-        
-            ZLPs = im.calc_ZLPs(pixy, pixx, signal=sig)
-            if check: ZLPs[tuple(select)]
-            low = np.nanpercentile(ZLPs, 16, axis=0)
-            high = np.nanpercentile(ZLPs, 84, axis=0)
-        
-            mean = np.nanpercentile(ZLPs, 50, axis=0)
-            ax4.fill_between(im.deltaE, low, high, alpha = 0.2)
-            ax4.plot(im.deltaE, mean, label = "Matched $I_{ZLP}$")
-            ax4.fill_between(im.deltaE, signal-low, signal-high, alpha = 0.2)
-            ax4.plot(im.deltaE, signal-mean, label = "$I_{inel}$")
+            for k in range(100):
+                zlp_idx = np.random.randint(0, len(ZLPs_gen))
+                ax4.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0') 
+            #for k in range(500):
+            #    zlp_idx = np.random.randint(0, len(ZLPs_match))
+            #    ax4.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
+                
+            #ax4.fill_between(im.deltaE, low_gen, high_gen, alpha = 0.2)
+            #ax4.plot(im.deltaE, mean_gen, label = "Model prediction $I_{ZLP}$")
+            #ax4.fill_between(im.deltaE, low_match, high_match, alpha = 0.2)
+            #ax4.plot(im.deltaE, mean_match, label = "Matched $I_{ZLP}$")
+            #ax4.fill_between(im.deltaE, signal - low_match, signal - high_match, alpha = 0.2)
+            #ax4.plot(im.deltaE, signal - mean_match, label = "$I_{inel}$")
             ax4.legend(loc=1)
             
             plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
@@ -218,6 +221,9 @@ for i in np.arange(0,len(im.x_axis),30):
             ax6.legend()
             """
             print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)))
+
+#%%
+
 
 #%%
 
