@@ -736,35 +736,37 @@ class SpectralImage:
                 self.load_ZLP_models_smefit(**kwargs)
             except:
                 self.load_ZLP_models_smefit()
-        if not hasattr(self, 'ZLP_models'):
-            ans = input("No ZLP models found. Please specify directory or train models. \n" +
-                        "Do you want to define path to models [p], train models [t] or quit [q]?\n")
-            if ans[0] == "q":
-                return
-            elif ans[0] == "p":
-                path_to_models = input("Please input path to models: \n")
-                try:
-                    self.load_ZLP_models_smefit(**kwargs)
-                except:
-                    self.load_ZLP_models_smefit()
-                if not hasattr(self, 'ZLP_models'):
-                    print("You had your chance. Please locate your models.")
-                    return
-            elif ans[0] == "t":
-                try:
-                    self.train_zlp(**kwargs)
-                except:
-                    self.train_zlp()
-                if "path_to_models" in kwargs:
-                    path_to_models = kwargs["path_to_models"]
-                    self.load_ZLP_models_smefit(path_to_models)
-                else:
-                    self.load_ZLP_models_smefit()
-            else:
-                print("unvalid input, not calculating ZLPs")
-                return
+
+        # if not hasattr(self, 'ZLP_models'):
+        #     ans = input("No ZLP models found. Please specify directory or train models. \n" +
+        #                 "Do you want to define path to models [p], train models [t] or quit [q]?\n")
+        #     if ans[0] == "q":
+        #         return
+        #     elif ans[0] == "p":
+        #         path_to_models = input("Please input path to models: \n")
+        #         try:
+        #             self.load_ZLP_models_smefit(**kwargs)
+        #         except:
+        #             self.load_ZLP_models_smefit()
+        #         if not hasattr(self, 'ZLP_models'):
+        #             print("You had your chance. Please locate your models.")
+        #             return
+        #     elif ans[0] == "t":
+        #         try:
+        #             self.train_zlp(**kwargs)
+        #         except:
+        #             self.train_zlp()
+        #         if "path_to_models" in kwargs:
+        #             path_to_models = kwargs["path_to_models"]
+        #             self.load_ZLP_models_smefit(path_to_models)
+        #         else:
+        #             self.load_ZLP_models_smefit()
+        #     else:
+        #         print("unvalid input, not calculating ZLPs")
+        #         return
 
         count = len(self.ZLP_models)
+
         predictions = np.zeros((count, self.l))  # np.zeros((count, len_data))
 
         if not hasattr(self, "scale_var_deltaE"):

@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding matching nn_rep to costs">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +125,7 @@
       <workItem from="1626076505763" duration="3559000" />
       <workItem from="1626080754868" duration="890000" />
       <workItem from="1626088600547" duration="5329000" />
-      <workItem from="1626247139269" duration="14875000" />
+      <workItem from="1626247139269" duration="17519000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -281,7 +274,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626343511045</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs">
+      <created>1626352002924</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1626352002924</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -330,7 +330,8 @@
     <MESSAGE value="Adding cluster scripts" />
     <MESSAGE value="Adding chi2 distribution plots" />
     <MESSAGE value="Adding matching nn_rep to costs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding matching nn_rep to costs" />
+    <MESSAGE value="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix: use load_ZLP_models_smefit in calc_gen_ZLPs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

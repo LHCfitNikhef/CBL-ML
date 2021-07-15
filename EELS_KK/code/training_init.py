@@ -15,9 +15,11 @@ display_step = 10
 
 im = SpectralImage.load_data(dm4_path)
 im.cluster(5)
-
-
+im.pool(5)
 path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
+im.calc_gen_ZLPs(30, 30, signal="pooled", path_to_models=path_to_models)
+
+
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
 im.train_zlp(n_clusters=n_clusters,
