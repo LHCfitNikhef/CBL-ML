@@ -633,11 +633,11 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
 
 
 def plot_loss_dist(path):
-    tot_bs_rep = 10
+    tot_bs_rep = 500
     cost_test_best = []
     cost_train_best = []
 
-    for bs_rep in range(tot_bs_rep):
+    for bs_rep in range(1, tot_bs_rep):
         with open(os.path.join(path, 'costs_test_{}.txt'.format(bs_rep))) as f:
             for line in f:
                 cost_test_best.append(float(line.strip()))
@@ -653,6 +653,8 @@ def plot_loss_dist(path):
     plt.xlabel(r'$\chi^2$')
     plt.legend(frameon=False, loc='upper right')
     fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
+
+plot_loss_dist('/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/')
 
 
 def training_report(path, rep_n, loss_train, loss_test):

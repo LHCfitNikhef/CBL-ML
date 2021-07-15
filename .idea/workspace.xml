@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding cluster scripts">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="Adding chi2 distribution plots">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
     </list>
@@ -57,6 +57,7 @@
       <recent name="$PROJECT_DIR$/EELS_KK/code" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/EELS_KK/output/no_early_stopping" />
       <recent name="$PROJECT_DIR$/EELS_KK" />
     </key>
   </component>
@@ -121,7 +122,9 @@
       <workItem from="1625814667303" duration="21750000" />
       <workItem from="1625843659687" duration="129000" />
       <workItem from="1626076505763" duration="3559000" />
-      <workItem from="1626080754868" duration="182000" />
+      <workItem from="1626080754868" duration="890000" />
+      <workItem from="1626088600547" duration="5329000" />
+      <workItem from="1626247139269" duration="1014000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -249,7 +252,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625843567424</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Adding chi2 distribution plots">
+      <created>1626081057417</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1626081057417</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,7 +270,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/develop" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -284,7 +306,8 @@
     <MESSAGE value="adding train and val loss function per epoch" />
     <MESSAGE value="Adding chi2 distribution functionality" />
     <MESSAGE value="Adding cluster scripts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding cluster scripts" />
+    <MESSAGE value="Adding chi2 distribution plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding chi2 distribution plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
