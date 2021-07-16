@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="fixed issue: now correct mapping between costs and nn_rep">
+    <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="adding latex strings to plots">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_analysis_models_bs.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/pyfiles/bash_train_pyfiles/KK_analysis_models_bs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/doctrees/modules/modules.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/modules/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx/build/html/searchindex.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +20,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -126,7 +133,8 @@
       <workItem from="1626088600547" duration="5329000" />
       <workItem from="1626247139269" duration="25928000" />
       <workItem from="1626369075541" duration="7526000" />
-      <workItem from="1626380260982" duration="4000" />
+      <workItem from="1626380260982" duration="28000" />
+      <workItem from="1626419158844" duration="5870000" />
     </task>
     <task id="LOCAL-00001" summary="new sphinx branch">
       <created>1618918950288</created>
@@ -303,7 +311,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626376531476</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="adding latex strings to plots">
+      <created>1626380278145</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1626380278145</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -356,7 +371,8 @@
     <MESSAGE value="count variable in calc_gen_ZLPs gives the number of ZLPs replicas" />
     <MESSAGE value="removing pdb lines" />
     <MESSAGE value="fixed issue: now correct mapping between costs and nn_rep" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed issue: now correct mapping between costs and nn_rep" />
+    <MESSAGE value="adding latex strings to plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding latex strings to plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
