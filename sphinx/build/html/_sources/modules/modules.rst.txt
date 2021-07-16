@@ -1,10 +1,15 @@
 Documentation
 =============
 
-.. note::
+Welcome to the EELSfitter documentation! Here you can find instructions how to use the code and descriptions of all
+the methods and functions.
+
+..
+   note::
    This is still work in progress
 
-.. tip::
+..
+   tip::
    This is a tip! It might be wise to follow it.
 
 
@@ -17,6 +22,8 @@ The ``SpectralImage`` class
 
 The ``Training`` module
 ************************
+
+The training module contains all functions and methods necessary to train the zero-loss-peak.
 
 .. automodule:: training
     :members:

@@ -102,7 +102,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-spectralimage-class">The <code class="docutils literal notranslate"><span class="pre">SpectralImage</span></code> class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-training">The <code class="docutils literal notranslate"><span class="pre">Training</span></code> module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-training-module">The <code class="docutils literal notranslate"><span class="pre">Training</span></code> module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-clustering-module">The <code class="docutils literal notranslate"><span class="pre">Clustering</span></code> module</a></li>
 </ul>
 </li>
@@ -172,14 +172,8 @@
             
   <div class="section" id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is still work in progress</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>This is a tip! It might be wise to follow it.</p>
-</div>
+<p>Welcome to the EELSfitter documentation! Here you can find instructions how to use the code and descriptions of all
+the methods and functions.</p>
 <div class="section" id="the-spectralimage-class">
 <h2>The <code class="docutils literal notranslate"><span class="pre">SpectralImage</span></code> class<a class="headerlink" href="#the-spectralimage-class" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
@@ -810,31 +804,80 @@ by calling <a class="reference internal" href="#training.train_zlp_scaled" title
 </dd></dl>
 
 </div>
-<div class="section" id="module-training">
-<span id="the-training-module"></span><h2>The <code class="docutils literal notranslate"><span class="pre">Training</span></code> module<a class="headerlink" href="#module-training" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<div class="section" id="the-training-module">
+<h2>The <code class="docutils literal notranslate"><span class="pre">Training</span></code> module<a class="headerlink" href="#the-training-module" title="Permalink to this headline">¶</a></h2>
+<p>The training module contains all functions and methods necessary to train the zero-loss-peak.</p>
+<span class="target" id="module-training"></span><dl class="py function">
 <dt id="training.CI_high">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">CI_high</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="o">=</span><span class="default_value">0.68</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#CI_high"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.CI_high" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the upper 68% confidence level (by default) of <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array_like</em>) – arbitrary array</p></li>
+<li><p><strong>confidence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Confidence level</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>high_a</strong> – confidence level set by <code class="docutils literal notranslate"><span class="pre">confidence</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.CI_low">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">CI_low</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">confidence</span><span class="o">=</span><span class="default_value">0.68</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#CI_low"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.CI_low" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="training.MC_reps">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">MC_reps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_avg</span></em>, <em class="sig-param"><span class="n">data_std</span></em>, <em class="sig-param"><span class="n">n_rep</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#MC_reps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.MC_reps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the lower 68% confidence level (by default) of <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array_like</em>) – arbitrary array</p></li>
+<li><p><strong>confidence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Confidence level</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>low_a</strong> – confidence level set by <code class="docutils literal notranslate"><span class="pre">confidence</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt id="training.MLP">
 <em class="property">class </em><code class="sig-prename descclassname">training.</code><code class="sig-name descname">MLP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_inputs</span></em>, <em class="sig-param"><span class="n">num_outputs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#MLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.MLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Multilayer Perceptron (MLP) class. It uses the following architecture</p>
+<div class="math notranslate nohighlight">
+\[[n_i, 10, 15, 5, n_f],\]</div>
+<p>where <span class="math notranslate nohighlight">\(n_i\)</span> and <span class="math notranslate nohighlight">\(n_f\)</span> denote the number of input features and output target values respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of input features</p></li>
+<li><p><strong>num_outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the target output.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="training.MLP.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#MLP.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.MLP.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Propagates the input features <code class="docutils literal notranslate"><span class="pre">x</span></code> through the MLP.
+:param x: input features
+:type x: torch.tensor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>x</strong> – MLP outcome</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.tensor</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="training.MLP.training">
@@ -846,13 +889,28 @@ by calling <a class="reference internal" href="#training.train_zlp_scaled" title
 <dl class="py function">
 <dt id="training.binned_statistics">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">binned_statistics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">nbins</span></em>, <em class="sig-param"><span class="n">stats</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#binned_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.binned_statistics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the mean, variance and number of counts within the bins described by ewd</p>
+<dd><p>Find the mean, variance and number of counts within the bins described by <a class="reference internal" href="#training.ewd" title="training.ewd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ewd()</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="training.derivative_clusters">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">derivative_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">clusters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#derivative_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.derivative_clusters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the derivative of the spectral image in each cluster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object</p></li>
+<li><p><strong>clusters</strong> (<em>array_like</em>) – An array with size the number of clusters Each entry is a 2D array that contains all the spectra within the cluster.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>der_clusters</strong> – Slope of the intensity spectrum for all clusters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.determine_de1">
@@ -885,32 +943,49 @@ pixel within the cluster.</p></li>
 <dl class="py function">
 <dt id="training.ewd">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">ewd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">nbins</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#ewd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.ewd" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>INPUT:</dt><dd><p>x:
-y:
-nbins:</p>
+<dd><p>Apply Equal Width Discretization (EWD) to <code class="docutils literal notranslate"><span class="pre">x</span></code> to determine variances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – input data</p></li>
+<li><p><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of bins</p></li>
+</ul>
 </dd>
-<dt>OUTPUT:</dt><dd><p>df_train:
-cuts1:
-cuts2:</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>cuts1</strong> (<em>numpy.ndarray</em>)</p></li>
+<li><p><strong>cuts2</strong> (<em>numpy.ndarray</em>)</p></li>
+</ul>
+</p>
 </dd>
 </dl>
-<p>Apply Equal Width Discretization (EWD) to x and y data to determine variances</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="training.find_min_de1">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">find_min_de1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx</span></em>, <em class="sig-param"><span class="n">y_smooth</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#find_min_de1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.find_min_de1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the minimum o
-:param image:
-:param dy_dx:
-:param y_smooth:</p>
+<dd><p>Finds the location of the first local minimum of the intensity spectrum</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object</p></li>
+<li><p><strong>dy_dx</strong> (<em>array_like</em>) – Derivative of the intensity spectrum</p></li>
+<li><p><strong>y_smooth</strong> (<em>array_like</em>) – Smoothed intensity spectrum</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pos_der</strong> – Position of first local minimum</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="training.find_scale_var">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">find_scale_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em>, <em class="sig-param"><span class="n">min_out</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">max_out</span><span class="o">=</span><span class="default_value">0.9</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#find_scale_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.find_scale_var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the scaling parameters needed to rescale the training data to lie between <cite>min_out</cite> and <cite>max_out</cite>.</p>
+<dd><p>Computes the scaling parameters needed to rescale the training data to lie between <code class="docutils literal notranslate"><span class="pre">min_out</span></code> and <code class="docutils literal notranslate"><span class="pre">max_out</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -920,10 +995,10 @@ cuts2:</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p><strong>a, b</strong> – list of rescaling parameters</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of rescaling parameters <cite>[a, b]</cite></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -931,12 +1006,19 @@ cuts2:</p>
 <dl class="py function">
 <dt id="training.get_mean">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">get_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#get_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.get_mean" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="training.get_median">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">get_median</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">nbins</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#get_median"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.get_median" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the mean of <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>array_like</em>) – data to average</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mean</strong> – The mean of <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.loss_fn">
@@ -973,21 +1055,18 @@ m,k},j_{m,k})}\right) \right) \right]^2}{\sigma^2_k \left( E_{\ell_k}\right) }.\
 <li><p>The slope of the EELS spectrum for each cluster plus uncertainties.</p></li>
 <li><p>The log EELS intensity per cluster plus uncertainties.</p></li>
 </ul>
-<p>image: SpectralImage
-y_smooth_clusters: array_like</p>
-<blockquote>
-<div><p>An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
-pixel within the cluster.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>dy_dx_clusters: array_like</dt><dd><p>An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
-pixel within the cluster.</p>
-</dd>
-<dt>min_clusters: array_like</dt><dd><p>Location of first local minimum for each cluster</p>
-</dd>
-<dt>dE1_prob: array_like</dt><dd><p>Values of dE1 as determined from the 16% replica rule</p>
-</dd>
-<dt>dE1_shift: array_like</dt><dd><p>Values of dE1 as determined from the shifted first local minimum rule</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object</p></li>
+<li><p><strong>y_smooth_clusters</strong> (<em>array_like</em>) – An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
+pixel within the cluster.</p></li>
+<li><p><strong>dy_dx_clusters</strong> (<em>array_like</em>) – An array that contains an array for each cluster, which subsequently contains the slope of the spectrum at each
+pixel within the cluster.</p></li>
+<li><p><strong>min_clusters</strong> (<em>array_like</em>) – Location of first local minimum for each cluster</p></li>
+<li><p><strong>dE1_prob</strong> (<em>array_like</em>) – Values of dE1 as determined from the 16% replica rule</p></li>
+<li><p><strong>dE1_shift</strong> (<em>array_like</em>) – Values of dE1 as determined from the shifted first local minimum rule</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -995,7 +1074,13 @@ pixel within the cluster.</p>
 <dl class="py function">
 <dt id="training.plot_loss_dist">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">plot_loss_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#plot_loss_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.plot_loss_dist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plot the <span class="math notranslate nohighlight">\(\chi^2\)</span> distribution of the training and validation set after training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Location where to store the plot.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.scale">
@@ -1004,8 +1089,8 @@ pixel within the cluster.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inp</strong> (<em>array_like</em>) – training data to be rescaled, e.g. dE</p></li>
-<li><p><strong>ab</strong> (<em>array_like</em>) – scaling parameters, which can be find with <cite>find_scale_var</cite>.</p></li>
+<li><p><strong>inp</strong> (<em>array_like</em>) – training data to be rescaled, e.g. <span class="math notranslate nohighlight">\(\Delta E\)</span></p></li>
+<li><p><strong>ab</strong> (<em>array_like</em>) – scaling parameters, which can be find with <a class="reference internal" href="#training.find_scale_var" title="training.find_scale_var"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_scale_var()</span></code></a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1025,15 +1110,20 @@ pixel within the cluster.</p>
 The signal is prepared by introducing reflected copies of the signal
 (with the window size) in both ends so that transient parts are minimized
 in the begining and end part of the output signal.</p>
-<dl>
-<dt>input:</dt><dd><p>x: the input signal
-window_len: the dimension of the smoothing window; should be an odd integer
-window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bartlett’, ‘blackman’</p>
-<blockquote>
-<div><p>flat window will produce a moving average smoothing.</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array_like</em>) – The input signal</p></li>
+<li><p><strong>window_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The dimension of the smoothing window; should be an odd integer. Set to 10 by default.</p></li>
+<li><p><strong>window</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – the type of window from <code class="docutils literal notranslate"><span class="pre">&quot;flat&quot;</span></code>, ‘<code class="docutils literal notranslate"><span class="pre">&quot;hanning&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;hamming&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;bartlett&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;blackman&quot;</span></code>
+<code class="docutils literal notranslate"><span class="pre">&quot;flat&quot;</span></code> window will produce a moving average smoothing.</p></li>
+</ul>
 </dd>
-<dt>output:</dt><dd><p>the smoothed signal</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>smoothed_signal</strong> – The smoothed spectrum</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1041,12 +1131,23 @@ window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bar
 <dl class="py function">
 <dt id="training.smooth_clusters">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">smooth_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">clusters</span></em>, <em class="sig-param"><span class="n">window_len</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#smooth_clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.smooth_clusters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="training.split_test_train">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">split_test_train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">0.2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#split_test_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.split_test_train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Smooth the spectrum for all clusters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><em>SpectralImage</em></a>) – <a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">spectral_image.SpectralImage</span></code></a> object</p></li>
+<li><p><strong>clusters</strong> (<em>array_like</em>) – </p></li>
+<li><p><strong>window_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Smoothing window length</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>smoothed_clusters</strong> – The smoothed spectra for all clusters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="training.train_zlp_scaled">
@@ -1080,15 +1181,14 @@ window: the type of window from ‘flat’, ‘hanning’, ‘hamming’, ‘bar
 
 <dl class="py function">
 <dt id="training.training_report">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">training_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">rep_n</span></em>, <em class="sig-param"><span class="n">loss_train</span></em>, <em class="sig-param"><span class="n">loss_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#training_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.training_report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produce a training report</p>
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">training_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">loss_train</span></em>, <em class="sig-param"><span class="n">loss_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#training_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.training_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a training report: evolution of the training and validation loss per epoch</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – </p></li>
-<li><p><strong>rep_n</strong> – </p></li>
-<li><p><strong>loss_train</strong> – </p></li>
-<li><p><strong>loss_test</strong> – </p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – location where to store the evolution plots</p></li>
+<li><p><strong>loss_train</strong> (<em>array_like</em>) – Training loss</p></li>
+<li><p><strong>loss_test</strong> (<em>array_like</em>) – Validation loss</p></li>
 </ul>
 </dd>
 </dl>
