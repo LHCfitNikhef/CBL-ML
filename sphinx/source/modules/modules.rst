@@ -38,3 +38,4 @@ The ``Clustering`` module
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: cost_clusters, exp, dist, log, power, reassign_values, relocate_cluster, relocate_clusters

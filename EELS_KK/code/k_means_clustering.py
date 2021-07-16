@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jan 14 14:23:07 2021
 
-@author: isabel
-"""
 import numpy as np
 import math
 #CLUSTERING
@@ -56,7 +52,7 @@ def reassign_values(clusters, values, cost_function = dist):
 
 def k_means(values, n_clusters=3, n_iterations=30, n_times=5):
     """
-    The k means clustering algorithm. Unsupervised clustering into `n_clusters` clusters, by minimising
+    The k means clustering algorithm. Unsupervised clustering into ``n_clusters`` clusters, by minimising
     the distance to the cluster means.
 
     Parameters
