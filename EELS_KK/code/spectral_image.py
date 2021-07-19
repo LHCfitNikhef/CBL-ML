@@ -102,7 +102,9 @@ class SpectralImage:
 
     def __init__(self, data, deltadeltaE, pixelsize=None, beam_energy=None, collection_angle=None, name=None,
                  dielectric_function_im_avg=None, dielectric_function_im_std=None, S_s_avg=None, S_s_std=None,
-                 thickness_avg=None, thickness_std=None, IEELS_avg=None, IEELS_std=None, clusters=None, clustered=None, cluster_data=None, deltaE=None, x_axis=None, y_axis = None, **kwargs):
+                 thickness_avg=None, thickness_std=None, IEELS_avg=None, IEELS_std=None, clusters=None, clustered=None, cluster_data=None, deltaE=None, x_axis=None, y_axis = None,
+                 ZLP_models = None, scale_var_deltaE=None, crossings_E=None, crossings_n=None, data_smooth=None, dE1=None, n=None, pooled=None,
+                 scale_var_log_sum_I = None, **kwargs):
 
         self.data = data
         self.ddeltaE = deltadeltaE
@@ -131,7 +133,15 @@ class SpectralImage:
         self.cluster_data = cluster_data
         self.x_axis = x_axis
         self.y_axis = y_axis
-
+        self.ZLP_models = ZLP_models
+        self.scale_var_deltaE = scale_var_deltaE
+        self.crossings_E = crossings_E
+        self.crossings_n = crossings_n
+        self.data_smooth = data_smooth
+        self.dE1 = dE1
+        self.n = n
+        self.pooled = pooled
+        self.scale_var_log_sum_I = scale_var_log_sum_I
 
     def save_image(self, filename):
         """
@@ -287,7 +297,7 @@ class SpectralImage:
 
         """
         if path_to_pickle[-4:] != '.pkl':
-            raise ValueError("please provide a path to a pickle file containing a Spectrall_image class object.")
+            raise ValueError("please provide a path to a pickle file containing a Spectral_image class object.")
             return
         if not os.path.exists(path_to_pickle):
             raise FileNotFoundError('pickled file: ' + path_to_pickle + ' not found')
@@ -370,7 +380,7 @@ class SpectralImage:
         """
         self.y_axis = np.linspace(0, self.image_shape[0] - 1, self.image_shape[0])
         self.x_axis = np.linspace(0, self.image_shape[1] - 1, self.image_shape[1])
-        if hasattr(self, 'pixelsize'):
+        if self.pixelsize is not None:
             self.y_axis *= self.pixelsize[0]
             self.x_axis *= self.pixelsize[1]
 
@@ -593,107 +603,12 @@ class SpectralImage:
     # %%METHODS ON ZLP
     # CALCULATING ZLPs FROM PRETRAINDED MODELS
 
-    def calc_ZLPs2(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
-        ### Definition for the matching procedure
-        signal = self.get_pixel_signal(i, j, signal)
-
-        if not hasattr(self, 'ZLP_models'):
-            try:
-                self.load_ZLP_models_smefit(**kwargs)
-            except:
-                self.load_ZLP_models_smefit()
-        if not hasattr(self, 'ZLP_models'):
-            ans = input("No ZLP models found. Please specify directory or train models. \n" +
-                        "Do you want to define path to models [p], train models [t] or quit [q]?\n")
-            if ans[0] == "q":
-                return
-            elif ans[0] == "p":
-                path_to_models = input("Please input path to models: \n")
-                try:
-                    self.load_ZLP_models(**kwargs)
-                except:
-                    self.load_ZLP_models()
-                if not hasattr(self, 'ZLP_models'):
-                    print("You had your chance. Please locate your models.")
-                    return
-            elif ans[0] == "t":
-                try:
-                    self.train_zlp(**kwargs)
-                except:
-                    self.train_zlp()
-                if "path_to_models" in kwargs:
-                    path_to_models = kwargs["path_to_models"]
-                    self.load_ZLP_models(path_to_models)
-                else:
-                    self.load_ZLP_models()
-            else:
-                print("unvalid input, not calculating ZLPs")
-                return
-
-        cluster = self.clustered[i, j]
-
-        # TODO: aanpassen
-        def matching(signal, gen_i_ZLP, dE1):
-            dE0 = dE1 - 0.5
-            dE2 = dE1 * 4
-            # gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
-            delta = (dE1 - dE0) / 10  # lau: 3
-
-            # factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<dE1) & (self.deltaE >= dE0)] - dE1)**2, delta**2))
-            factor_NN = 1 / (1 + np.exp(
-                -(self.deltaE[(self.deltaE < dE1) & (self.deltaE >= dE0)] - (dE0 + dE1) / 2) / delta))
-            factor_dm = 1 - factor_NN
-
-            range_0 = signal[self.deltaE < dE0]
-            range_1 = gen_i_ZLP[(self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_NN + signal[
-                (self.deltaE < dE1) & (self.deltaE >= dE0)] * factor_dm
-            range_2 = gen_i_ZLP[(self.deltaE >= dE1) & (self.deltaE < 3 * dE2)]
-            range_3 = gen_i_ZLP[(self.deltaE >= 3 * dE2)] * 0
-            totalfile = np.concatenate((range_0, range_1, range_2, range_3), axis=0)
-            # TODO: now hardcoding no negative values!!!! CHECKKKK
-            totalfile = np.minimum(totalfile, signal)
-            return totalfile
-
-        count = len(self.ZLP_models)
-        ZLPs = np.zeros((count, self.l))  # np.zeros((count, len_data))
-
-        if not hasattr(self, "scale_var_deltaE"):
-            self.scale_var_deltaE = find_scale_var(self.deltaE)
-
-        if not hasattr(self, "scale_var_log_sum_I"):
-            all_spectra = self.data
-            all_spectra[all_spectra < 1] = 1
-            int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
-            self.scale_var_log_sum_I = find_scale_var(int_log_I)
-            del all_spectra
-
-        log_sum_I_pixel = np.log(np.sum(signal))
-        predict_x_np = np.zeros((self.l, 2))
-        predict_x_np[:, 0] = scale(self.deltaE, self.scale_var_deltaE)
-        predict_x_np[:, 1] = scale(log_sum_I_pixel, self.scale_var_log_sum_I)
-
-        predict_x = torch.from_numpy(predict_x_np)
-
-        dE1 = self.dE1[1, int(cluster)]
-        print("cluster:", cluster, ", dE1:", dE1)
-        for k in range(count):
-            model = self.ZLP_models[k]
-            with torch.no_grad():
-                predictions = np.exp(model(predict_x.float()).flatten())
-            ZLPs[k, :] = matching(signal, predictions, dE1)  # matching(energies, np.exp(mean_k), data)
-
-        if select_ZLPs:
-            ZLPs = ZLPs[self.select_ZLPs(ZLPs, dE1)]
-
-        return ZLPs
-
     def calc_ZLPs(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
-        ### Definition for the matching procedure
 
-        # TODO: aanpassen
+        # Definition for the matching procedure
         def matching(signal, gen_i_ZLP, dE1):
             dE0 = dE1 - 0.5
-            dE2 = dE1 * 4
+            dE2 = dE1 * 3
             # gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]#*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
             delta = (dE1 - dE0) / 10  # lau: 3
 
@@ -727,52 +642,23 @@ class SpectralImage:
         return ZLPs
 
     def calc_gen_ZLPs(self, i, j, signal="eels", select_ZLPs=True, **kwargs):
-        ### Definition for the matching procedure
+        # Definition for the matching procedure
         signal = self.get_pixel_signal(i, j, signal)
 
-        # TODO: use the smefit version
-        if not hasattr(self, 'ZLP_models'):
+        if self.ZLP_models is None:
             try:
                 self.load_ZLP_models_smefit(**kwargs)
             except:
                 self.load_ZLP_models_smefit()
 
-        # if not hasattr(self, 'ZLP_models'):
-        #     ans = input("No ZLP models found. Please specify directory or train models. \n" +
-        #                 "Do you want to define path to models [p], train models [t] or quit [q]?\n")
-        #     if ans[0] == "q":
-        #         return
-        #     elif ans[0] == "p":
-        #         path_to_models = input("Please input path to models: \n")
-        #         try:
-        #             self.load_ZLP_models_smefit(**kwargs)
-        #         except:
-        #             self.load_ZLP_models_smefit()
-        #         if not hasattr(self, 'ZLP_models'):
-        #             print("You had your chance. Please locate your models.")
-        #             return
-        #     elif ans[0] == "t":
-        #         try:
-        #             self.train_zlp(**kwargs)
-        #         except:
-        #             self.train_zlp()
-        #         if "path_to_models" in kwargs:
-        #             path_to_models = kwargs["path_to_models"]
-        #             self.load_ZLP_models_smefit(path_to_models)
-        #         else:
-        #             self.load_ZLP_models_smefit()
-        #     else:
-        #         print("unvalid input, not calculating ZLPs")
-        #         return
-
         count = len(self.ZLP_models)
 
         predictions = np.zeros((count, self.l))  # np.zeros((count, len_data))
 
-        if not hasattr(self, "scale_var_deltaE"):
+        if self.scale_var_deltaE is None:
             self.scale_var_deltaE = find_scale_var(self.deltaE)
 
-        if not hasattr(self, "scale_var_log_sum_I"):
+        if self.scale_var_log_sum_I is None:
             all_spectra = self.data
             all_spectra[all_spectra < 1] = 1
             int_log_I = np.log(np.sum(all_spectra, axis=2)).flatten()
@@ -862,14 +748,13 @@ class SpectralImage:
         **kwargs
             Additional keyword arguments that are passed to the method :py:meth:`train_zlp_scaled() <training.train_zlp_scaled>` in the :py:mod:`training` module.
         """
-
         self.cluster(n_clusters)
 
         training_data = self.get_cluster_spectra(conf_interval=conf_interval, signal=signal)
         train.train_zlp_scaled(self, training_data, **kwargs)
 
     def load_ZLP_models(self, path_to_models="models", threshold_costs=1, name_in_path=True, plotting=False):
-        if hasattr(self, "name") and name_in_path:
+        if self.name is not None and name_in_path:
             path_to_models = self.name + "_" + path_to_models
 
         if not os.path.exists(path_to_models):
@@ -928,7 +813,7 @@ class SpectralImage:
         #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
         #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
         #     return
-        if hasattr(self, "name") and name_in_path:
+        if self.name is not None and name_in_path:
             path_to_models = self.name + "_" + path_to_models
 
         if not os.path.exists(path_to_models):
@@ -952,7 +837,7 @@ class SpectralImage:
         except:
             pass
 
-        if hasattr(self, "clustered"):
+        if self.clustered is not None:
             if self.n_clusters != self.dE1.shape[1]:
                 print("image clustered in ", self.n_clusters, " clusters, but ZLP-models take ", self.dE1.shape[1],
                       " clusters, reclustering based on models.")
@@ -1370,12 +1255,7 @@ class SpectralImage:
         save_index: int, optional
         save_path: str, optional
         """
-        # TODO
-        # data = self.data[self.deltaE>0, :,:]
-        # energies = self.deltaE[self.deltaE>0]
-        # TODO: make check for models
-        # if not hasattr(self, 'ZLPs_gen'):
-        #     self.calc_ZLPs_gen2("iets")
+
         self.dielectric_function_im_avg = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
         self.dielectric_function_im_std = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
         self.S_s_avg = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
@@ -1384,10 +1264,6 @@ class SpectralImage:
         self.thickness_std = np.zeros(self.image_shape)
         self.IEELS_avg = np.zeros(self.data.shape)
         self.IEELS_std = np.zeros(self.data.shape)
-        N_ZLPs_calculated = hasattr(self, 'N_ZLPs')
-        # TODO: add N_ZLP saving
-        # if not N_ZLPs_calculated:
-        #    self.N_ZLPs = np.zeros(self.image_shape)
         if plot:
             fig1, ax1 = plt.subplots()
             fig2, ax2 = plt.subplots()
@@ -1540,7 +1416,7 @@ class SpectralImage:
             y-label
         """
         # TODO: invert colours
-        if hasattr(self, 'name'):
+        if self.name is not None:
             name = self.name
         else:
             name = ''
@@ -1549,7 +1425,7 @@ class SpectralImage:
             plt.title("intgrated intensity spectrum " + name)
         else:
             plt.title(title)
-        if hasattr(self, 'pixelsize'):
+        if self.pixelsize is not None:
             #    plt.xlabel(self.pixelsize)
             #    plt.ylabel(self.pixelsize)
             plt.xlabel("[m]")
@@ -1616,7 +1492,7 @@ class SpectralImage:
         
         plt.figure(dpi=200)
         if title is None:
-            if hasattr(self, 'name'):
+            if self.name is not None:
                 plt.title(self.name)
         else:
             plt.title(title)
@@ -1655,7 +1531,7 @@ class SpectralImage:
             kwargs['vmax'] = np.max(unique_data_points) + spacing
             kwargs['vmin'] = np.min(unique_data_points) - spacing
 
-        if hasattr(self, 'pixelsize'):
+        if self.pixelsize is not None:
             ax = sns.heatmap(data, cmap=cmap, **kwargs)
             xticks, yticks, xticks_labels, yticks_labels = self.get_ticks(sig_ticks, npix_xtick, npix_ytick, scale_ticks, tick_int)
             ax.xaxis.set_ticks(xticks)
@@ -1703,7 +1579,7 @@ class SpectralImage:
 
         if save_as:
             if type(save_as) != str:
-                if hasattr(self, 'name'):
+                if self.name is not None:
                     save_as = self.name
             if 'mask' in kwargs:
                 save_as += '_masked'
@@ -1889,7 +1765,7 @@ class SpectralImage:
         self.__dict__[key] = value
 
     def __str__(self):
-        if hasattr(self, 'name'):
+        if self.name is not None:
             name_str = ", name = " + self.name
         else:
             name_str = ""
@@ -1899,7 +1775,7 @@ class SpectralImage:
 
     def __repr__(self):
         data_str = "data * np.ones(" + str(self.shape) + ")"
-        if hasattr(self, 'name'):
+        if self.name is not None:
             name_str = ", name = " + self.name
         else:
             name_str = ""

@@ -337,7 +337,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.show()
 
 
-def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
+def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7, perc_de1=16, plot_de1=False, prob=True):
     """
     Computes the hyperparamter :math:`\Delta E_I` for every cluster in two ways:
 
@@ -356,6 +356,13 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
         pixel within the cluster.
     shift_de1: float, optional
         Shift the location of :math:`\Delta E_I` by a factor of ``shift_dE1`` w.r.t. to the first local minimum.
+    perc_de1: float, optional
+        Percentage of replicas that is allowed to have a positive slope at :math:`\Delta E_I`.
+    plot_de1: bool, optional
+        When set to `True`, the location of :math:`\Delta E_I` is plotted. Set to `False` by default.
+    prob: bool, optional
+        When set to `True`, the location of :math:`\Delta E_I` is determined by demanding that ``perc_de1``% of the EELS replicas should
+        have a positive slope.
 
     Returns
     -------
@@ -376,11 +383,12 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
     min_clusters = np.array([find_min_de1(image, dy_dx_avg[i], y_smooth_clusters_avg[i]) for i in range(n_clusters)])
 
     # find the replica such that 16% of the replicas have a steeper slope
-    dy_dx_16_perc = np.array([np.nanpercentile(dy_dx_clusters[i], 84, axis=0) for i in range(n_clusters)])
+    cl_high = 100 - perc_de1
+    dy_dx_perc = np.array([np.nanpercentile(dy_dx_clusters[i], cl_high, axis=0) for i in range(n_clusters)])
 
     # find the index at which 16% of the replicas have a positive slope
     # and evaluate the corresponding value of deltaE.
-    idx = np.argwhere(np.diff(np.sign(dy_dx_16_perc)))[:, 1][1::2]
+    idx = np.argwhere(np.diff(np.sign(dy_dx_perc)))[:, 1][1::2]
     de1_prob = image.deltaE[idx]
 
     # find dE1 by taking a certain fraction of the location of the first local minimum.
@@ -391,16 +399,19 @@ def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7):
     n_rep_cluster = np.array([dy_dx_clusters[i].shape[0] for i in range(n_clusters)])
 
     # display the computed values of dE1 (both methods) together with the raw EELS spectrum
-    plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, de1_shift)
+    if plot_de1:
+        plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, de1_shift)
 
-    # TODO: insert toggle
-    # return de1_prob, replace by de1_shift it this method is prefered
-    return de1_prob
+    # return the de1 selected by the bool prob
+    if prob:
+        return de1_prob
+    else:
+        return de1_shift
 
 
 def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_dE1=0.7, shift_dE2=3,
                      path_to_models="models",
-                     display_step=1000, bs_rep_num=0):
+                     display_step=1000, bs_rep_num=0, perc_de1=16, plot_de1=False, prob=True):
     """
     Trains the ZLP on the (clustered) spectral image.
 
@@ -426,6 +437,13 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         Number of epochs after which to print output.
     bs_rep_num: int, optional
         For cluster users only: labels the parallel run.
+    perc_de1: float, optional
+        Percentage of replicas that is allowed to have a positive slope at :math:`\Delta E_I`.
+    plot_de1: bool, optional
+        When set to `True`, the location of :math:`\Delta E_I` is plotted. Set to `False` by default.
+    prob: bool, optional
+        When set to `True`, the location of :math:`\Delta E_I` is determined by demanding that 16% of the EELS replicas should
+        have a positive slope.
 
     Examples
     --------
@@ -473,7 +491,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
 
     # hyperparameters: discard training data > dE1 and add pseudo data after dE2
-    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1)
+    dE1 = determine_de1(image, smooth_dy_dx, spectra_smooth, shift_dE1, perc_de1, plot_de1, prob)
     dE2 = shift_dE2 * dE1
 
     if print_progress:
