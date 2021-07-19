@@ -508,9 +508,10 @@ for i in np.arange(0, 31, 30):
                 
                 
                 
-                range1 = dE1 - 0.5
+                range1 = dE1 - 0.6
                 range2 = dE1 + 0.1
                 baseline = np.average(p_ieels_median[(im.deltaE > range1 - 0.1) & (im.deltaE < range1)])
+                """
                 popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
                                        p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
                                        p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
@@ -518,27 +519,41 @@ for i in np.arange(0, 31, 30):
                 popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
                                        p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
                                        p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
-
+                """
+                # Fixed b
+                popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                       p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                       p0 = [400,1.5], bounds=([0, 0], np.inf))
+                
+                popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                       p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                       p0 = [400,1.5], bounds=([0, 0], np.inf))
+                
+                
                 fig1, ax1 = plt.subplots(dpi=200)
                 ax1.set_title(title_specimen + r"$\rm{-\;Bandgap\;Fit\;pixel[%d,%d]}$"%(pixx, pixy))
                 ax1.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
                 ax1.set_ylabel(r"$\rm{Intensity\;[a.u.]\;}$")
-                ax1.set_ylim(-2,500)
-                ax1.set_xlim(0,5)
+                ax1.set_ylim(-2,300)
+                ax1.set_xlim(1,3)
                 
                 ax1.fill_between(im.deltaE, p_ieels_low, p_ieels_high, alpha = 0.2, color = 'C0')
-                ax1.plot(im.deltaE, p_ieels_median, alpha = 0.2, color = 'C0')
+                ax1.plot(im.deltaE, p_ieels_median, alpha = 1.0, color = 'C0')
                 ax1.plot(im.deltaE, p_ieels_smooth, label = r"$\rm{Spectrum\;}$", color = 'C0')
                 ax1.plot(im.deltaE[1:], p_ieels_der1, alpha = 0.2, color = 'C1')
-                ax1.plot(im.deltaE[1:], p_ieels_der1_smooth, label = r"$\rm{1st\;Order\;}$", color = 'C1')
+                ax1.plot(im.deltaE[1:], p_ieels_der1_smooth, label = r"$\rm{1st\;Order\;}$", color = 'C1',alpha = 0.5)
                 ax1.plot(im.deltaE[1:-1], p_ieels_der2, alpha = 0.2, color = 'C2')
-                ax1.plot(im.deltaE[1:-1], p_ieels_der2_smooth, label = r"$\rm{2nd\;Order\;}$", color = 'C2')
+                ax1.plot(im.deltaE[1:-1], p_ieels_der2_smooth, label = r"$\rm{2nd\;Order\;}$", color = 'C2',alpha = 0.5)
                 
                 ax1.axvspan(xmin=range1, xmax=range2, ymin=-1000, ymax=1000, color = 'C3', alpha=0.1)
                 ax1.axhline(0,color = 'black', alpha=0.5)
                 
-                ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1],popt[2]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4')
-                ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1],popt2[2]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5')
+                #ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1],popt[2]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+                #ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1],popt2[2]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
+                
+                # Fixed b
+                ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+                ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
                 
                 ax1.legend()
                 
@@ -561,16 +576,24 @@ for i in np.arange(0, 31, 30):
                 ax2.axvspan(xmin=range1, xmax=range2, ymin=-1000, ymax=1000, color = 'C3', alpha=0.1)
                 ax2.axhline(0,color = 'black', alpha=0.5)
                 
-                ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1],popt[2]), label = r"$\rm{Fit\;}$", color = 'C4')
-                ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1],popt2[2]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5')
+                #ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1],popt[2]), label = r"$\rm{Fit\;}$", color = 'C4')
+                #ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1],popt2[2]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5')
+                
+                # Fixed b
+                ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+                ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
                 
                 ax2.legend(loc=2)
                 
                 plt.savefig(save_loc + save_title_specimen + '_Bandgap_fit_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
                 
                 #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)))
-                print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)) + ", b = " + str(round(popt[2],4)))
-                print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + ", b = " + str(round(popt2[2],4)) + " (smooth)")
+                #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)) + ", b = " + str(round(popt[2],4)))
+                #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + ", b = " + str(round(popt2[2],4)) + " (smooth)")
+                
+                # Fixed b
+                print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)))
+                print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + " (smooth)")
         except:
             print("Whatever you wanted, it failed")
 #%% EPSILON
