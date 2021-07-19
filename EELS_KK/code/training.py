@@ -512,6 +512,9 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     if not os.path.exists(path_scale_var):
         np.savetxt(path_scale_var, ab_int_log_I)
 
+    import pdb
+    pdb.set_trace()
+
     path_dE1 = os.path.join(path_to_models, "dE1.txt")
     if not os.path.exists(path_dE1):
         np.savetxt(path_dE1, np.vstack((image.clusters, dE1)))

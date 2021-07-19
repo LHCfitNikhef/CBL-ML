@@ -1281,7 +1281,7 @@ class SpectralImage:
     def cluster(self, n_clusters=5, based_on="log", **kwargs):
         """
         Clusters the spectral image into clusters according to the (log) integrated intensity at each
-        pixel. Cluster means are stored in the attribute `clusters` and the index to which each cluster belongs is
+        pixel. Cluster means are stored in the attribute `clusters` and the cluster index to which each pixel belongs is
         stored in the attribute `clustered`.
 
         Parameters

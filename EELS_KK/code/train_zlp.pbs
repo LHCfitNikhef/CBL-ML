@@ -1,1 +1,4 @@
-python /data/theorie/jthoeve/EELSfitter/code/training_init.py ${ARG}
+source /data/theorie/jthoeve/miniconda3/etc/profile.d/conda.sh
+conda activate eels_kk
+
+python /data/theorie/jthoeve/EELSfitter/code/plot_results_dE_abel.py
