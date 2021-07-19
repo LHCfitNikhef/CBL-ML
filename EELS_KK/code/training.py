@@ -457,9 +457,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     # TODO: fix the code example: SpectralImage cannot be found from within the current module
     # TODO: dm3 file works as well
 
-    print("GPU available: ", torch.cuda.is_available())
-    sys.exit()
-
     if display_step is None:
         print_progress = False
         display_step = 1E6

@@ -846,7 +846,7 @@ class SpectralImage:
             plt.title(r'$\chi^2\;\rm{distribution}$')
             plt.xlabel(r'$\chi^2$')
             plt.legend(frameon=False, loc='upper right')
-            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
+            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2_p5.pdf')
 
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
