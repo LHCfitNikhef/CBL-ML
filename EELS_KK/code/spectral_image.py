@@ -287,7 +287,7 @@ class SpectralImage:
 
         """
         if path_to_pickle[-4:] != '.pkl':
-            raise ValueError("please provide a path to a pickle file containing a Spectrall_image class object.")
+            raise ValueError("please provide a path to a pickle file containing a Spectral_image class object.")
             return
         if not os.path.exists(path_to_pickle):
             raise FileNotFoundError('pickled file: ' + path_to_pickle + ' not found')

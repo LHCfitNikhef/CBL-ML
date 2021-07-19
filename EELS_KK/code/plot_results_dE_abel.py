@@ -15,10 +15,10 @@ from spectral_image import SpectralImage
 import torch
 from matplotlib import rc
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 22})
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'], 'size': 10})
 rc('text', usetex=True)
 
-plt.rcParams.update({'font.size': 10})
+#plt.rcParams.update({'font.size': 10})
 
 def gen_ZLP_I(image, I):
     deltaE = np.linspace(0.1,0.9, image.l)
@@ -28,13 +28,13 @@ def gen_ZLP_I(image, I):
 
     predict_x = torch.from_numpy(predict_x_np)
     count = len(image.ZLP_models)
-    ZLPs = np.zeros((count, image.l)) #np.zeros((count, len_data))
+    ZLPs = np.zeros((count, image.l))
         
     for k in range(count): 
         model = image.ZLP_models[k]
         with torch.no_grad():
             predictions = np.exp(model(predict_x.float()).flatten())
-        ZLPs[k,:] = predictions#matching(energies, np.exp(mean_k), data)
+        ZLPs[k,:] = predictions
         
     return ZLPs
 
@@ -62,12 +62,12 @@ def select_ZLPs(image, ZLPs):
     
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4')
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/h-ws2_eels-SI_004.dm4')
-im = SpectralImage.load_data('/data/theorie/abelbk/WS2/area03-eels-SI-aligned.dm4')
+im = SpectralImage.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
 # im.cluster(5)
 #im=im
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_09/'
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_h-ws2_SI-004/E1_05/'
-path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
 
 
 
@@ -75,7 +75,8 @@ im.pool(5)
 im.cluster(5)
 sig = "pooled"
 title_specimen = r'$\rm{WS_2\;nanoflower\;}$'#'InSe'
-save_loc = "/data/theorie/jthoeve/EELSfitter/output"
+save_title_specimen = "WS2_nanoflower"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_new/"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
@@ -112,8 +113,8 @@ print("predictions done")
 """
 #%%
 
-for i in np.arange(0, 31,30):
-    for j in np.arange(0, 31,30):
+for i in np.arange(0, im.shape[1],30):
+    for j in np.arange(0, im.shape[0],30):
         if i != 0 and j != 0:
             pixx = i
             pixy = j
@@ -141,9 +142,9 @@ for i in np.arange(0, 31,30):
             mean_match = np.nanpercentile(ZLPs_match, 50, axis=0)
 
             fig3, ax3 = plt.subplots(dpi=200)
-            ax3.set_title(title_specimen + " specimen \nZLP matching result at pixel[" + str(pixx) + ","+ str(pixy) + "]")
-            ax3.set_xlabel("Energy loss [eV]")
-            ax3.set_ylabel("Intensity [a.u.]")
+            ax3.set_title(title_specimen + r"$\rm{specimen}$" +"\n" + r"$\rm{ZLP\;matching\;result\;at\;pixel[%d,%d]}$"%(pixx, pixy))
+            ax3.set_xlabel(r"$\rm{Energy\;loss\;[eV]}$")
+            ax3.set_ylabel(r"$\rm{Intensity\;[a.u.]}$")
             ax3.set_ylim(0, 3000)
             ax3.set_xlim(0, im.deltaE[-1])
             
@@ -166,7 +167,7 @@ for i in np.arange(0, 31,30):
             
             ax3.legend(loc=1, frameon=False)
             
-            plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
+            plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
             
             fig4, ax4 = plt.subplots(dpi=200)
             ax4.set_title(title_specimen + r"$\rm{specimen}$" +"\n" + r"$\rm{ZLP\;matching\;result\;at\;pixel[%d,%d]}$"%(pixx, pixy))
@@ -195,7 +196,7 @@ for i in np.arange(0, 31,30):
             ax4.legend(loc=1, frameon=False)
 
             #plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
-            plt.savefig(save_loc +'/ZLP_WS2_30_30.pdf' )
+            plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
             """
             #Plotting random ZLPs
             fig5, ax5 = plt.subplots()
