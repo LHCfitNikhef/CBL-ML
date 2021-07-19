@@ -862,7 +862,6 @@ class SpectralImage:
         **kwargs
             Additional keyword arguments that are passed to the method :py:meth:`train_zlp_scaled() <training.train_zlp_scaled>` in the :py:mod:`training` module.
         """
-
         self.cluster(n_clusters)
 
         training_data = self.get_cluster_spectra(conf_interval=conf_interval, signal=signal)
