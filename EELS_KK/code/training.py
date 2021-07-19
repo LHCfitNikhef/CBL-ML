@@ -308,7 +308,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.legend(loc='lower right', frameon=False, fontsize=15)
     plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
     plt.ylim(-3e3, 2e3)
-    plt.show()
+    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/dE1_der_plot.pdf')
 
     # plot with location of dE1 shown on top of raw (smoothened) spectrum
     fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
@@ -334,7 +334,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.ylim(1e2, 3e4)
     plt.xlim(0.2, 4.0)
     plt.yscale('log')
-    plt.show()
+    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/dE1_plot.pdf')
 
 
 def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7, perc_de1=16, plot_de1=False, prob=True):
@@ -466,9 +466,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     if not os.path.exists(path_to_models):
         os.mkdir(path_to_models)
 
-    num_saving_per_rep = 50
-    saving_step = int(n_epochs / num_saving_per_rep)
-
     # set all intensities smaller than 1 to 1
     for i in range(image.n_clusters):
         spectra[i][spectra[i] < 1] = 1
@@ -592,8 +589,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         loss_test_n = []
         loss_train_n = []
 
-        n_stagnant = 0
-        n_stagnant_max = 5
         for epoch in range(1, n_epochs + 1):
 
             # set the model to training mode
@@ -638,7 +633,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         torch.save(model.state_dict(), nn_rep_path)
 
         # make a training report for each replica
-        training_report(training_report_path, i, loss_train_n, loss_test_n)
+        training_report(training_report_path, loss_train_n, loss_test_n)
 
     with open(train_cost_path, "w") as text_file:
         for item in loss_train_reps:
@@ -648,7 +643,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         for item in loss_test_reps:
             text_file.write("%s\n" % item)
 
-def training_report(path, rep_n, loss_train, loss_test):
+def training_report(path, loss_train, loss_test):
     """
     Produce a training report
 
