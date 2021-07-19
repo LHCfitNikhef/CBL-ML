@@ -524,7 +524,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     test_cost_path = os.path.join(path_to_models, "costs_test_{}.txt".format(bs_rep_num))
 
     for i in range(n_rep):
-        save_idx = i + n_rep * bs_rep_num
+        save_idx = i + n_rep * bs_rep_num - n_rep + 1
         nn_rep_path = os.path.join(path_to_models, "nn_rep_{}".format(save_idx))
 
         training_report_path = os.path.join(path_to_models, 'rep_{}'.format(save_idx))
@@ -618,6 +618,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
                     print('Rep {}, Epoch {}, Training loss {}, Testing loss {}'.format(i, epoch,
                                                                                        round(loss_train.item(), 3),
                                                                                        round(loss_test_n[epoch - 1], 3)))
+                    """
                     if round(loss_test_n[epoch - 1], 3) >= round(loss_test_n[epoch - 1 - display_step], 3):
                         n_stagnant += 1
                     else:
@@ -628,7 +629,7 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
                         # save the optimal model
                         torch.save(model.state_dict(), nn_rep_path)
                         break
-
+                    """
                 # update the test and train loss of the replica
                 loss_test_reps[i] = loss_test.item()
                 loss_train_reps[i] = loss_train.item()
@@ -646,34 +647,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     with open(test_cost_path, "w") as text_file:
         for item in loss_test_reps:
             text_file.write("%s\n" % item)
-
-    plot_loss_dist(path_to_models)
-
-
-def plot_loss_dist(path):
-    tot_bs_rep = 500
-    cost_test_best = []
-    cost_train_best = []
-
-    for bs_rep in range(1, tot_bs_rep):
-        with open(os.path.join(path, 'costs_test_{}.txt'.format(bs_rep))) as f:
-            for line in f:
-                cost_test_best.append(float(line.strip()))
-        with open(os.path.join(path, 'costs_train_{}.txt'.format(bs_rep))) as f:
-            for line in f:
-                cost_train_best.append(float(line.strip()))
-
-    fig, ax = plt.subplots(figsize=(1.1*10, 1.1*6))
-    plt.figure(figsize=(1.2*10, 1.2*6))
-    plt.hist(cost_train_best, label=r'$\rm{Training}$', alpha=0.4)
-    plt.hist(cost_test_best, label=r'$\rm{Validation}$', alpha=0.4)
-    plt.title(r'$\chi^2\;\rm{distribution}$')
-    plt.xlabel(r'$\chi^2$')
-    plt.legend(frameon=False, loc='upper right')
-    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
-
-#plot_loss_dist('/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/')
-
 
 def training_report(path, rep_n, loss_train, loss_test):
     """
