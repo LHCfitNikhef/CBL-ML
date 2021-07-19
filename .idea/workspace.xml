@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c4f8b670-1111-4364-a194-6c81a6f7a9eb" name="Default Changelist" comment="fixed issue: now correct mapping between costs and nn_rep">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/plot_results_dE_abel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/spectral_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EELS_KK/code/training_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/EELS_KK/code/training_init.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,7 +328,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/develop" />
+                        <option value="develop" />
                       </list>
                     </value>
                   </entry>
