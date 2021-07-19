@@ -26,6 +26,11 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="GithubProjectSettings">
+    <option name="CREATE_PULL_REQUEST_DEFAULT_BRANCH" value="develop" />
+    <option name="CREATE_PULL_REQUEST_DEFAULT_REPO_USER" value="LHCfitNikhef" />
+    <option name="CREATE_PULL_REQUEST_DEFAULT_REPO_NAME" value="CBL-ML" />
+  </component>
   <component name="ProjectId" id="1rQo488A4amEvVuA27p432RmuOk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -86,6 +91,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.training_init" />
         <item itemvalue="Python.training_init" />
       </list>
     </recent_temporary>
