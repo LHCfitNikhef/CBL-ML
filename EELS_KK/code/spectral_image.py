@@ -144,6 +144,7 @@ class SpectralImage:
         self.n = n
         self.pooled = pooled
         self.scale_var_log_sum_I = scale_var_log_sum_I
+        self.output_path = os.getcwd()
 
     def save_image(self, filename):
         """
@@ -600,11 +601,32 @@ class SpectralImage:
                 pooled[i, j] = np.average(np.average(self.data[min_x:max_x, min_y:max_y, :], axis=1), axis=0)
         self.pooled = pooled
 
-    # %%METHODS ON ZLP
+    # METHODS ON ZLP
     # CALCULATING ZLPs FROM PRETRAINDED MODELS
 
-    def calc_ZLPs(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+    def calc_zlps_matched(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+        """
+        Returns the shape-(M, N) array of matched ZLP model predictions at pixel (``i``, ``j``) after training.
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
 
+        Parameters
+        ----------
+        i: int
+            horizontal pixel.
+        j: int
+            vertical pixel.
+        signal: str, bool
+            Description of signal type. Set to ``"EELS"`` by default.
+        select_ZLPs: bool, optional
+            Filter out ZLP models based on their arclength in the extrapolating region in between :math:`\Delta E_I` and :math:`\Delta E_{II}`.
+        kwargs: dict, optional
+            Additional keyword arguments.
+
+        Returns
+        -------
+        predictions: numpy.ndarray, shape=(M, N)
+            The matched ZLP predictions at pixel (``i``, ``j``).
+        """
         # Definition for the matching procedure
         def matching(signal, gen_i_ZLP, dE1):
             dE0 = dE1 - 0.5
@@ -627,7 +649,7 @@ class SpectralImage:
             totalfile = np.minimum(totalfile, signal)
             return totalfile
 
-        ZLPs_gen = self.calc_gen_ZLPs(i, j, signal, select_ZLPs, **kwargs)
+        ZLPs_gen = self.calc_zlps(i, j, signal, select_ZLPs, **kwargs)
 
         count = len(ZLPs_gen)
         ZLPs = np.zeros((count, self.l))  # np.zeros((count, len_data))
@@ -641,15 +663,40 @@ class SpectralImage:
             ZLPs[k, :] = matching(signal, predictions, dE1)  # matching(energies, np.exp(mean_k), data)
         return ZLPs
 
-    def calc_gen_ZLPs(self, i, j, signal="eels", select_ZLPs=True, **kwargs):
+    def calc_zlps(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+        """
+        Returns the shape-(M, N) array of ZLP model predictions at pixel (``i``, ``j``) after training, where
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
+
+
+        Parameters
+        ----------'
+        i: int
+            horizontal pixel.
+        j: int
+            vertical pixel.
+        signal: str, bool
+            Description of signal type. Set to ``"EELS"`` by default.
+        select_ZLPs: bool, optional
+            Filter out ZLP models based on their arclength in the extrapolating region in between :math:`\Delta E_I` and :math:`\Delta E_{II}`.
+        kwargs: dict, optional
+            Additional keyword arguments.
+
+
+        Returns
+        -------
+        predictions: numpy.ndarray, shape=(M, N)
+            The ZLP predictions at pixel (``i``, ``j``).
+
+        """
         # Definition for the matching procedure
         signal = self.get_pixel_signal(i, j, signal)
 
         if self.ZLP_models is None:
             try:
-                self.load_ZLP_models_smefit(**kwargs)
+                self.load_zlp_models(**kwargs)
             except:
-                self.load_ZLP_models_smefit()
+                self.load_zlp_models()
 
         count = len(self.ZLP_models)
 
@@ -749,18 +796,43 @@ class SpectralImage:
 
         return (np.std(predictions) / np.average(predictions)) > 1E-3  # very small --> straight line
 
-    def load_ZLP_models_smefit(self, path_to_models="models", name_in_path=False, plotting=False,
-                               idx=None):
-        # if n_rep is None and idx is None:
-        #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
-        #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
-        #     return
-        if self.name is not None and name_in_path:
-            path_to_models = self.name + "_" + path_to_models
+    def gen_zlp_ntot(self, ntot):
+        deltaE = np.linspace(0.1, 0.9, self.l)
+        predict_x_np = np.zeros((self.l, 2))
+        predict_x_np[:, 0] = deltaE
+        predict_x_np[:, 1] = ntot
+
+        predict_x = torch.from_numpy(predict_x_np)
+        count = len(self.ZLP_models)
+        ZLPs = np.zeros((count, self.l))
+
+        for k in range(count):
+            model = self.ZLP_models[k]
+            with torch.no_grad():
+                predictions = np.exp(model(predict_x.float()).flatten())
+            ZLPs[k, :] = predictions
+
+        return ZLPs
+
+    def load_zlp_models(self, path_to_models, plot_chi2=False, idx=None):
+        """
+        Loads the trained ZLP models and stores them in ``self.ZLP_models``. Models that have a :math:`\chi^2 > \chi^2_{\mathrm{mean}} + 5\sigma` are
+        discarded, where :math:`\sigma` denotes the 68% CI.
+
+        Parameters
+        ----------
+        path_to_models: str
+            Location where the model predictions have been stored after training.
+        plot_chi2: bool, optional
+            When set to `True`, plot and save the :math:`\chi^2` distribution.
+        idx: int, optional
+            When specified, only the zlp labelled by ``idx`` is loaded, instead of all model predictions.
+
+        """
 
         if not os.path.exists(path_to_models):
             print(
-                "No path " + os.getcwd() + path_to_models + " found. Please ensure spelling and that there are models trained.")
+                "No path " + path_to_models + " found. Please ensure spelling and that there are models trained.")
             return
 
         self.ZLP_models = []
@@ -768,13 +840,13 @@ class SpectralImage:
         path_to_models += (path_to_models[-1] != '/') * '/'
         path_dE1 = "dE1.txt"
         model = train.MLP(num_inputs=2, num_outputs=1)
-        self.dE1 = np.loadtxt(path_to_models + path_dE1)
+        self.dE1 = np.loadtxt(os.path.join(path_to_models, path_dE1))
 
-        path_scale_var = 'scale_var.txt'  # HIER
-        self.scale_var_log_sum_I = np.loadtxt(path_to_models + path_scale_var)
+        path_scale_var = 'scale_var.txt'
+        self.scale_var_log_sum_I = np.loadtxt(os.path.join(path_to_models, path_scale_var))
         try:
             path_scale_var_deltaE = 'scale_var_deltaE.txt'
-            self.scale_var_deltaE = np.loadtxt(path_to_models + path_scale_var_deltaE)
+            self.scale_var_deltaE = np.loadtxt(os.path.join(path_to_models, path_scale_var_deltaE))
             print("found delta E vars")
         except:
             pass
@@ -789,26 +861,12 @@ class SpectralImage:
 
         if idx is not None:
             with torch.no_grad():
-                model.load_state_dict(torch.load(path_to_models + "/nn_rep_" + str(idx)))
+                model.load_state_dict(torch.load(os.path.join(path_to_models, "nn_rep_{}".format(idx))))
             self.ZLP_models.append(copy.deepcopy(model))
             return
 
         path_costs = "costs_test_"
         files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
-        #idx_costs = np.array([int(s.replace(path_costs, "").replace(".txt", "")) for s in files_costs])
-        # path_model_rep = "nn_rep_"
-        # files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
-        # idx_models = np.array([int(s.replace(path_model_rep, "").replace(".txt", "")) for s in files_model_rep])
-        #
-        # overlap_idx = np.intersect1d(idx_costs, idx_models)
-
-        #n_rep = len(overlap_idx)
-        #costs = np.zeros(n_rep)
-        #files_models = np.zeros(n_rep, dtype='U12')  # reads max 999,999 models, you really do not need more.
-
-        # for i in range(n_rep):
-        #     file = files_costs[i]
-        #     costs[i] =  np.loadtxt(path_to_models + file)
 
         bs_rep_num = len(files_costs)
 
@@ -839,14 +897,14 @@ class SpectralImage:
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
 
         # plot the chi2 distributions
-        if plotting:
+        if plot_chi2:
             fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
             plt.hist(cost_trains, label=r'$\rm{Training}$', bins=40, range=(0, 5* cost_tests_std), alpha=0.4)
             plt.hist(cost_tests, label=r'$\rm{Validation}$', bins=40, range= (0, 5* cost_tests_std), alpha=0.4)
             plt.title(r'$\chi^2\;\rm{distribution}$')
             plt.xlabel(r'$\chi^2$')
             plt.legend(frameon=False, loc='upper right')
-            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2_p5.pdf')
+            fig.savefig(os.path.join(self.output_path, 'chi2_dist.pdf'))
 
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
@@ -1127,7 +1185,7 @@ class SpectralImage:
 
         """
         # data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-        ZLPs = self.calc_ZLPs(i, j, select_ZLPs=select_ZLPs)  # [:,self.deltaE>0]
+        ZLPs = self.calc_zlps_matched(i, j, select_ZLPs=select_ZLPs)  # [:,self.deltaE>0]
 
         dielectric_functions = (1 + 1j) * np.zeros(ZLPs[:, self.deltaE > 0].shape)
         S_ss = np.zeros(ZLPs[:, self.deltaE > 0].shape)
@@ -1152,7 +1210,7 @@ class SpectralImage:
         ts_OG = ts
         max_OG = max_ieels
 
-        ZLPs_signal = self.calc_ZLPs(i, j, signal=signal, select_ZLPs=select_ZLPs)
+        ZLPs_signal = self.calc_zlps_matched(i, j, signal=signal, select_ZLPs=select_ZLPs)
         dielectric_functions = (1 + 1j) * np.zeros(ZLPs_signal[:, self.deltaE > 0].shape)
         S_ss = np.zeros(ZLPs_signal[:, self.deltaE > 0].shape)
         ts = np.zeros(ZLPs_signal.shape[0])

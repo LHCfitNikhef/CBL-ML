@@ -174,7 +174,7 @@ if not os.path.exists(save_loc):
 im.pool(5)
 sig = "pooled"
 
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 
 
 #%%
@@ -252,14 +252,14 @@ for i in range(len(try_pixels)):
     ax5.set_xlabel("energy loss [eV]")
     ax5.plot(im.deltaE, signal, label = "signal", color = 'black')
     
-    ZLPs = im.calc_gen_ZLPs(pixx,pixy, signal = sig, select_ZLPs=True)
+    ZLPs = im.calc_zlps(pixx, pixy, signal = sig, select_ZLPs=True)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
     mean = np.nanpercentile(ZLPs, 50, axis=0)
     ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
     ax5.plot(im.deltaE, mean, label = r"model prediction $I_{\rm ZLP}$")
     
-    ZLPs = im.calc_ZLPs(pixx,pixy, signal=sig, select_ZLPs=True)
+    ZLPs = im.calc_zlps_matched(pixx, pixy, signal=sig, select_ZLPs=True)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
     mean = np.nanpercentile(ZLPs, 50, axis=0)
@@ -285,14 +285,14 @@ for i in range(len(try_pixels)):
     ax5.set_xlabel("energy loss [eV]")
     ax5.plot(im.deltaE, signal, label = "signal", color = 'black')
     
-    ZLPs = im.calc_gen_ZLPs(pixx,pixy, signal = sig, select_ZLPs=True)
+    ZLPs = im.calc_zlps(pixx, pixy, signal = sig, select_ZLPs=True)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
     mean = np.nanpercentile(ZLPs, 50, axis=0)
     ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
     ax5.plot(im.deltaE, mean, label = r"model prediction $I_{\rm ZLP}$")
     
-    ZLPs = im.calc_ZLPs(pixx,pixy, signal=sig, select_ZLPs=True)
+    ZLPs = im.calc_zlps_matched(pixx, pixy, signal=sig, select_ZLPs=True)
     low = np.nanpercentile(ZLPs, 16, axis=0)
     high = np.nanpercentile(ZLPs, 84, axis=0)
     mean = np.nanpercentile(ZLPs, 50, axis=0)

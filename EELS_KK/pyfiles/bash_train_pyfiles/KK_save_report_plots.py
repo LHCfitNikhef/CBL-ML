@@ -38,7 +38,7 @@ im = Spectral_image.load_spectral_image(path_to_results)
 # # im.pixelsize *=1E6
 im.calc_axes()
 # im.cluster(5, based_upon = 'log')
-im.load_ZLP_models_smefit(path_to_models)
+im.load_zlp_models(path_to_models)
 
 
 

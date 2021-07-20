@@ -55,8 +55,8 @@ im.cluster(5)
 #rank = 84
 rank = 64
 j = 80
-im.load_ZLP_models_smefit(path_to_models=path_to_models, n_rep = 500)
-ZLPs = im.calc_gen_ZLPs(rank,j,path_to_models=path_to_models, n_rep = 500)
+im.load_zlp_models(path_to_models=path_to_models, n_rep = 500)
+ZLPs = im.calc_zlps(rank,j,path_to_models=path_to_models, n_rep = 500)
 n_model = len(im.ZLP_models)
 epss, ts, S_Es, IEELSs = im.KK_pixel(rank, j)
 
@@ -134,7 +134,7 @@ if row >= n_x:
     sys.exit()
 
 
-im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
+im.load_zlp_models(path_to_models, name_in_path = False)
 
 im.set_n(4.1462, n_background = 2.1759)
 im.set_n(3.0)

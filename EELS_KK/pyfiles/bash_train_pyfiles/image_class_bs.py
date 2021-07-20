@@ -940,7 +940,7 @@ class SpectralImage:
     def load_ZLP_models_smefit(self, path_to_models = "models", threshold_costs = 0.3, name_in_path = False, plotting = False, idx = None):
         # if n_rep is None and idx is None:
         #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
-        #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
+        #           " or the specific replica model you wist to load (idx) in load_zlp_models.")
         #     return
         if hasattr(self, "name") and name_in_path:
             path_to_models = self.name + "_" + path_to_models
@@ -1391,7 +1391,7 @@ class SpectralImage:
                 if track_process: print("calculating dielectric function for pixel ", i, j)
                 """
                 data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-                ZLPs = self.calc_ZLPs(i,j)#[:,self.deltaE>0]
+                ZLPs = self.calc_zlps_matched(i,j)#[:,self.deltaE>0]
                 dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
                 S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
                 ts = np.zeros(ZLPs.shape[0])            

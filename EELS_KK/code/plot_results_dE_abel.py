@@ -81,7 +81,7 @@ title_specimen = r'$\rm{WS_2\;nanoflower\;}$'  # 'InSe'
 save_title_specimen = "WS2_nanoflower"
 save_loc = "/data/theorie/jthoeve/EELSfitter/output/"
 # save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 
 # %%
 
@@ -134,7 +134,7 @@ for i in np.arange(0, im.shape[1], 30):
 
             signal = im.get_pixel_signal(pixy, pixx, signal=sig)
 
-            ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal=sig, select_ZLPs=True)
+            ZLPs_gen = im.calc_zlps(pixy, pixx, signal=sig, select_ZLPs=True)
             # if check:
             # select = select_ZLPs(im, ZLPs_gen)
             # ZLPs_gen = ZLPs_gen[tuple(select)]
@@ -143,7 +143,7 @@ for i in np.arange(0, im.shape[1], 30):
             high_gen = np.nanpercentile(ZLPs_gen, 84, axis=0)
             mean_gen = np.nanpercentile(ZLPs_gen, 50, axis=0)
 
-            ZLPs_match = im.calc_ZLPs(pixy, pixx, signal=sig, select_ZLPs=True)
+            ZLPs_match = im.calc_zlps_matched(pixy, pixx, signal=sig, select_ZLPs=True)
             # if check:
             # select = select_ZLPs(im, ZLPs_match)
             # ZLPs_match = ZLPs_match[tuple(select)]
@@ -267,7 +267,7 @@ im.train_ZLPs(n_clusters = 5, n_rep = 500, n_epochs = 100000, path_to_models = p
     
     
 
-ZLPs = im.calc_ZLPs(30,60,path_to_models = path_to_models)
+ZLPs = im.calc_zlps_matched(30,60,path_to_models = path_to_models)
 
 np.savetxt("004_zlps_I_scaled_5_pix_30_60.txt", ZLPs)
 

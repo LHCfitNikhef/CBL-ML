@@ -34,7 +34,7 @@ if not im.check_cost_smefit(path_to_models, bs_rep_num):
     sys.exit()
 
 im.cluster(5)
-im.load_ZLP_models_smefit(path_to_models, idx = bs_rep_num)   
+im.load_zlp_models(path_to_models, idx = bs_rep_num)
 
 im.im_dielectric_function_bs(save_index = bs_rep_num, save_path = path_to_save)
 

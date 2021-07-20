@@ -80,7 +80,7 @@ im.calc_axes()
 #path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_5/'
 #path_to_models = 'models/report/004_clu10_p5_final_35dE1_06dE1/'
 
-im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
+im.load_zlp_models(path_to_models, name_in_path = False)
 #im.dE1[0,1] = 1.6 
 
 im = im
@@ -350,7 +350,7 @@ im.calc_axes()
 #path_to_models = 'models/dE2_3_times_dE1/train_lau_pooled_5_CI_1_dE1_times_07_epochs_1e6_scale_on_pooled_clu_log_5/'
 #path_to_models = 'models/report/004_clu10_p5_final_35dE1_06dE1/'
 
-im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
+im.load_zlp_models(path_to_models, name_in_path = False)
 
 
 #%%
