@@ -67,7 +67,7 @@ im = SpectralImage.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-ee
 #im=im
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_09/'
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_h-ws2_SI-004/E1_05/'
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_p5/'
 
 
 
@@ -76,7 +76,7 @@ im.cluster(5)
 sig = "pooled"
 title_specimen = r'$\rm{WS_2\;nanoflower\;}$'#'InSe'
 save_title_specimen = "WS2_nanoflower"
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_new/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_p5/"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
 im.load_ZLP_models_smefit(path_to_models=path_to_models)
 
@@ -123,7 +123,7 @@ for i in np.arange(0, im.shape[1],30):
 
             signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             
-            ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal = sig, select_ZLPs=True)
+            ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
             #if check:
                 #select = select_ZLPs(im, ZLPs_gen)
                 #ZLPs_gen = ZLPs_gen[tuple(select)]
@@ -132,7 +132,7 @@ for i in np.arange(0, im.shape[1],30):
             high_gen = np.nanpercentile(ZLPs_gen, 84, axis=0)
             mean_gen = np.nanpercentile(ZLPs_gen, 50, axis=0)
                 
-            ZLPs_match = im.calc_ZLPs(pixy, pixx, signal = sig, select_ZLPs=True)
+            ZLPs_match = im.calc_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
             #if check: 
                 #select = select_ZLPs(im, ZLPs_match)
                 #ZLPs_match = ZLPs_match[tuple(select)]

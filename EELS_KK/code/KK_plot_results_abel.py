@@ -505,11 +505,22 @@ for i in np.arange(0, 31, 30):
                 p_ieels_der2 = np.diff(p_ieels_der1_smooth)
                 p_ieels_der2_smooth = savgol_filter(p_ieels_der2, window_length = windowlength, polyorder = polyorder)
                 
+                for k in range(len(im.deltaE)):
+                    if im.deltaE[k] > 0 and p_ieels_der2_smooth[k] > 0.1:
+                        if p_ieels_der2_smooth[k-1] < p_ieels_der2_smooth[k] and p_ieels_der2_smooth[k+1] < p_ieels_der2_smooth[k]:
+                            range1 = im.deltaE[k] * 0.9
+                            k_start_r2 = k
+                            break
+                    
+                for k in range(k_start_r2, len(im.deltaE)):
+                    if p_ieels_der2_smooth[k-1] > 0 and p_ieels_der2_smooth[k+1] < 0:
+                        print("Indirect bandgap!")
+                        range2 = im.deltaE[k]
+                        break
                 
-                
-                
-                range1 = dE1 - 0.6
-                range2 = dE1 + 0.1
+                print(range1, range2)
+                #range1 = dE1 - 0.6
+                #range2 = dE1 + 0.1
                 baseline = np.average(p_ieels_median[(im.deltaE > range1 - 0.1) & (im.deltaE < range1)])
                 """
                 popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
