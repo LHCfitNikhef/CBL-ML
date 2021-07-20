@@ -67,18 +67,18 @@ im = SpectralImage.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-ee
 #im=im
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_09/'
 #path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_h-ws2_SI-004/E1_05/'
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_p5/'
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_p2/'
 
 
 
 im.pool(5)
 im.cluster(5)
 sig = "pooled"
-title_specimen = r'$\rm{WS_2\;nanoflower\;}$'#'InSe'
+title_specimen = r'$\rm{WS_2\;nanoflower\;(dE1\;p2\;)}$'#'InSe'
 save_title_specimen = "WS2_nanoflower"
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_p5/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/E1_p2/"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_ZLP_models_smefit(path_to_models=path_to_models, plotting = True)
 
 #%%
 """
@@ -124,18 +124,12 @@ for i in np.arange(0, im.shape[1],30):
             signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             
             ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
-            #if check:
-                #select = select_ZLPs(im, ZLPs_gen)
-                #ZLPs_gen = ZLPs_gen[tuple(select)]
                 
             low_gen = np.nanpercentile(ZLPs_gen, 16, axis=0)
             high_gen = np.nanpercentile(ZLPs_gen, 84, axis=0)
             mean_gen = np.nanpercentile(ZLPs_gen, 50, axis=0)
                 
             ZLPs_match = im.calc_ZLPs(pixy, pixx, signal = sig, select_ZLPs=False)
-            #if check: 
-                #select = select_ZLPs(im, ZLPs_match)
-                #ZLPs_match = ZLPs_match[tuple(select)]
             
             low_match = np.nanpercentile(ZLPs_match, 16, axis=0)
             high_match = np.nanpercentile(ZLPs_match, 84, axis=0)
@@ -149,12 +143,15 @@ for i in np.arange(0, im.shape[1],30):
             ax3.set_xlim(0, im.deltaE[-1])
             
             ax3.plot(im.deltaE, signal, label = r"$\rm{Signal}$", color='black')
+            
+            # Plot random ZLPs
             #for k in range(300):
             #    zlp_idx = np.random.randint(0, len(ZLPs_gen))
             #    ax3.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0')
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
             #    ax3.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1') 
+            
             ax3.axvline(dE1,0,1, color='C3', linestyle='--')
             ax3.axvline(dE2,0,1, color='C3', linestyle='--')
             ax3.axvspan(dE1, dE2, alpha=0.1, color='C3')
@@ -177,12 +174,15 @@ for i in np.arange(0, im.shape[1],30):
             ax4.set_xlim(1,7)
 
             ax4.plot(im.deltaE, signal, label = r"$\rm{Signal}$", color='black')
+            
+            # Plot random ZLPs
             #for k in range(300):
             #    zlp_idx = np.random.randint(0, len(ZLPs_gen))
             #    ax4.plot(im.deltaE, ZLPs_gen[zlp_idx], color= 'C0')
             #for k in range(500):
             #    zlp_idx = np.random.randint(0, len(ZLPs_match))
             #    ax4.plot(im.deltaE, ZLPs_match[zlp_idx], color= 'C1')
+            
             ax4.vlines(dE1,0,100000, color='C3', linestyle='--')
             ax4.vlines(dE2,0,100000, color='C3', linestyle='--')
             ax4.axvspan(dE1, dE2, alpha=0.1, color='C3')
@@ -195,42 +195,8 @@ for i in np.arange(0, im.shape[1],30):
 
             ax4.legend(loc=1, frameon=False)
 
-            #plt.savefig(save_loc + title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
             plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ','+ str(pixy) + ']_zoomed.pdf')
-            """
-            #Plotting random ZLPs
-            fig5, ax5 = plt.subplots()
-            ax5.set_title("random ZLP matching results at pixel[" + str(pixx) + ","+ str(pixy) + "]")
-            ax5.set_xlabel("energy loss [eV]")
-            ax5.set_ylabel("intensity")
-            ax5.set_ylim(0,600)
-            ax5.set_xlim(xlim)
-        
-            n_plot = 15
-            for j in range(n_plot):
-                plt.plot(im.deltaE, ZLPs[j], color = 'black', alpha = 0.8)
-        
-            ax5.plot(im.deltaE, signal, label = "signal")
-            ax5.plot(im.deltaE, mean, label = "mean")
-            ax5.fill_between(im.deltaE, low, high, color = 'orange', alpha = 0.2)
-            ax5.legend()
-        
-            fig6, ax6 = plt.subplots()
-            ax6.set_title("random ZLP matching results at pixel[" + str(pixx) + ","+ str(pixy) + "]")
-            ax6.set_xlabel("energy loss [eV]")
-            ax6.set_ylabel("intensity")
-            ax6.set_ylim(0,600)
-            ax6.set_xlim(xlim)
-        
-            n_plot = len(ZLPs)
-            for k in range(n_plot):
-                plt.plot(im.deltaE, ZLPs[k], color = 'black', alpha = 0.2)
-        
-            ax6.plot(im.deltaE, signal, label = "signal")
-            ax6.plot(im.deltaE, mean, label = "mean")
-            ax6.fill_between(im.deltaE, low, high, color = 'orange', alpha = 0.2)
-            ax6.legend()
-            """
+
             print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)))
 
 #%%
