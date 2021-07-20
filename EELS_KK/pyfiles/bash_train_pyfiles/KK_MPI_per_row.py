@@ -55,7 +55,7 @@ if rank >= n_x:
 
 
 im.cluster(5)
-im.load_ZLP_models_smefit(path_to_models, n_rep=500, name_in_path = False)
+im.load_zlp_models(path_to_models, n_rep=500, name_in_path = False)
 
 
 

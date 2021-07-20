@@ -70,7 +70,7 @@ sig = "pooled"
 title_specimen = 'WS2 nanoflower'#'InSe'
 save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/"
 #save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/pdfplots/"
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 
 #%%
 
@@ -123,7 +123,7 @@ for i in np.arange(0,len(im.x_axis),30):
             signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             ax3.plot(im.deltaE, signal, label = "Signal", color='black')
             
-            ZLPs = im.calc_gen_ZLPs(pixy, pixx, signal = sig)
+            ZLPs = im.calc_zlps(pixy, pixx, signal = sig)
             if check:
                 select = select_ZLPs(im, ZLPs)
                 ZLPs = ZLPs[tuple(select)]
@@ -134,7 +134,7 @@ for i in np.arange(0,len(im.x_axis),30):
                 ax3.fill_between(im.deltaE, low, high, alpha = 0.2)
                 ax3.plot(im.deltaE, mean, label = "Model prediction $I_{ZLP}$")
         
-            ZLPs = im.calc_ZLPs(pixy, pixx, signal=sig)
+            ZLPs = im.calc_zlps_matched(pixy, pixx, signal=sig)
             if check: ZLPs = ZLPs[tuple(select)]
             low = np.nanpercentile(ZLPs, 16, axis=0)
             high = np.nanpercentile(ZLPs, 84, axis=0)
@@ -158,7 +158,7 @@ for i in np.arange(0,len(im.x_axis),30):
             signal = im.get_pixel_signal(pixy, pixx, signal = sig)
             ax4.plot(im.deltaE, signal, label = "Signal", color='black')
             
-            ZLPs = im.calc_gen_ZLPs(pixy, pixx, signal = sig)
+            ZLPs = im.calc_zlps(pixy, pixx, signal = sig)
             if check:
                 select = select_ZLPs(im, ZLPs)
                 ZLPs = ZLPs[tuple(select)]
@@ -169,7 +169,7 @@ for i in np.arange(0,len(im.x_axis),30):
                 ax4.fill_between(im.deltaE, low, high, alpha = 0.2)
                 ax4.plot(im.deltaE, mean, label = "Model prediction $I_{ZLP}$")
         
-            ZLPs = im.calc_ZLPs(pixy, pixx, signal=sig)
+            ZLPs = im.calc_zlps_matched(pixy, pixx, signal=sig)
             if check: ZLPs[tuple(select)]
             low = np.nanpercentile(ZLPs, 16, axis=0)
             high = np.nanpercentile(ZLPs, 84, axis=0)
@@ -234,7 +234,7 @@ im.train_ZLPs(n_clusters = 5, n_rep = 500, n_epochs = 100000, path_to_models = p
     
     
 
-ZLPs = im.calc_ZLPs(30,60,path_to_models = path_to_models)
+ZLPs = im.calc_zlps_matched(30,60,path_to_models = path_to_models)
 
 np.savetxt("004_zlps_I_scaled_5_pix_30_60.txt", ZLPs)
 

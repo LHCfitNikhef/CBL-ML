@@ -82,7 +82,7 @@ if row >= n_x:
 
 
 # im.cluster(5)
-im.load_ZLP_models_smefit(path_to_models)
+im.load_zlp_models(path_to_models)
 if image == 'lau':
     im.eo = 60
     im.dE1[1,0] = 2.5

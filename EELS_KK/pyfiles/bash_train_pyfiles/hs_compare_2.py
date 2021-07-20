@@ -45,7 +45,7 @@ if plotim == 'lau':
 
 im = Spectral_image.load_spectral_image(path_to_results)
 
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 im.pool(5)
 im.set_n(4.1462, n_background = 2.1759)
 
@@ -148,7 +148,7 @@ if plotim == 'lau':
 
 im = Spectral_image.load_spectral_image(path_to_results)
 
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 im.pool(5)
 im.set_n(4.1462, n_background = 2.1759)
 im.e0 = 200 #keV

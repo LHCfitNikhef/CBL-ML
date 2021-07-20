@@ -24,7 +24,7 @@ path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_nf-ws2_SI-
 im = Spectral_image.load_Spectral_image(path_to_results)
 
 path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_07/'
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 im.pool(5)
 #%% Settings for all heatmaps
 

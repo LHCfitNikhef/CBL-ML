@@ -46,7 +46,7 @@ path_to_dm_image = PATH + TO + 'h-ws2_eels-SI_004.dm4'
 
 im = Spectral_image.load_data(path_to_dm_image)
 name = " 004"
-im.load_ZLP_models_smefit(path_to_models, name_in_path = False)
+im.load_zlp_models(path_to_models, name_in_path = False)
 
 
 
@@ -64,7 +64,7 @@ select_ZLPs = False
 
 for i in range(n_x):
     for j in range(n_y):
-        zlp_pix = im.calc_ZLPs(i,j, signal = signal, select_ZLPs = select_ZLPs)
+        zlp_pix = im.calc_zlps_matched(i, j, signal = signal, select_ZLPs = select_ZLPs)
         signal = im.get_signal(i,j, signal = signal)
         if select_ZLPs: n_models = len(zlp_pix)
         for k in range(n_models):

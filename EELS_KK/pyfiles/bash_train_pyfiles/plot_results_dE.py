@@ -99,7 +99,7 @@ path_to_models = 'models/dE2_3_times_dE1/train_004_not_pooled_CI_1_dE1_times_07_
 im.pool(5)
 sig = "pooled"
 
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 
 im.dE1[1,0] -= 0.2
 
@@ -154,7 +154,7 @@ ax6.set_ylabel("intensity")
 ax6.set_ylim(-200,1.5e3)
 ax6.set_xlim(xlim)
 
-ZLPs = im.calc_ZLPs(50,60, signal = sig)
+ZLPs = im.calc_zlps_matched(50,60, signal = sig)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -226,7 +226,7 @@ ax4.set_xlim(0,2)
 ax3.legend()
 ax4.legend()
 
-ZLPs = im.calc_ZLPs(50,60)
+ZLPs = im.calc_zlps_matched(50,60)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -241,7 +241,7 @@ ax6.plot(im.deltaE, mean, label = "ddE = 0")
 
 
 path_to_models = 'dE1/E1_03'
-im.load_ZLP_models_smefit(n_rep = 500, path_to_models=path_to_models)
+im.load_zlp_models(n_rep = 500, path_to_models=path_to_models)
 
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
@@ -277,7 +277,7 @@ ax1.legend()
 ax2.legend()
     
 
-ZLPs = im.calc_ZLPs(50,60)
+ZLPs = im.calc_zlps_matched(50,60)
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
 mean = np.average(ZLPs, axis = 0)
@@ -289,7 +289,7 @@ ax6.plot(im.deltaE, mean, label = "ddE = -0.3")
 
 
 path_to_models = 'dE1/E1_05'
-im.load_ZLP_models_smefit(n_rep = 500, path_to_models=path_to_models)
+im.load_zlp_models(n_rep = 500, path_to_models=path_to_models)
 
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
@@ -327,7 +327,7 @@ ax3.legend()
 ax4.legend()
 """
 # path_to_models = 'dE1/E1_05'
-# im.load_ZLP_models_smefit(path_to_models=path_to_models)
+# im.load_zlp_models(path_to_models=path_to_models)
 
 
 fig5, ax5 = plt.subplots()
@@ -343,7 +343,7 @@ ax5.set_ylim(-200,1.5e3)
 ax5.set_xlim(xlim)
 
 
-ZLPs = im.calc_gen_ZLPs(50,60, signal = sig)
+ZLPs = im.calc_zlps(50, 60, signal = sig)
 if check:
     select = select_ZLPs(im, ZLPs)
     ZLPs = ZLPs[select]
@@ -360,7 +360,7 @@ signal = im.get_pixel_signal(50,60, signal = sig)
 ax5.plot(im.deltaE, signal, label = "signal")
 # ax6.plot(im.deltaE, signal, label = "signal")
 # #"""
-ZLPs = im.calc_ZLPs(50,60, signal=sig)
+ZLPs = im.calc_zlps_matched(50, 60, signal=sig)
 if check: ZLPs = ZLPs[select]
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
@@ -371,7 +371,7 @@ ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
 ax5.plot(im.deltaE, mean, label = "matched")
 # ax6.plot(im.deltaE, mean, label = "matched")
 
-# ZLPs = im.calc_ZLPs(50,60, signal=sig)
+# ZLPs = im.calc_zlps_matched(50,60, signal=sig)
 # low = np.nanpercentile(ZLPs, 16, axis=0)
 # high = np.nanpercentile(ZLPs, 84, axis=0)
 # mean = np.average(ZLPs, axis = 0)
@@ -442,7 +442,7 @@ ax5.set_ylim(-200,2.5e3)
 ax5.set_xlim(xlim)
 
 
-ZLPs = im.calc_gen_ZLPs(pixx,pixy, signal = sig)
+ZLPs = im.calc_zlps(pixx, pixy, signal = sig)
 if check: 
     select = select_ZLPs(im, ZLPs)
     ZLPs = ZLPs[select]
@@ -459,7 +459,7 @@ signal = im.get_pixel_signal(pixx,pixy, signal = sig)
 ax5.plot(im.deltaE, signal, label = "signal")
 # ax6.plot(im.deltaE, signal, label = "signal")
 #"""
-ZLPs = im.calc_ZLPs(pixx,pixy, signal=sig)
+ZLPs = im.calc_zlps_matched(pixx, pixy, signal=sig)
 if check: ZLPs = ZLPs[select]
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
@@ -470,7 +470,7 @@ ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
 ax5.plot(im.deltaE, mean, label = "matched")
 # ax6.plot(im.deltaE, mean, label = "matched")
 
-# ZLPs = im.calc_ZLPs(50,60, signal=sig)
+# ZLPs = im.calc_zlps_matched(50,60, signal=sig)
 # low = np.nanpercentile(ZLPs, 16, axis=0)
 # high = np.nanpercentile(ZLPs, 84, axis=0)
 # mean = np.average(ZLPs, axis = 0)
@@ -544,7 +544,7 @@ ax5.set_ylim(-200,1.5e3)
 ax5.set_xlim(xlim)
 
 
-ZLPs = im.calc_gen_ZLPs(pixx,pixy, signal = sig)
+ZLPs = im.calc_zlps(pixx, pixy, signal = sig)
 if check: 
     select = select_ZLPs(im, ZLPs)
     ZLPs = ZLPs[select]
@@ -561,7 +561,7 @@ signal = im.get_pixel_signal(pixx,pixy, signal = sig)
 ax5.plot(im.deltaE, signal, label = "signal")
 # ax6.plot(im.deltaE, signal, label = "signal")
 #"""
-ZLPs = im.calc_ZLPs(pixx,pixy, signal=sig)
+ZLPs = im.calc_zlps_matched(pixx, pixy, signal=sig)
 if check: ZLPs = ZLPs[select]
 low = np.nanpercentile(ZLPs, 16, axis=0)
 high = np.nanpercentile(ZLPs, 84, axis=0)
@@ -572,7 +572,7 @@ ax5.fill_between(im.deltaE, low, high, alpha = 0.2)
 ax5.plot(im.deltaE, mean, label = "matched")
 # ax6.plot(im.deltaE, mean, label = "matched")
 
-# ZLPs = im.calc_ZLPs(50,60, signal=sig)
+# ZLPs = im.calc_zlps_matched(50,60, signal=sig)
 # low = np.nanpercentile(ZLPs, 16, axis=0)
 # high = np.nanpercentile(ZLPs, 84, axis=0)
 # mean = np.average(ZLPs, axis = 0)

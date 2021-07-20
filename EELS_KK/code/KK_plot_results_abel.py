@@ -26,7 +26,7 @@ path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_nf-ws2_SI-
 im = SpectralImage.load_spectral_image(path_to_results)
 
 path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+im.load_zlp_models(path_to_models=path_to_models)
 im.pool(5)
 im.cluster(5)
 im.calc_axes()

@@ -18,7 +18,7 @@ smooth = sys.argv[3]
 
 im = Spectral_image.load_data("path")
 im.cluster(5)
-im.load_ZLP_models_smefit(path_to_models)
+im.load_zlp_models(path_to_models)
 if smooth:
     im.smooth(window_len=50)
 

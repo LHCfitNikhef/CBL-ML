@@ -28,7 +28,7 @@ path = '/data/theorie/ipostmes/cluster_programs/EELS_KK/dmfiles/h-ws2_eels-SI_00
 im = Spectral_image.load_data(path)
 [n_x, n_y] = im.image_shape
 
-im.load_ZLP_models_smefit(path_to_models)
+im.load_zlp_models(path_to_models)
 
 
 
