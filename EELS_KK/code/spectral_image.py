@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import seaborn as sns
@@ -10,10 +12,10 @@ import os
 import copy
 import warnings
 import torch
-import torch.nn as nn
 import bz2
 import pickle
 import _pickle as cPickle
+
 
 from k_means_clustering import k_means
 import training as train
@@ -154,7 +156,7 @@ class SpectralImage:
             path to save location plus filename. If it does not end on ".pkl", ".pkl" will be added.
         """
         if filename[-4:] != '.pkl':
-            filename + '.pkl'
+            filename = filename + '.pkl'
         with open(filename, 'wb') as output:  # Overwrites any existing file.
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
@@ -173,7 +175,7 @@ class SpectralImage:
 
         """
         if filename[-5:] != '.pbz2':
-            filename + '.pbz2'
+            filename = filename + '.pbz2'
         self.compressed_pickle(filename, self)
 
     @staticmethod
@@ -298,7 +300,6 @@ class SpectralImage:
         """
         if path_to_pickle[-4:] != '.pkl':
             raise ValueError("please provide a path to a pickle file containing a Spectral_image class object.")
-            return
         if not os.path.exists(path_to_pickle):
             raise FileNotFoundError('pickled file: ' + path_to_pickle + ' not found')
         with open(path_to_pickle, 'rb') as pickle_im:
@@ -330,7 +331,6 @@ class SpectralImage:
         if path_to_compressed_pickle[-5:] != '.pbz2':
             raise ValueError(
                 "please provide a path to a compressed .pbz2 pickle file containing a Spectrall_image class object.")
-            return
         if not os.path.exists(path_to_compressed_pickle):
             raise FileNotFoundError('pickled file: ' + path_to_compressed_pickle + ' not found')
 
@@ -705,29 +705,6 @@ class SpectralImage:
 
         return (check_sum <= threshold)
 
-    def select_ZLPs_old(self, ZLPs, dE1=None):
-        if dE1 is None:
-            dE1 = min(self.dE1[1, :])
-            dE2 = 3 * max(self.dE1[1, :])
-        else:
-            dE2 = 3 * dE1
-
-        ZLPs_c = ZLPs[:, (self.deltaE > dE1) & (self.deltaE < dE2)]
-        low = np.nanpercentile(ZLPs_c, 2, axis=0)
-        high = np.nanpercentile(ZLPs_c, 95, axis=0)
-
-        threshold = (low[0] + high[0]) / 100
-
-        low[low < threshold] = 0
-        high[high < threshold] = threshold
-
-        check = (ZLPs_c < low) | (ZLPs_c >= high)
-        check = np.sum(check, axis=1) / check.shape[1]
-
-        threshold = 0.01
-
-        return (check < threshold)
-
     def train_zlp(self, n_clusters=5, conf_interval=1, clusters=None, signal='EELS', **kwargs):
         """
         Train the ZLP on the spectral image.
@@ -753,41 +730,6 @@ class SpectralImage:
         training_data = self.get_cluster_spectra(conf_interval=conf_interval, signal=signal)
         train.train_zlp_scaled(self, training_data, **kwargs)
 
-    def load_ZLP_models(self, path_to_models="models", threshold_costs=1, name_in_path=True, plotting=False):
-        if self.name is not None and name_in_path:
-            path_to_models = self.name + "_" + path_to_models
-
-        if not os.path.exists(path_to_models):
-            print("No path " + path_to_models + " found. Please ensure spelling and that there are models trained.")
-            return
-
-        self.ZLP_models = []
-
-        model = MLP(num_inputs=2, num_outputs=1)
-
-        costs = np.loadtxt(path_to_models + "/costs.txt")
-
-        if plotting:
-            plt.figure()
-            plt.title("chi^2 distribution of models")
-            plt.hist(costs[costs < threshold_costs * 3], bins=20)
-            plt.xlabel("chi^2")
-            plt.ylabel("number of occurence")
-
-        n_working_models = np.sum(costs < threshold_costs)
-
-        k = 0
-        for j in range(len(costs)):
-            if costs[j] < threshold_costs:
-                with torch.no_grad():
-                    model.load_state_dict(torch.load(path_to_models + "/nn_rep" + str(j)))
-                    if self.check_model(model):
-                        # TODO: this check is unnesscicary I believe, to be removed
-                        self.ZLP_models.append(copy.deepcopy(model))
-                    else:
-                        print("disregarded model, straight line.")
-                k += 1
-
     @staticmethod
     def check_cost_smefit(path_to_models, idx, threshold=1):
         path_to_models += (path_to_models[-1] != '/') * '/'
@@ -807,7 +749,7 @@ class SpectralImage:
 
         return (np.std(predictions) / np.average(predictions)) > 1E-3  # very small --> straight line
 
-    def load_ZLP_models_smefit(self, path_to_models="models", threshold_costs=0.3, name_in_path=False, plotting=False,
+    def load_ZLP_models_smefit(self, path_to_models="models", name_in_path=False, plotting=False,
                                idx=None):
         # if n_rep is None and idx is None:
         #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
@@ -825,7 +767,7 @@ class SpectralImage:
 
         path_to_models += (path_to_models[-1] != '/') * '/'
         path_dE1 = "dE1.txt"
-        model = MLP(num_inputs=2, num_outputs=1)
+        model = train.MLP(num_inputs=2, num_outputs=1)
         self.dE1 = np.loadtxt(path_to_models + path_dE1)
 
         path_scale_var = 'scale_var.txt'  # HIER
@@ -897,7 +839,6 @@ class SpectralImage:
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
 
         # plot the chi2 distributions
-        # TODO: add option to function call whether to plot or not
         if plotting:
             fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
             plt.hist(cost_trains, label=r'$\rm{Training}$', bins=40, range=(0, 5* cost_tests_std), alpha=0.4)
@@ -905,8 +846,7 @@ class SpectralImage:
             plt.title(r'$\chi^2\;\rm{distribution}$')
             plt.xlabel(r'$\chi^2$')
             plt.legend(frameon=False, loc='upper right')
-            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2.pdf')
-
+            fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2_p5.pdf')
 
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
@@ -1725,7 +1665,7 @@ class SpectralImage:
             return 1E-12
         if prefix == 'n':
             return 1E-9
-        if prefix in ['μ', 'µ', 'u', 'micron']:
+        if prefix in ['u', 'micron']:
             return 1E-6
         if prefix == 'm':
             return 1E-3
@@ -1851,29 +1791,6 @@ def bandgap(x, amp, BG, b):
     return amp * (x - BG) ** (b)
 
 
-class MLP(nn.Module):
-
-    def __init__(self, num_inputs, num_outputs):
-        super().__init__()
-        # Initialize the modules we need to build the network
-        self.linear1 = nn.Linear(num_inputs, 10)
-        self.linear2 = nn.Linear(10, 15)
-        self.linear3 = nn.Linear(15, 5)
-        self.output = nn.Linear(5, num_outputs)
-        self.sigmoid = nn.Sigmoid()
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        # Perform the calculation of the model to determine the prediction
-        x = self.linear1(x)
-        x = self.sigmoid(x)
-        x = self.linear2(x)
-        x = self.sigmoid(x)
-        x = self.linear3(x)
-        x = self.relu(x)
-        x = self.output(x)
-        return x
-
 
 def scale(inp, ab):
     """
@@ -1904,8 +1821,10 @@ def round_scientific(value, n_sig):
     num = round(value, n_sig - scale - 1)
     return num
 
+
 def trunc(values, decs=0):
     return np.trunc(values*10**decs)/(10**decs)
+
 
 def round_to_nearest(value, base=5):
     return base * round(float(value) / base)
