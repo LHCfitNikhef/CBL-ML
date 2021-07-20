@@ -396,7 +396,10 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.legend(loc='lower right', frameon=False, fontsize=15)
     plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
     plt.ylim(-3e3, 2e3)
+    # TODO: remove absolute hard coded path
     fig.savefig('/data/theorie/jthoeve/EELSfitter/output/eels_der.pdf')
+
+
 
     # plot with location of dE1 shown on top of raw (smoothened) spectrum
     fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))

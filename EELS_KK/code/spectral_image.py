@@ -15,6 +15,7 @@ import torch
 import bz2
 import pickle
 import _pickle as cPickle
+from matplotlib import rc
 
 
 from k_means_clustering import k_means
@@ -816,7 +817,16 @@ class SpectralImage:
 
         return (np.std(predictions) / np.average(predictions)) > 1E-3  # very small --> straight line
 
-    def gen_zlp_ntot(self, ntot):
+    def calc_zlp_ntot(self, ntot):
+        """
+        Returns the shape-(M, N) array of zlp model predictions at the scaled log integrated intensity ``ntot``.
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
+
+        Parameters
+        ----------
+        ntot: float
+            Log integrated intensity (rescaled)
+        """
         deltaE = np.linspace(0.1, 0.9, self.l)
         predict_x_np = np.zeros((self.l, 2))
         predict_x_np[:, 0] = deltaE
@@ -833,6 +843,40 @@ class SpectralImage:
             ZLPs[k, :] = predictions
 
         return ZLPs
+
+    def plot_zlp_ntot(self):
+        """
+        Plot the trained ZLP including uncertainties for the cluster means.
+        """
+
+        rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica'], 'size': 10})
+        rc('text', usetex=True)
+
+        fig, ax = plt.subplots(dpi=200)
+        ax.set_title(r"$\rm{Predicted\;ZLPs\;for\;cluster\;means}$")
+        ax.set_xlabel(r"$\rm{Energy\;loss\;[eV]}$")
+        ax.set_ylabel(r"$\log I_{\rm{EELS}}\;\rm{[a.u.]}$")
+
+        cluster_means = self.clusters
+        scaled_int = [self.scale_var_log_sum_I[0] * i + self.scale_var_log_sum_I[1] for i in cluster_means]
+
+        for i, cluster_mean_scaled in enumerate(scaled_int):
+            zlps = self.calc_zlp_ntot(cluster_mean_scaled)
+
+            low = np.nanpercentile(zlps, 16, axis=0)
+            high = np.nanpercentile(zlps, 84, axis=0)
+            median = np.nanpercentile(zlps, 50, axis=0)
+
+            ax.fill_between(self.deltaE, low, high, alpha=0.3)
+            label = r"$\rm{Vacuum}$" if i == 0 else r"$\rm{Cluster\;%d}$" % i
+            ax.plot(self.deltaE, median, label=label)
+
+        ax.set_ylim(1, 1e3)
+        ax.set_xlim(0.4, 6)
+        ax.legend()
+        plt.yscale('log')
+        fig.savefig(os.path.join(self.output_path, 'scaled_int.pdf'))
+
 
     def load_zlp_models(self, path_to_models, plot_chi2=False, idx=None):
         """

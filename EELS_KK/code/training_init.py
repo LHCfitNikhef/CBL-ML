@@ -16,13 +16,16 @@ display_step = 10
 
 im = SpectralImage.load_data(dm4_path)
 im.output_path = '/data/theorie/jthoeve/EELSfitter/output/'
+path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
+im.load_zlp_models(path_to_models=path_to_models)
+im.plot_zlp_ntot()
 
 #im.cluster(5)
 #im.pool(5)
 #path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_p5'
-path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
+
 #im.calc_zlps(30, 30, signal="pooled", path_to_models=path_to_models)
-im.calc_zlps_matched(30, 30, select_ZLPs=False, path_to_models=path_to_models)
+#im.calc_zlps_matched(30, 30, select_ZLPs=False, path_to_models=path_to_models)
 #im.load_zlp_models(path_to_models=path_to_models, plotting=True)
 
 # im.train_zlp(n_clusters=n_clusters,

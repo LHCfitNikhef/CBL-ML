@@ -178,7 +178,7 @@ the methods and functions.</p>
 <h2>The <code class="docutils literal notranslate"><span class="pre">SpectralImage</span></code> class<a class="headerlink" href="#the-spectralimage-class" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="spectral_image.SpectralImage">
-<em class="property">class </em><code class="sig-prename descclassname">spectral_image.</code><code class="sig-name descname">SpectralImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">deltadeltaE</span></em>, <em class="sig-param"><span class="n">pixelsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">beam_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clusters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clustered</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cluster_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deltaE</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">spectral_image.</code><code class="sig-name descname">SpectralImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">deltadeltaE</span></em>, <em class="sig-param"><span class="n">pixelsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">beam_energy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dielectric_function_im_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">S_s_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_avg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">IEELS_std</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clusters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clustered</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cluster_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">deltaE</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ZLP_models</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale_var_deltaE</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">crossings_E</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">crossings_n</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_smooth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dE1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pooled</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale_var_log_sum_I</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The spectral image class that provides several tools to analyse spectral images with the zero-loss peak
 subtracted.</p>
@@ -251,7 +251,7 @@ subtracted.</p>
 <dl class="py method">
 <dt id="spectral_image.SpectralImage.calc_thickness">
 <code class="sig-name descname">calc_thickness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spect</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">N_ZLP</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.calc_thickness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.calc_thickness" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates thickness from sample data, using Egerton <a href="#id6"><span class="problematic" id="id1">[1]_</span></a></p>
+<dd><p>Calculates thickness from sample data, using Egerton <a href="#id8"><span class="problematic" id="id1">[1]_</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -279,9 +279,59 @@ Microscope”, Springer-Verlag, 2011.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spectral_image.SpectralImage.calc_zlps">
+<code class="sig-name descname">calc_zlps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.calc_zlps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.calc_zlps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape-(M, N) array of ZLP model predictions at pixel (<code class="docutils literal notranslate"><span class="pre">i</span></code>, <code class="docutils literal notranslate"><span class="pre">j</span></code>) after training, where
+M and N correspond to the number of model predictions and <span class="math notranslate nohighlight">\(\Delta E\)</span> s respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – horizontal pixel.</p></li>
+<li><p><strong>j</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – vertical pixel.</p></li>
+<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Description of signal type. Set to <code class="docutils literal notranslate"><span class="pre">&quot;EELS&quot;</span></code> by default.</p></li>
+<li><p><strong>select_ZLPs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Filter out ZLP models based on their arclength in the extrapolating region in between <span class="math notranslate nohighlight">\(\Delta E_I\)</span> and <span class="math notranslate nohighlight">\(\Delta E_{II}\)</span>.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>predictions</strong> – The ZLP predictions at pixel (<code class="docutils literal notranslate"><span class="pre">i</span></code>, <code class="docutils literal notranslate"><span class="pre">j</span></code>).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a>, shape=(M, N)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spectral_image.SpectralImage.calc_zlps_matched">
+<code class="sig-name descname">calc_zlps_matched</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">j</span></em>, <em class="sig-param"><span class="n">signal</span><span class="o">=</span><span class="default_value">'EELS'</span></em>, <em class="sig-param"><span class="n">select_ZLPs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.calc_zlps_matched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.calc_zlps_matched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape-(M, N) array of matched ZLP model predictions at pixel (<code class="docutils literal notranslate"><span class="pre">i</span></code>, <code class="docutils literal notranslate"><span class="pre">j</span></code>) after training.
+M and N correspond to the number of model predictions and <span class="math notranslate nohighlight">\(\Delta E\)</span> s respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – horizontal pixel.</p></li>
+<li><p><strong>j</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – vertical pixel.</p></li>
+<li><p><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Description of signal type. Set to <code class="docutils literal notranslate"><span class="pre">&quot;EELS&quot;</span></code> by default.</p></li>
+<li><p><strong>select_ZLPs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Filter out ZLP models based on their arclength in the extrapolating region in between <span class="math notranslate nohighlight">\(\Delta E_I\)</span> and <span class="math notranslate nohighlight">\(\Delta E_{II}\)</span>.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>predictions</strong> – The matched ZLP predictions at pixel (<code class="docutils literal notranslate"><span class="pre">i</span></code>, <code class="docutils literal notranslate"><span class="pre">j</span></code>).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a>, shape=(M, N)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spectral_image.SpectralImage.cluster">
 <code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">based_on</span><span class="o">=</span><span class="default_value">'log'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clusters the spectral image into clusters according to the (log) integrated intensity at each
+pixel. Cluster means are stored in the attribute <cite>clusters</cite> and the cluster index to which each pixel belongs is
+stored in the attribute <cite>clustered</cite>.
 pixel. Cluster means are stored in the attribute <code class="docutils literal notranslate"><span class="pre">self.clusters</span></code> and the index to which each cluster belongs is
 stored in the attribute <code class="docutils literal notranslate"><span class="pre">self.clustered</span></code>.</p>
 <dl class="field-list simple">
@@ -470,7 +520,7 @@ based_on value. The default is 1.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>track_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – default is <cite>False</cite>, if <cite>True</cite>,  outputs for each pixel the program that is busy with that pixel.</p></li>
 <li><p><strong>plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – default is <cite>False</cite>, if <cite>True</cite>, plots all calculated dielectric functions</p></li>
-<li><p><strong>save_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – optional labelling to incude in <code class="docutils literal notranslate"><span class="pre">save_path</span></code>.</p></li>
+<li><p><strong>save_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – optional labelling to include in <code class="docutils literal notranslate"><span class="pre">save_path</span></code>.</p></li>
 <li><p><strong>save_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – location where the dielectric function, SSD and thickness are stored.</p></li>
 </ul>
 </dd>
@@ -489,7 +539,7 @@ based_on value. The default is 1.</p></li>
 <dd><p>Calculate the complex
 dielectric function from a single scattering distribution (SSD) using
 the Kramers-Kronig relations.</p>
-<p>It uses the FFT method as in <a href="#id7"><span class="problematic" id="id3">[1]_</span></a>.  The SSD is an
+<p>It uses the FFT method as in <a href="#id9"><span class="problematic" id="id3">[1]_</span></a>.  The SSD is an
 EELSSpectrum instance containing SSD low-loss EELS with no zero-loss
 peak. The internal loop is devised to approximately subtract the
 surface plasmon contribution supposing an unoxidized planar surface and
@@ -566,7 +616,7 @@ the SSD (only when <cite>t</cite> is None)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This method is based in Egerton’s Matlab code <a href="#id8"><span class="problematic" id="id4">[1]_</span></a> with some
+<p>This method is based in Egerton’s Matlab code <a href="#id10"><span class="problematic" id="id4">[1]_</span></a> with some
 minor differences:</p>
 <ul class="simple">
 <li><p>The wrap-around problem when computing the ffts is workarounded by
@@ -649,6 +699,22 @@ Microscope”, Springer-Verlag, 2011.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#spectral_image.SpectralImage" title="spectral_image.SpectralImage">SpectralImage</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spectral_image.SpectralImage.load_zlp_models">
+<code class="sig-name descname">load_zlp_models</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_models</span></em>, <em class="sig-param"><span class="n">plot_chi2</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">idx</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spectral_image.html#SpectralImage.load_zlp_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spectral_image.SpectralImage.load_zlp_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the trained ZLP models and stores them in <code class="docutils literal notranslate"><span class="pre">self.ZLP_models</span></code>. Models that have a <span class="math notranslate nohighlight">\(\chi^2 &gt; \chi^2_{\mathrm{mean}} + 5\sigma\)</span> are
+discarded, where <span class="math notranslate nohighlight">\(\sigma\)</span> denotes the 68% CI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Location where the model predictions have been stored after training.</p></li>
+<li><p><strong>plot_chi2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – When set to <cite>True</cite>, plot and save the <span class="math notranslate nohighlight">\(\chi^2\)</span> distribution.</p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – When specified, only the zlp labelled by <code class="docutils literal notranslate"><span class="pre">idx</span></code> is loaded, instead of all model predictions.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -914,7 +980,7 @@ by calling <a class="reference internal" href="#training.train_zlp_scaled" title
 
 <dl class="py function">
 <dt id="training.determine_de1">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">determine_de1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx_clusters</span></em>, <em class="sig-param"><span class="n">y_smooth_clusters</span></em>, <em class="sig-param"><span class="n">shift_de1</span><span class="o">=</span><span class="default_value">0.7</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#determine_de1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.determine_de1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">determine_de1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">dy_dx_clusters</span></em>, <em class="sig-param"><span class="n">y_smooth_clusters</span></em>, <em class="sig-param"><span class="n">shift_de1</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">perc_de1</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">plot_de1</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prob</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#determine_de1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.determine_de1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the hyperparamter <span class="math notranslate nohighlight">\(\Delta E_I\)</span> for every cluster in two ways:</p>
 <ul class="simple">
 <li><p>Take a certain fraction of the location of the first local minimum. The fraction is tuned by <code class="docutils literal notranslate"><span class="pre">shift_de1</span></code>.</p></li>
@@ -929,6 +995,10 @@ pixel within the cluster.</p></li>
 <li><p><strong>y_smooth_clusters</strong> (<em>array_like</em>) – An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
 pixel within the cluster.</p></li>
 <li><p><strong>shift_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Shift the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> by a factor of <code class="docutils literal notranslate"><span class="pre">shift_dE1</span></code> w.r.t. to the first local minimum.</p></li>
+<li><p><strong>perc_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Percentage of replicas that is allowed to have a positive slope at <span class="math notranslate nohighlight">\(\Delta E_I\)</span>.</p></li>
+<li><p><strong>plot_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – When set to <cite>True</cite>, the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> is plotted. Set to <cite>False</cite> by default.</p></li>
+<li><p><strong>prob</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – When set to <cite>True</cite>, the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> is determined by demanding that <a href="#id6"><span class="problematic" id="id7">``</span></a>perc_de1``% of the EELS replicas should
+have a positive slope.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1072,17 +1142,6 @@ pixel within the cluster.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="training.plot_loss_dist">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">plot_loss_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#plot_loss_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.plot_loss_dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the <span class="math notranslate nohighlight">\(\chi^2\)</span> distribution of the training and validation set after training.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Location where to store the plot.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="training.scale">
 <code class="sig-prename descclassname">training.</code><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em>, <em class="sig-param"><span class="n">ab</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rescale the training data to lie between 0.1 and 0.9</p>
@@ -1151,7 +1210,7 @@ in the begining and end part of the output signal.</p>
 
 <dl class="py function">
 <dt id="training.train_zlp_scaled">
-<code class="sig-prename descclassname">training.</code><code class="sig-name descname">train_zlp_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">spectra</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">shift_dE1</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">shift_dE2</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">bs_rep_num</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#train_zlp_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.train_zlp_scaled" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">training.</code><code class="sig-name descname">train_zlp_scaled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">spectra</span></em>, <em class="sig-param"><span class="n">n_rep</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">n_epochs</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">shift_dE1</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">shift_dE2</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">path_to_models</span><span class="o">=</span><span class="default_value">'models'</span></em>, <em class="sig-param"><span class="n">display_step</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">bs_rep_num</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">perc_de1</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">plot_de1</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prob</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/training.html#train_zlp_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#training.train_zlp_scaled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains the ZLP on the (clustered) spectral image.</p>
 <p>One should train on two input features: the (scaled) log intensity <span class="math notranslate nohighlight">\(\log I_{\mathrm{EELS}}\)</span> and the (scaled) <span class="math notranslate nohighlight">\(\Delta E\)</span>.</p>
 <dl class="field-list simple">
@@ -1166,6 +1225,10 @@ in the begining and end part of the output signal.</p>
 <li><p><strong>path_to_models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Path to where the trained models should be stored.</p></li>
 <li><p><strong>display_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of epochs after which to print output.</p></li>
 <li><p><strong>bs_rep_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – For cluster users only: labels the parallel run.</p></li>
+<li><p><strong>perc_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Percentage of replicas that is allowed to have a positive slope at <span class="math notranslate nohighlight">\(\Delta E_I\)</span>.</p></li>
+<li><p><strong>plot_de1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – When set to <cite>True</cite>, the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> is plotted. Set to <cite>False</cite> by default.</p></li>
+<li><p><strong>prob</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – When set to <cite>True</cite>, the location of <span class="math notranslate nohighlight">\(\Delta E_I\)</span> is determined by demanding that 16% of the EELS replicas should
+have a positive slope.</p></li>
 </ul>
 </dd>
 </dl>
