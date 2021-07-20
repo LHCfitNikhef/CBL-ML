@@ -23,6 +23,22 @@ rc('text', usetex=True)
 
 
 class MLP(nn.Module):
+    """
+    Multilayer Perceptron (MLP) class. It uses the following architecture
+
+    .. math::
+
+       [n_i, 10, 15, 5, n_f],
+
+    where :math:`n_i` and :math:`n_f` denote the number of input features and output target values respectively.
+
+    Parameters
+    ----------
+    num_inputs: int
+        number of input features
+    num_outputs: int
+        dimension of the target output.
+    """
 
     def __init__(self, num_inputs, num_outputs):
         super().__init__()
@@ -35,6 +51,18 @@ class MLP(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self, x):
+        """
+        Propagates the input features ``x`` through the MLP.
+        Parameters
+        ----------
+        x: torch.tensor
+            input features
+
+        Returns
+        -------
+        x: torch.tensor
+            MLP outcome
+        """
         # Perform the calculation of the model to determine the prediction
         x = self.linear1(x)
         x = self.sigmoid(x)
@@ -53,9 +81,9 @@ def scale(inp, ab):
     Parameters
     ----------
     inp: array_like
-        training data to be rescaled, e.g. dE
+        training data to be rescaled, e.g. :math:`\Delta E`
     ab: array_like
-        scaling parameters, which can be find with `find_scale_var`.
+        scaling parameters, which can be find with :py:meth:`find_scale_var() <find_scale_var>`.
     Returns
     -------
     Rescaled training data
@@ -65,7 +93,7 @@ def scale(inp, ab):
 
 def find_scale_var(inp, min_out=0.1, max_out=0.9):
     """
-    Computes the scaling parameters needed to rescale the training data to lie between `min_out` and `max_out`.
+    Computes the scaling parameters needed to rescale the training data to lie between ``min_out`` and ``max_out``.
 
     Parameters
     ----------
@@ -78,7 +106,8 @@ def find_scale_var(inp, min_out=0.1, max_out=0.9):
 
     Returns
     -------
-    list of rescaling parameters `[a, b]`
+    a, b: list
+        list of rescaling parameters
     """
     a = (max_out - min_out) / (inp.max() - inp.min())
     b = min_out - a * inp.min()
@@ -129,17 +158,17 @@ def loss_fn(output, target, error):
     return loss
 
 
-def MC_reps(data_avg, data_std, n_rep):
-    n_full = len(data_avg)
-    full_y_reps = np.zeros(shape=(n_full, n_rep))
-    for i in range(n_rep):
-        full_rep = np.random.normal(0, data_std)
-        full_y_reps[:, i] = (data_avg + full_rep).reshape(n_full)
-    return full_y_reps
+# def MC_reps(data_avg, data_std, n_rep):
+#     n_full = len(data_avg)
+#     full_y_reps = np.zeros(shape=(n_full, n_rep))
+#     for i in range(n_rep):
+#         full_rep = np.random.normal(0, data_std)
+#         full_y_reps[:, i] = (data_avg + full_rep).reshape(n_full)
+#     return full_y_reps
 
 
 def binned_statistics(x, y, nbins, stats=None):
-    """Find the mean, variance and number of counts within the bins described by ewd"""
+    """Find the mean, variance and number of counts within the bins described by :py:meth:`ewd() <ewd>`"""
     if stats is None:
         stats = []
         edges = None
@@ -182,12 +211,26 @@ def binned_statistics(x, y, nbins, stats=None):
     return result, edges
 
 
-def split_test_train(data, test_size=0.2):
-    # TODO: to use if we do not use single complete spectra
-    n_test = round(test_size * data.shape[1])
-    train, test = torch.utils.data.random_split(data, [data.shape[1] - n_test, n_test])
-    return train
-    pass
+# def split_test_train(data, test_size=0.2):
+#     """
+#     Split ``data`` into a training and validation set based on the ``test_size``.
+#
+#     Parameters
+#     ----------
+#     data: array_like
+#         Data to be split
+#     test_size: float
+#         Set to 0.2 by default; training and validation set are split up in 80/20%.
+#
+#     Returns
+#     -------
+#
+#     """
+#     # TODO: to use if we do not use single complete spectra
+#     n_test = round(test_size * data.shape[1])
+#     train, test = torch.utils.data.random_split(data, [data.shape[1] - n_test, n_test])
+#     return train
+#     pass
 
 
 def smooth(data, window_len=10, window='hanning', keep_original=False):
@@ -198,14 +241,20 @@ def smooth(data, window_len=10, window='hanning', keep_original=False):
     (with the window size) in both ends so that transient parts are minimized
     in the begining and end part of the output signal.
     
-    input:
-        x: the input signal 
-        window_len: the dimension of the smoothing window; should be an odd integer
-        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-            flat window will produce a moving average smoothing.
+    Parameters
+    ----------
+    data: array_like
+        The input signal
+    window_len: int, optional
+        The dimension of the smoothing window; should be an odd integer. Set to 10 by default.
+    window: str, optional
+        the type of window from ``"flat"``, '``"hanning"``, ``"hamming"``, ``"bartlett"``, ``"blackman"``
+        ``"flat"`` window will produce a moving average smoothing.
 
-    output:
-        the smoothed signal
+    Returns
+    -------
+    smoothed_signal: array_like
+        The smoothed spectrum
 
     """
     # TODO: add comnparison
@@ -219,11 +268,29 @@ def smooth(data, window_len=10, window='hanning', keep_original=False):
 
     # y=np.convolve(w/w.sum(),s,mode='valid')
     surplus_data = int((window_len - 1) * 0.5)
-    return np.apply_along_axis(lambda m: np.convolve(m, w / w.sum(), mode='valid'), axis=1, arr=s)[:,
+    smoothed_signal = np.apply_along_axis(lambda m: np.convolve(m, w / w.sum(), mode='valid'), axis=1, arr=s)[:,
            surplus_data:-surplus_data]
+    return smoothed_signal
 
 
 def smooth_clusters(image, clusters, window_len=None):
+    """
+    Smooth the spectrum for all clusters
+
+    Parameters
+    ----------
+    image: SpectralImage
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object
+    clusters: array_like
+
+    window_len: int
+        Smoothing window length
+
+    Returns
+    -------
+    smoothed_clusters: array_like
+        The smoothed spectra for all clusters
+    """
     smoothed_clusters = np.zeros((len(clusters)), dtype=object)
     for i in range(len(clusters)):
         smoothed_clusters[i] = smooth(clusters[i])
@@ -231,6 +298,21 @@ def smooth_clusters(image, clusters, window_len=None):
 
 
 def derivative_clusters(image, clusters):
+    """
+    Computes the derivative of the spectral image in each cluster.
+
+    Parameters
+    ----------
+    image: SpectralImage
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object
+    clusters: array_like
+        An array with size the number of clusters Each entry is a 2D array that contains all the spectra within the cluster.
+
+    Returns
+    -------
+    der_clusters: array_like
+        Slope of the intensity spectrum for all clusters.
+    """
     dx = image.ddeltaE
     der_clusters = np.zeros((len(clusters)), dtype=object)
     for i in range(len(clusters)):
@@ -240,16 +322,21 @@ def derivative_clusters(image, clusters):
 
 def find_min_de1(image, dy_dx, y_smooth):
     """
-    Finds the minimum o
+    Finds the location of the first local minimum of the intensity spectrum
+
     Parameters
     ----------
-    image
-    dy_dx
-    y_smooth
+    image: SpectralImage
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object
+    dy_dx: array_like
+        Derivative of the intensity spectrum
+    y_smooth: array_like
+        Smoothed intensity spectrum
 
     Returns
     -------
-
+    pos_der: float
+        Position of first local minimum
     """
     crossing = (dy_dx > 0)
     if not crossing.any():
@@ -268,9 +355,10 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     - The slope of the EELS spectrum for each cluster plus uncertainties.
     - The log EELS intensity per cluster plus uncertainties.
 
-    Parameters.
+    Parameters
     ----------
     image: SpectralImage
+        :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object
     y_smooth_clusters: array_like
         An array that contains an array for each cluster, which subsequently contains the smoothed spectrum at each
         pixel within the cluster.
@@ -308,7 +396,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.legend(loc='lower right', frameon=False, fontsize=15)
     plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
     plt.ylim(-3e3, 2e3)
-    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/dE1_der_plot.pdf')
+    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/eels_der.pdf')
 
     # plot with location of dE1 shown on top of raw (smoothened) spectrum
     fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
@@ -334,7 +422,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.ylim(1e2, 3e4)
     plt.xlim(0.2, 4.0)
     plt.yscale('log')
-    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/dE1_plot.pdf')
+    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/eels.pdf')
 
 
 def determine_de1(image, dy_dx_clusters, y_smooth_clusters, shift_de1=0.7, perc_de1=16, plot_de1=False, prob=True):
@@ -512,9 +600,6 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
     if not os.path.exists(path_scale_var):
         np.savetxt(path_scale_var, ab_int_log_I)
 
-    import pdb
-    pdb.set_trace()
-
     path_dE1 = os.path.join(path_to_models, "dE1.txt")
     if not os.path.exists(path_dE1):
         np.savetxt(path_dE1, np.vstack((image.clusters, dE1)))
@@ -592,6 +677,8 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         loss_test_n = []
         loss_train_n = []
 
+        n_stagnant = 0
+        n_stagnant_max = 5
         for epoch in range(1, n_epochs + 1):
 
             # set the model to training mode
@@ -646,16 +733,19 @@ def train_zlp_scaled(image, spectra, n_rep=500, n_epochs=30000, lr=1e-3, shift_d
         for item in loss_test_reps:
             text_file.write("%s\n" % item)
 
+
 def training_report(path, loss_train, loss_test):
     """
-    Produce a training report
+    Produce a training report: evolution of the training and validation loss per epoch
 
     Parameters
     ----------
-    path
-    rep_n
-    loss_train
-    loss_test
+    path: str
+        location where to store the evolution plots
+    loss_train: array_like
+        Training loss
+    loss_test: array_like
+        Validation loss
     """
     training_loss_path = os.path.join(path, 'training_loss.txt')
     with open(training_loss_path, 'w') as f:
@@ -675,19 +765,24 @@ def training_report(path, loss_train, loss_test):
     plt.legend(loc='best', frameon=False)
     fig.savefig(os.path.join(path, 'loss.pdf'))
 
+
 def ewd(x, nbins):
     """
-    INPUT:
-        x:
-        y:
-        nbins:
+    Apply Equal Width Discretization (EWD) to ``x`` to determine variances
 
-    OUTPUT:
-        df_train:
-        cuts1:
-        cuts2:
+    Parameters
+    ----------
+    x: array_like
+        input data
+    nbins: int
+        number of bins
 
-    Apply Equal Width Discretization (EWD) to x and y data to determine variances
+    Returns
+    -------
+    cuts1: numpy.ndarray
+    cuts2: numpy.ndarray
+
+
     """
     # TODO: I think everything that was here isn't needed?? since x is already sorted, and a 1D array
     # df_train = np.array(np.c_[x,y])
@@ -697,6 +792,21 @@ def ewd(x, nbins):
 
 
 def CI_high(data, confidence=0.68):
+    """
+    Computes the upper 68% confidence level (by default) of ``data``.
+
+    Parameters
+    ----------
+    data: array_like
+        arbitrary array
+    confidence: float
+        Confidence level
+
+    Returns
+    -------
+    high_a: float
+        confidence level set by ``confidence``.
+    """
     ## remove the lowest and highest 16% of the values
 
     a = np.array(data)
@@ -710,7 +820,21 @@ def CI_high(data, confidence=0.68):
 
 
 def CI_low(data, confidence=0.68):
-    ## remove the lowest and highest 16% of the values
+    """
+    Computes the lower 68% confidence level (by default) of ``data``.
+
+    Parameters
+    ----------
+    data: array_like
+        arbitrary array
+    confidence: float
+        Confidence level
+
+    Returns
+    -------
+    low_a: float
+        confidence level set by ``confidence``.
+    """
 
     a = np.array(data)
     n = len(a)
@@ -721,13 +845,25 @@ def CI_low(data, confidence=0.68):
     return low_a
 
 
-def get_median(x, y, nbins):
-    # df_train,
-    cuts1, cuts2 = ewd(x, y, nbins)
-    median, edges, binnum = scipy.stats.binned_statistic(x, y, statistic='median',
-                                                         bins=cuts2)  # df_train[:,0], df_train[:,1], statistic='median', bins=cuts2)
-    return median
-
+# def get_median(x, y, nbins):
+#     # df_train,
+#     cuts1, cuts2 = ewd(x, y, nbins)
+#     median, edges, binnum = scipy.stats.binned_statistic(x, y, statistic='median',
+#                                                          bins=cuts2)  # df_train[:,0], df_train[:,1], statistic='median', bins=cuts2)
+#     return median
 
 def get_mean(data):
-    return np.mean(data)
+    """
+    Returns the mean of ``data``.
+
+    Parameters
+    ----------
+    data: array_like
+        data to average
+    Returns
+    -------
+    mean: array_like
+        The mean of ``data``.
+    """
+    mean = np.mean(data)
+    return mean
