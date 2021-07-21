@@ -548,7 +548,7 @@ for i in np.arange(0, 31, 30):
                     #E_bands_smooth[i] = popt2[1]
                     #bs_smooth[i] = popt2[2]
                     
-                    bandgapfits.append(bandgap_test(im.deltaE, As[i], E_bands[i], bs[i]))
+                    bandgapfits.append(bandgap_test(im.deltaE, popt[0], popt[1], popt[2]))
                     #bandgapfits_smooth.append(bandgap_test(im.deltaE, As_smooth[i], E_bands_smooth[i], bs_smooth[i]))
                     i_succes.append(i)
                     print("succes!")
