@@ -22,11 +22,14 @@ from spectral_image import SpectralImage
 
 
 #path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_n10-inse_SI-003/image_KK.pkl"
-path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_nf-ws2_SI-001/image_KK_7.pkl"
-im = SpectralImage.load_spectral_image(path_to_results)
+#path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_nf-ws2_SI-001/image_KK_7.pkl"
 
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_new/'
-im.load_zlp_models(path_to_models=path_to_models)
+#path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/dmfiles/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4'
+path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4'
+im = SpectralImage.load_data(path_to_image)
+
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_nf-ws2_SI-001/E1_p16_k5_median/'
+im.load_ZLP_models_smefit(path_to_models=path_to_models)
 im.pool(5)
 im.cluster(5)
 im.calc_axes()
@@ -63,12 +66,12 @@ npix_ytick=26.25
 sig_ticks = 3
 scale_ticks = 1000
 tick_int = True
-thicknesslimit = np.nanpercentile(im.t[im.clustered == 2],99)
-mask = ((np.isnan([im.t[:,:,0]])[0]) | (im.t[:,:,0] > thicknesslimit))
+#thicknesslimit = np.nanpercentile(im.t[im.clustered == 2],99)
+#mask = ((np.isnan([im.t[:,:,0]])[0]) | (im.t[:,:,0] > thicknesslimit))
 cb_scale=0.85
 title_specimen = r'$\rm{WS_2\;nanoflower\;}$' #'WS$_2$ nanoflower flake'
 save_title_specimen = 'WS2_nanoflower_flake'
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/new/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/E1_p16_k10_median/pdfplots/"
 
 im.e0       = 200                           # keV
 im.dE1[1,0] = 2.5                           # Why do we fix the first dE1?
@@ -472,9 +475,244 @@ im.plot_heatmap(b_round, title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}
                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
                 save_as = save_loc + save_title_specimen + '_Bandgap_exponent_Discretized')
 
-
 #%% BANDGAP FIT INDIVIDUAL PIXELS
 
+def bandgap_test(x, amp, BG, b=1.5):
+    result = np.zeros(x.shape)
+    result[x<BG] = 1
+    result[x>=BG] = amp * (x[x>=BG] - BG)**(b)
+    return result
+
+for i in np.arange(0, 31, 30):
+    for j in np.arange(0, 31, 30):
+        if i != 0 and j != 0:
+            pixx=i
+            pixy=j
+            [ts, IEELSs, max_IEELSs], [epss, ts_p, S_ss_p, IEELSs_p, max_IEELSs_p] = im.KK_pixel(pixy, pixx, signal = "pooled", iterations=5)
+            
+            n_model = len(IEELSs_p)
+            windowlength = 29
+            polyorder = 2
+            #%%
+            IEELSs_p_smooth = savgol_filter(IEELSs_p, window_length = windowlength, polyorder = polyorder, axis = 1)
+            
+            IEELSs_p_1d = np.diff(IEELSs_p_smooth, axis = 1)
+            
+            IEELSs_p_1d_smooth = savgol_filter(IEELSs_p_1d, window_length = windowlength, polyorder = polyorder, axis = 1)
+            
+            IEELS_1d_CL_high = np.percentile(IEELSs_p_1d_smooth, 84, axis = 0)
+            
+            IEELS_1d_CL_high_idx = np.argwhere(np.diff(np.sign(IEELS_1d_CL_high - 0.1)))
+            
+            
+            
+            fig2, ax2 = plt.subplots(dpi=200)
+            ax2.set_title(title_specimen + r"$\rm{-\;Bandgap\;Fit\;pixel[%d,%d]}$"%(pixx, pixy))
+            ax2.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
+            ax2.set_ylabel(r"$\rm{Intensity\;[a.u.]\;}$")
+            ax2.set_ylim(-2,10)
+            ax2.set_xlim(1,5)
+            
+            ax2.fill_between(im.deltaE, np.nanpercentile(IEELSs_p_smooth, 16, axis = 0), np.nanpercentile(IEELSs_p_smooth, 84, axis = 0), alpha = 0.5, color = 'C0')
+            ax2.fill_between(im.deltaE[1:], np.nanpercentile(IEELSs_p_1d_smooth, 16, axis = 0), np.nanpercentile(IEELSs_p_1d_smooth, 84, axis = 0), alpha = 0.5, color = 'C1')
+            #ax2.plot(im.deltaE, IEELSs_p_median, alpha = 1.0, color = 'C0')
+            #ax2.plot(im.deltaE, IEELSs_p_median_smooth, label = r"$\rm{Spectrum\;}$", color = 'C0')
+            ax2.axhline(0,color = 'black', alpha=0.5)
+            
+            import pdb
+            pdb.set_trace()
+            #%%
+            As = np.zeros(n_model)
+            E_bands = np.zeros(n_model)
+            bs = np.zeros(n_model)
+            
+            As_smooth = np.zeros(n_model)
+            E_bands_smooth = np.zeros(n_model)
+            bs_smooth = np.zeros(n_model)
+            
+
+            # Determine fitting range for all models
+            
+            for i in range(n_model): 
+                
+                IEELSs_fit = IEELSs_p[i]
+                IEELSs_fit_smooth = savgol_filter(IEELSs_fit, window_length = windowlength, polyorder = polyorder)
+                IEELSs_fit_der1 = np.diff(IEELSs_fit_smooth)
+                IEELSs_fit_der1_smooth = savgol_filter(IEELSs_fit_der1, window_length = windowlength, polyorder = polyorder)
+                IEELSs_fit_der2 = np.diff(IEELSs_fit_der1_smooth)
+                IEELSs_fit_der2_smooth = savgol_filter(IEELSs_fit_der2, window_length = windowlength, polyorder = polyorder)
+                
+                for k in range(len(im.deltaE)):
+                    if im.deltaE[k] > 0 and p_ieels_der2_smooth[k - 1] < 0 and p_ieels_der2_smooth[k + 1] > 0:
+                            range1 = im.deltaE[k]
+                            k_start_r2 = k
+                            break
+                        
+                import pdb
+                pdb.set_trace()
+                #dE1 = im.dE1[1, int(im.clustered[pixy,pixx])]
+                
+    
+                #print("range1 = " + str(round(range1,4)) + ", range2 = " + str(round(range2,4)))
+                #range1 = dE1 - 0.6
+                #range2 = dE1 + 0.1
+                try:
+                    baseline = np.average(p_ieels_median[(im.deltaE > range1 - 0.1) & (im.deltaE < range1)])
+        
+                    popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                           p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                           p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
+                    
+                    popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                           p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                           p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
+                    As[i] = popt[0]
+                    E_bands[i] = popt[1]
+                    bs[i] = popt[2]
+                    
+                    As_smooth[i] = popt2[0]
+                    E_bands_smooth[i] = popt2[1]
+                    bs_smooth[i] = popt2[2]
+                except:
+                    #n_fails += 1
+                    #print("fail nr.: ", n_fails, "failed curve-fit, row: ", row, ", pixel: ", j, ", model: ", i)
+                    As[i] = 0
+                    E_bands[i] = 0
+                    bs[i] = 0
+                    
+                    As_smooth[i] = 0
+                    E_bands_smooth[i] = 0
+                    bs_smooth[i] = 0
+                    
+
+            # Fixed b
+            """
+            popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                   p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                   p0 = [400,1.5], bounds=([0, 0], np.inf))
+            
+            popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                                   p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                                   p0 = [400,1.5], bounds=([0, 0], np.inf))
+            """
+            IEELSs_p_median = np.nanpercentile(IEELSs_p, 50, axis = 0)
+            IEELSs_p_median_smooth = savgol_filter(IEELSs_p_median, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_median_1d = np.diff(IEELSs_p_median_smooth)
+            IEELSs_p_median_1d_smooth = savgol_filter(IEELSs_p_median_1d, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_median_2d = np.diff(IEELSs_p_median_1d_smooth)
+            IEELSs_p_median_2d_smooth = savgol_filter(IEELSs_p_median_2d, window_length = windowlength, polyorder = polyorder)
+            
+            IEELSs_p_low = np.nanpercentile(IEELSs_p, 16, axis = 0)
+            IEELSs_p_low_smooth = savgol_filter(IEELSs_p_low, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_low_1d = np.diff(IEELSs_p_low_smooth)
+            IEELSs_p_low_1d_smooth = savgol_filter(IEELSs_p_median, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_low_2d = np.diff(IEELSs_p_low_1d_smooth)
+            IEELSs_p_low_2d_smooth = savgol_filter(IEELSs_p_low_2d, window_length = windowlength, polyorder = polyorder)
+            
+            IEELSs_p_high = np.nanpercentile(IEELSs_p, 84, axis = 0)
+            IEELSs_p_high_smooth = savgol_filter(IEELSs_p_high, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_high_1d = np.diff(IEELSs_p_high_smooth)
+            IEELSs_p_high_1d_smooth = savgol_filter(IEELSs_p_high_1d, window_length = windowlength, polyorder = polyorder)
+            IEELSs_p_high_2d = np.diff(IEELSs_p_high_1d_smooth)
+            IEELSs_p_high_2d_smooth = savgol_filter(IEELSs_p_high_2d, window_length = windowlength, polyorder = polyorder)
+            
+            
+            
+            A_median = np.nanpercentile(As, 50, axis = 0)
+            E_band_median =  np.nanpercentile(IEELSs_p, 50, axis = 0)
+            b_median = np.nanpercentile(bs, 50, axis = 0)
+            
+            A_low = np.nanpercentile(As, 16, axis = 0)
+            E_band_low = np.nanpercentile(E_bands, 16, axis = 0)
+            b_low = np.nanpercentile(bs, 16, axis = 0)
+            
+            A_high = np.nanpercentile(As, 84, axis = 0)
+            E_band_high = np.nanpercentile(E_bands, 84, axis = 0)
+            b_high = np.nanpercentile(bs, 84, axis = 0)
+            
+            A_median_smooth = np.nanpercentile(As, 50, axis = 0)
+            E_band_median_smooth =  np.nanpercentile(IEELSs_p, 50, axis = 0)
+            b_median_smooth = np.nanpercentile(bs, 50, axis = 0)
+            
+            A_low_smooth = np.nanpercentile(As, 16, axis = 0)
+            E_band_low_smooth = np.nanpercentile(E_bands, 16, axis = 0)
+            b_low_smooth = np.nanpercentile(bs, 16, axis = 0)
+            
+            A_high_smooth = np.nanpercentile(As, 84, axis = 0)
+            E_band_high_smooth = np.nanpercentile(E_bands, 84, axis = 0)
+            b_high_smooth = np.nanpercentile(bs, 84, axis = 0)
+            
+            
+            fig1, ax1 = plt.subplots(dpi=200)
+            ax1.set_title(title_specimen + r"$\rm{-\;Bandgap\;Fit\;pixel[%d,%d]}$"%(pixx, pixy))
+            ax1.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
+            ax1.set_ylabel(r"$\rm{Intensity\;[a.u.]\;}$")
+            ax1.set_ylim(-2,300)
+            ax1.set_xlim(1,5)
+            
+            ax1.fill_between(im.deltaE, IEELSs_p_low, IEELSs_p_high, alpha = 0.2, color = 'C0')
+            ax1.plot(im.deltaE, IEELSs_p_median, alpha = 1.0, color = 'C0')
+            ax1.plot(im.deltaE, IEELSs_p_median_smooth, label = r"$\rm{Spectrum\;}$", color = 'C0')
+            
+            ax1.plot(im.deltaE[1:], IEELSs_p_median_1d, alpha = 0.2, color = 'C1')
+            ax1.plot(im.deltaE[1:], IEELSs_p_median_1d_smooth, label = r"$\rm{1st\;Order\;}$", color = 'C1',alpha = 0.5)
+            
+            ax1.plot(im.deltaE[1:-1], IEELSs_p_median_2d, alpha = 0.2, color = 'C2')
+            ax1.plot(im.deltaE[1:-1], IEELSs_p_median_2d_smooth, label = r"$\rm{2nd\;Order\;}$", color = 'C2',alpha = 0.5)
+            
+            ax1.axvspan(xmin=range1, xmax=range2, ymin=-1000, ymax=1000, color = 'C3', alpha=0.1)
+            ax1.axhline(0,color = 'black', alpha=0.5)
+            
+            ax1.plot(im.deltaE, bandgap_test(im.deltaE,A_median,E_band_median,b_median), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+            ax1.plot(im.deltaE, bandgap_test(im.deltaE,A_median_smooth,E_band_median_smooth,b_median_smooth), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
+            
+            # Fixed b
+            #ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+            #ax1.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
+            
+            ax1.legend()
+            
+            
+            fig2, ax2 = plt.subplots(dpi=200)
+            ax2.set_title(title_specimen + r"$\rm{-\;Bandgap\;Fit\;pixel[%d,%d]}$"%(pixx, pixy))
+            ax2.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
+            ax2.set_ylabel(r"$\rm{Intensity\;[a.u.]\;}$")
+            ax2.set_ylim(-2,10)
+            ax2.set_xlim(1,5)
+            
+            ax2.fill_between(im.deltaE, p_ieels_low, p_ieels_high, alpha = 0.2, color = 'C0')
+            ax2.plot(im.deltaE, p_ieels_median, alpha = 0.2, color = 'C0')
+            ax2.plot(im.deltaE, p_ieels_smooth, label = r"$\rm{Spectrum\;}$", color = 'C0')
+            ax2.plot(im.deltaE[1:], p_ieels_der1, alpha = 0.2, color = 'C1')
+            ax2.plot(im.deltaE[1:], p_ieels_der1_smooth, label = r"$\rm{1st\;Order\;}$", color = 'C1')
+            ax2.plot(im.deltaE[1:-1], p_ieels_der2, alpha = 0.2, color = 'C2')
+            ax2.plot(im.deltaE[1:-1], p_ieels_der2_smooth, label = r"$\rm{2nd\;Order\;}$", color = 'C2')
+            
+            ax2.axvspan(xmin=range1, xmax=range2, ymin=-1000, ymax=1000, color = 'C3', alpha=0.1)
+            ax2.axhline(0,color = 'black', alpha=0.5)
+            
+            #ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1],popt[2]), label = r"$\rm{Fit\;}$", color = 'C4')
+            #ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1],popt2[2]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5')
+            
+            # Fixed b
+            ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt[0],popt[1]), label = r"$\rm{Fit\;Raw\;}$", color = 'C4',alpha = 0.5)
+            ax2.plot(im.deltaE, bandgap_test(im.deltaE,popt2[0],popt2[1]), label = r"$\rm{Fit\;Smooth\;}$", color = 'C5',alpha = 0.5)
+            
+            ax2.legend(loc=2)
+            
+            #plt.savefig(save_loc + save_title_specimen + '_Bandgap_fit_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
+            
+            #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)))
+            #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)) + ", b = " + str(round(popt[2],4)))
+            #print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + ", b = " + str(round(popt2[2],4)) + " (smooth)")
+            
+            # Fixed b
+            print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt[1],4)))
+            print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + " (smooth)")
+    #except:
+  #      print("Whatever you wanted, it failed")
+#%% BANDGAP FIT INDIVIDUAL PIXELS
+"""
 def bandgap_test(x, amp, BG, b=1.5):
     result = np.zeros(x.shape)
     result[x<BG] = 1
@@ -489,8 +727,8 @@ for i in np.arange(0, 31, 30):
             if i != 0 and j != 0:
                 pixx=i
                 pixy=j
-                #[ts, IEELSs, max_IEELSs], [epss, ts_p, S_ss_p, IEELSs_p, max_IEELSs_p] = im.KK_pixel(pixy, pixx, signal = "pooled", iterations=5)
-                #data = im.ieels_p
+                [ts, IEELSs, max_IEELSs], [epss, ts_p, S_ss_p, IEELSs_p, max_IEELSs_p] = im.KK_pixel(pixy, pixx, signal = "pooled", iterations=5)
+                data = im.ieels_p
                 p_ieels_median = im.ieels_p[pixy,pixx,0,:]
                 p_ieels_low = im.ieels_p[pixy,pixx,1,:]
                 p_ieels_high = im.ieels_p[pixy,pixx,2,:]
@@ -507,6 +745,7 @@ for i in np.arange(0, 31, 30):
                 p_ieels_der2 = np.diff(p_ieels_der1_smooth)
                 p_ieels_der2_smooth = savgol_filter(p_ieels_der2, window_length = windowlength, polyorder = polyorder)
                 
+
                 for k in range(len(im.deltaE)):
                     if im.deltaE[k] > 0 and p_ieels_der2_smooth[k] > 0.1:
                         if p_ieels_der2_smooth[k - 1] < p_ieels_der2_smooth[k] and p_ieels_der2_smooth[k + 1] < p_ieels_der2_smooth[k]:
@@ -539,7 +778,7 @@ for i in np.arange(0, 31, 30):
                 if second_cross_2der > second_cross_1der:
                     range2 = second_cross_1der
                     print("Direct bandgap!")
-
+               
                 #for k in range(k_start_r2, len(im.deltaE)):
                 #    if p_ieels_der2_smooth[k-1] > 0 and p_ieels_der2_smooth[k+1] < 0:
                 #        print("Indirect bandgap!")
@@ -552,13 +791,13 @@ for i in np.arange(0, 31, 30):
                 #range2 = dE1 + 0.1
                 baseline = np.average(p_ieels_median[(im.deltaE > range1 - 0.1) & (im.deltaE < range1)])
                 """
-                popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
-                                       p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
-                                       p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
+                #popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                #                       p_ieels_median[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                #                       p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
                 
-                popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
-                                       p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
-                                       p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
+                #popt2, pcov2 = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
+                #                       p_ieels_smooth[(im.deltaE > range1) & (im.deltaE < range2)] - baseline, 
+                #                       p0 = [400,1.5, 1.5], bounds=([0, 0, 0], np.inf))
                 """
                 # Fixed b
                 popt, pcov = curve_fit(bandgap_test, im.deltaE[(im.deltaE > range1) & (im.deltaE < range2)], 
@@ -636,7 +875,7 @@ for i in np.arange(0, 31, 30):
                 print("pixel[" + str(pixx) + ","+ str(pixy) + "] done, dE1 = " + str(round(dE1,4)) + ", BG = " + str(round(popt2[1],4)) + " (smooth)")
         except:
             print("Whatever you wanted, it failed")
-
+"""
 #%%
 """
 path_to_results_2 = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_n10-inse_SI-003/image_KK.pkl"
