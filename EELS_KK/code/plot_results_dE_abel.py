@@ -68,12 +68,12 @@ path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/m20210331/eels/eels-SI/10n-dop
 #im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
 im = SpectralImage.load_data(path_to_image)
 
-path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_shift09_k5/'
+path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_shift09_k10_average/'
 #path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
 im.load_ZLP_models_smefit(path_to_models=path_to_models, plotting=True)
 
 im.pool(5)
-im.cluster(5)
+im.cluster(10)
 sig = "pooled"
 
 #%% General settings
@@ -128,8 +128,8 @@ ax2.set_ylim(0, 1e3)
 ax2.set_xlim(0, 2)
 ax1.legend()
 ax2.legend()
-fig1.savefig(os.path.join(save_loc, 'scaled_int.pdf'))
-fig2.savefig(os.path.join(save_loc, 'scaled_int.pdf'))
+#fig1.savefig(os.path.join(save_loc, 'scaled_int.pdf'))
+#fig2.savefig(os.path.join(save_loc, 'scaled_int.pdf'))
 #im.plot_heatmap(im.clustered, title = title_specimen + r'$\rm{-\;K=5\;cluster\;}$', 
 #                cbar_kws={'label': r'$\rm{[-]\;}$'}, discrete_colormap = True,
 #                xlab = r'$\rm{[nm]\;}$', ylab = r'$\rm{[nm]\;}$')
@@ -189,7 +189,7 @@ for i in np.arange(0, im.shape[1], 30):
 
             ax3.legend(loc=1, frameon=False)
 
-            plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ',' + str(pixy) + '].pdf')
+            #plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ',' + str(pixy) + '].pdf')
 
             fig4, ax4 = plt.subplots(dpi=200)
             ax4.set_title(title_specimen + r"$\rm{specimen}$" + "\n" + r"$\rm{ZLP\;matching\;result\;at\;pixel[%d,%d]}$" % (pixx, pixy))
@@ -220,7 +220,7 @@ for i in np.arange(0, im.shape[1], 30):
 
             ax4.legend(loc=1, frameon=False)
 
-            plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ',' + str(pixy) + ']_zoomed.pdf')
+            #plt.savefig(save_loc + save_title_specimen + '_ZLP_matching_pixel[' + str(pixx) + ',' + str(pixy) + ']_zoomed.pdf')
             print("pixel[" + str(pixx) + "," + str(pixy) + "] done, dE1 = " + str(round(dE1, 4)))
 
 # %%
