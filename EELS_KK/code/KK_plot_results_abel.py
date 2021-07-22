@@ -477,7 +477,7 @@ im.plot_heatmap(b_round, title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}
 
 def bandgap_test(x, amp, BG, b=1.5):
     result = np.zeros(x.shape)
-    result[x<BG] = 1
+    result[x<BG] = 0
     result[x>=BG] = amp * (x[x>=BG] - BG)**(b)
     return result
 
@@ -520,7 +520,7 @@ for i in np.arange(0, 31, 30):
             #E_bands_smooth = np.zeros(n_model)
             #bs_smooth = np.zeros(n_model)
             #bandgapfits_smooth = np.zeros((n_model,len(im.deltaE)))
-            bandgapfits_smooth = []
+            #bandgapfits_smooth = []
             i_succes = []
             for i in range(n_model): 
                 IEELSs_fit = IEELSs_p[i]
@@ -536,7 +536,7 @@ for i in np.arange(0, 31, 30):
                     #                       IEELSs_fit_smooth[(im.deltaE > range1) & (im.deltaE < range2)], 
                     #                       p0 = [400, 1.5, 1.5], bounds=([0, 0, 0], np.inf))
                     
-                    if popt[1] >= (range2+range1)/2:
+                    if popt[1] >= (range2+range1)/1.5:
                         print("long face")
                         continue
                     
@@ -580,7 +580,7 @@ for i in np.arange(0, 31, 30):
             ax2.set_title(title_specimen + r"$\rm{-\;Bandgap\;Fit\;pixel[%d,%d]}$"%(pixx, pixy))
             ax2.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
             ax2.set_ylabel(r"$\rm{Intensity\;[a.u.]\;}$")
-            ax2.set_ylim(-30,500)
+            ax2.set_ylim(-1,2)
             ax2.set_xlim(1.5,2.5)
             
             #ax2.fill_between(im.deltaE, np.nanpercentile(IEELSs_p_smooth, 16, axis = 0), np.nanpercentile(IEELSs_p_smooth, 84, axis = 0), alpha = 0.1, color = 'C0')
@@ -609,14 +609,14 @@ for i in np.arange(0, 31, 30):
             
             
             ax2.fill_between(im.deltaE, np.nanpercentile(bandgapfits, 16, axis = 0), np.nanpercentile(bandgapfits, 84, axis = 0), alpha = 0.2, color = 'C4')
-            ax2.fill_between(im.deltaE, 
-                             bandgap_test(im.deltaE, np.nanpercentile(As, 16, axis = 0),np.nanpercentile(E_bands, 16, axis = 0),np.nanpercentile(bs, 16, axis = 0)),
-                             bandgap_test(im.deltaE, np.nanpercentile(As, 84, axis = 0),np.nanpercentile(E_bands, 84, axis = 0),np.nanpercentile(bs, 84, axis = 0)),
-                             alpha = 0.2, color = 'C5')
+            #ax2.fill_between(im.deltaE, 
+            #                 bandgap_test(im.deltaE, np.nanpercentile(As, 16, axis = 0), np.nanpercentile(E_bands, 16, axis = 0), np.nanpercentile(bs, 16, axis = 0)),
+            #                 bandgap_test(im.deltaE, np.nanpercentile(As, 84, axis = 0), np.nanpercentile(E_bands, 84, axis = 0), np.nanpercentile(bs, 84, axis = 0)),
+            #                 alpha = 0.2, color = 'C5')
             #ax2.fill_between(im.deltaE, np.nanpercentile(bandgapfits_smooth, 16, axis = 0), np.nanpercentile(bandgapfits_smooth, 84, axis = 0), alpha = 0.2, color = 'C5')
-            ax2.plot(im.deltaE, np.nanpercentile(bandgapfits, 50, axis = 0),label = "median bandgapfits", alpha = 1.0, color = 'C4')
+            #ax2.plot(im.deltaE, np.nanpercentile(bandgapfits, 50, axis = 0),label = "median bandgapfits", alpha = 1.0, color = 'C4')
             #ax2.plot(im.deltaE, np.nanpercentile(bandgapfits_smooth, 50, axis = 0),label = "smooth", color = 'C5')
-            ax2.plot(im.deltaE, bandgap_test(im.deltaE, np.nanpercentile(As, 50, axis = 0),np.nanpercentile(E_bands, 50, axis = 0),np.nanpercentile(bs, 50, axis = 0)),label = "median parameters", alpha = 1.0, color = 'C5')
+            ax2.plot(im.deltaE, bandgap_test(im.deltaE, np.nanpercentile(As, 50, axis = 0), np.nanpercentile(E_bands, 50, axis = 0), np.nanpercentile(bs, 50, axis = 0)),label = "median parameters", alpha = 1.0, color = 'C5')
             #ax2.plot(im.deltaE, bandgap_test(im.deltaE, np.nanpercentile(As_smooth, 50, axis = 0),np.nanpercentile(E_bands_smooth, 50, axis = 0),np.nanpercentile(bs_smooth, 50, axis = 0)),label = "smooth", color = 'C5')
             ax2.legend()
             
