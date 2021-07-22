@@ -17,7 +17,7 @@ display_step = 5
 
 im = SpectralImage.load_data(dm4_path)
 im.output_path = '/data/theorie/jthoeve/EELSfitter/output/'
-path_to_models = os.path.join(im.output_path, 'models/InSE_de1_09_300K/')
+path_to_models = os.path.join(im.output_path, 'models/InSE_de1_09_300K_run_2/')
 
 #im.load_zlp_models(path_to_models=path_to_models)
 #im.plot_zlp_ntot()
