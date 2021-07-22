@@ -397,7 +397,7 @@ def plot_dE1(image, y_smooth_clusters, dy_dx_clusters, min_clusters, de1_prob, d
     plt.xlim(np.min(min_clusters) / 4, np.max(min_clusters) * 2)
     plt.ylim(-3e3, 2e3)
     # TODO: remove absolute hard coded path
-    fig.savefig('/data/theorie/jthoeve/EELSfitter/output/eels_der.pdf')
+    #fig.savefig('/data/theorie/jthoeve/EELSfitter/output/eels_der.pdf')
 
 
 

@@ -65,12 +65,12 @@ def select_ZLPs(image, ZLPs):
 
 
 path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/m20210331/eels/eels-SI/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4'
-#im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
+#path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4'
 im = SpectralImage.load_data(path_to_image)
 
+#path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_shift09_k10_average/'
 path_to_models = 'C:/Users/abelbrokkelkam/PhD/data/MLdata/models/dE_n10-inse_SI-003/E1_shift09_k10_average/'
-#path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_new/'
-im.load_ZLP_models_smefit(path_to_models=path_to_models, plotting=True)
+im.load_zlp_models(path_to_models=path_to_models, plot_chi2=True)
 
 im.pool(5)
 im.cluster(10)
@@ -79,15 +79,16 @@ sig = "pooled"
 #%% General settings
 
 # InSe
+
 title_specimen = r'$\rm{InSe\;}$'
 save_title_specimen = "InSe"
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/E1_shift09_k5/pdfplots/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_n10-inse_SI-003/E1_shift09_k10_average/pdfplots/"
 
 # WS2
 """
 title_specimen = r'$\rm{WS_2\;nanoflower\;}$'
 save_title_specimen = 'WS2_nanoflower_flake'
-save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/pdfplots/new/"
+save_loc = "C:/Users/abelbrokkelkam/PhD/data/MLdata/plots/dE_nf-ws2_SI-001/E1_p16_k5_average/pdfplots/"
 """
 
 #%%
@@ -125,7 +126,7 @@ for i, cluster_mean_scaled in enumerate(scaled_int):
     ax2.plot(im.deltaE, mean, label=label)
 
 ax2.set_ylim(0, 1e3)
-ax2.set_xlim(0, 2)
+ax2.set_xlim(0.3, 2.5)
 ax1.legend()
 ax2.legend()
 #fig1.savefig(os.path.join(save_loc, 'scaled_int.pdf'))
@@ -149,12 +150,12 @@ for i in np.arange(0, im.shape[1], 30):
 
             signal = im.get_pixel_signal(pixy, pixx, signal=sig)
 
-            ZLPs_gen = im.calc_gen_ZLPs(pixy, pixx, signal=sig, select_ZLPs=True)
+            ZLPs_gen = im.calc_zlps(pixy, pixx, signal=sig, select_ZLPs=False)
             low_gen = np.nanpercentile(ZLPs_gen, 16, axis=0)
             high_gen = np.nanpercentile(ZLPs_gen, 84, axis=0)
             mean_gen = np.nanpercentile(ZLPs_gen, 50, axis=0)
 
-            ZLPs_match = im.calc_ZLPs(pixy, pixx, signal=sig, select_ZLPs=True)
+            ZLPs_match = im.calc_zlps_matched(pixy, pixx, signal=sig, select_ZLPs=False)
             low_match = np.nanpercentile(ZLPs_match, 16, axis=0)
             high_match = np.nanpercentile(ZLPs_match, 84, axis=0)
             mean_match = np.nanpercentile(ZLPs_match, 50, axis=0)
