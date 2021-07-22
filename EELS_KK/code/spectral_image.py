@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import seaborn as sns
@@ -16,6 +16,7 @@ import bz2
 import pickle
 import _pickle as cPickle
 from matplotlib import rc
+import re
 
 
 from k_means_clustering import k_means
@@ -931,14 +932,31 @@ class SpectralImage:
 
         path_costs = "costs_test_"
         files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
-
-        bs_rep_num = len(files_costs)
-
+        path_nn_reps = "nn_rep_"
+        files_nn_reps = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_nn_reps)]
+        
+        cost_files_nr = []
+        for costs_name in files_costs:
+            pattern = "\d+" 
+            string = re.findall(pattern, costs_name)
+            cost_files_nr.append(int(string[0]))
+        cost_files_nr = np.array(cost_files_nr)
+        cost_files_nr.sort()
+        
+        nn_reps_files_nr = []
+        for nn_reps_name in files_nn_reps:
+            pattern = "\d+" 
+            string = re.findall(pattern, nn_reps_name)
+            nn_reps_files_nr.append(int(string[0]))
+        nn_reps_files_nr = np.array(nn_reps_files_nr)
+        nn_reps_files_nr.sort()
+        
         cost_tests = []
         cost_trains = []
-        for i in range(1, bs_rep_num + 1):
+        for i in cost_files_nr:
             path_tests = os.path.join(path_to_models, 'costs_test_{}.txt'.format(i))
             path_trains = os.path.join(path_to_models, 'costs_train_{}.txt'.format(i))
+            
             with open(path_tests) as f:
                 for line in f:
                     cost_tests.append(float(line.strip()))
@@ -946,7 +964,8 @@ class SpectralImage:
             with open(path_trains) as f:
                 for line in f:
                     cost_trains.append(float(line.strip()))
-
+        
+        
         cost_tests = np.array(cost_tests)
         cost_tests_mean = np.mean(cost_tests)
         cost_tests_std = np.percentile(cost_tests, 68)
@@ -957,9 +976,10 @@ class SpectralImage:
         cost_trains_mean = np.mean(cost_trains)
         cost_trains_std = np.percentile(cost_trains, 68)
         threshold_costs_trains = cost_trains_mean + 5 * cost_trains_std
-        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
+        
+        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains)
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
-
+        
         # plot the chi2 distributions
         if plot_chi2:
             fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
@@ -971,10 +991,9 @@ class SpectralImage:
             fig.savefig(os.path.join(self.output_path, 'chi2_dist.pdf'))
 
         for idx in nn_rep_idx.flatten():
-            path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
+            path = os.path.join(path_to_models, 'nn_rep_{}'.format(nn_reps_files_nr[idx]))
             model.load_state_dict(torch.load(path))
             self.ZLP_models.append(copy.deepcopy(model))
-
 
     # METHODS ON DIELECTRIC FUNCTIONS
     def calc_thickness(self, spect, n, N_ZLP=1):
