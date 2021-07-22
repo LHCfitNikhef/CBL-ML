@@ -1,5 +1,5 @@
 import matplotlib
-# matplotlib.use('Agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import seaborn as sns
@@ -15,6 +15,7 @@ import torch
 import bz2
 import pickle
 import _pickle as cPickle
+from matplotlib import rc
 
 
 from k_means_clustering import k_means
@@ -144,6 +145,7 @@ class SpectralImage:
         self.n = n
         self.pooled = pooled
         self.scale_var_log_sum_I = scale_var_log_sum_I
+        self.output_path = os.getcwd()
 
     def save_image(self, filename):
         """
@@ -163,9 +165,9 @@ class SpectralImage:
     def save_compressed_image(self, filename):
         """
         Function to save image, including all attributes, in compressed pickle (.pbz2) format. Image will \
-            be saved at indicated location and name in filename input. Advantage over save_image is that \
-            the saved file is some orders smaller, disadvantage is that saving and reloading the image \
-            takes significantly longer. 
+            be saved at location ``filename``. Advantage over :py:meth:`save_image() <save_image>` is that \
+            the saved file has a reduced file size, disadvantage is that saving and reloading the image \
+            takes significantly longer.
 
 
         Parameters
@@ -182,7 +184,7 @@ class SpectralImage:
     # Pickle a file and then compress it into a file with extension 
     def compressed_pickle(title, data):
         """
-        Saves data at location title as compressed pickle.
+        Saves ``data`` at location ``title`` as compressed pickle.
         """
         with bz2.BZ2File(title, 'w') as f:
             cPickle.dump(data, f)
@@ -190,7 +192,16 @@ class SpectralImage:
     @staticmethod
     def decompress_pickle(file):
         """
-        Opens, decompresses and returns the pickle file at location file.
+        Opens, decompresses and returns the pickle file at location ``file``.
+
+        Parameters
+        ----------
+        file: str
+            location where the pickle file is stored
+
+        Returns
+        -------
+        data: SpectralImage
         """
         data = bz2.BZ2File(file, 'rb')
         data = cPickle.load(data)
@@ -201,27 +212,29 @@ class SpectralImage:
     # %%PROPERTIES
     @property
     def l(self):
-        """returns length of spectra, i.e. num energy loss bins"""
+        """Returns length of :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object, i.e. num energy loss bins"""
         return self.data.shape[2]
 
     @property
     def image_shape(self):
-        """return 2D-shape of spectral image"""
+        """Returns 2D-shape of :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object"""
         return self.data.shape[:2]
 
     @property
     def shape(self):
-        """returns 3D-shape of spectral image"""
+        """Returns 3D-shape of :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object"""
         return self.data.shape
 
     @property
     def n_clusters(self):
-        """return number of clusters image is clustered into"""
+        """Returns the number of clusters in the :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object."""
         return len(self.clusters)
 
     @property
     def n_spectra(self):
         """
+        Returns the number of spectra present in :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object
+
         Returns
         -------
         nspectra: int
@@ -232,19 +245,19 @@ class SpectralImage:
     @classmethod
     def load_data(cls, path_to_dmfile, load_additional_data=False):
         """
-        Load the dm4 spectral image and return a SpectralImage class instance
+        Load the .dm4 spectral image and return a :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` instance.
 
         Parameters
         ----------
         path_to_dmfile: str
-            location of dm4 file
+            location of .dm4 file
         load_additional_data: bool, optional
             Default is `False`. If `True`
 
         Returns
         -------
         SpectralImage
-            SpectralImage instance of the dm4 file
+            :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` instance of the dm4 file
         """
         dmfile_tot = dm.fileDM(path_to_dmfile)
         additional_data = []
@@ -278,12 +291,12 @@ class SpectralImage:
     @classmethod
     def load_spectral_image(cls, path_to_pickle):
         """
-        Loads spectral image from a pickled file. 
+        Loads :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` instance from a pickled file.
 
         Parameters
         ----------
         path_to_pickle : str
-            path to the pickeled image file.
+            path to the pickled image file.
 
         Raises
         ------
@@ -295,7 +308,7 @@ class SpectralImage:
         Returns
         -------
         SpectralImage
-            Image (i.e. including all attributes) loaded from pickle file.
+            :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` object (i.e. including all attributes) loaded from pickle file.
 
         """
         if path_to_pickle[-4:] != '.pkl':
@@ -325,8 +338,8 @@ class SpectralImage:
 
         Returns
         -------
-        image : Specral_image
-            `SpectralImage` instance loaded from the compressed pickle file.
+        image : SpectralImage
+             :py:meth:`spectral_image.SpectralImage <spectral_image.SpectralImage>` instance loaded from the compressed pickle file.
         """
         if path_to_compressed_pickle[-5:] != '.pbz2':
             raise ValueError(
@@ -345,7 +358,9 @@ class SpectralImage:
             and gets the value of the background refractive index.
             
         If there are more specimen present in the image, it is wise to check by hand what cluster belongs \
-            to what specimen, and set the values by running image.n[cluster_i] = n_i.
+            to what specimen, and set the values by running::
+
+             image.n[cluster_i] = n_i
 
         Parameters
         ----------
@@ -366,8 +381,13 @@ class SpectralImage:
     def determine_deltaE(self):
         """
         Determines the energy losses of the spectral image, based on the bin width of the energy loss.
-        It shifts the `deltaE` attribute such that the zero point corresponds with the point of highest
+        It shifts the ``self.deltaE`` attribute such that the zero point corresponds with the point of highest
         intensity.
+
+        Returns
+        -------
+        deltaE: array_like
+            Array of :math:`\Delta E` values
         """
         data_avg = np.average(self.data, axis=(0, 1))
         ind_max = np.argmax(data_avg)
@@ -376,7 +396,7 @@ class SpectralImage:
 
     def calc_axes(self):
         """
-        Determines the  x_axis and y_axis of the spectral image.
+        Determines the  x_axis and y_axis of the spectral image. Stores them in ``self.x_axis`` and ``self.y_axis`` respectively.
         """
         self.y_axis = np.linspace(0, self.image_shape[0] - 1, self.image_shape[0])
         self.x_axis = np.linspace(0, self.image_shape[1] - 1, self.image_shape[1])
@@ -386,7 +406,7 @@ class SpectralImage:
 
     def get_pixel_signal(self, i, j, signal='EELS'):
         """
-        Retrieves the spectrum at pixel `(i, j)`.
+        Retrieves the spectrum at pixel (``i``, ``j``)`.
 
         Parameters
         ----------
@@ -427,20 +447,22 @@ class SpectralImage:
 
     def get_cluster_spectra(self, conf_interval=1, clusters=None, signal="EELS"):
         """
+        Returns a clustered spectral image.
+
         Parameters
         ----------
         conf_interval : float, optional
             The ratio of spectra returned. The spectra are selected based on the 
-            based_on value. The default is `1`
+            based_on value. The default is 1.
         clusters : list of ints, optional
             list with all the cluster labels.
         signal: str, optional
-            Description of signal, `EELS' by default.
+            Description of signal, ``"EELS"`` by default.
 
         Returns
         -------
         cluster_data : array_like
-            An array of size `n_clusters`, with each entry being a 2D array that contains all the spectra within the cluster.
+            An array with size equal to the number of clusters. Each entry is a 2D array that contains all the spectra within that cluster.
         """
         # TODO: check clustering before everything
         if clusters is None:
@@ -475,14 +497,14 @@ class SpectralImage:
 
     def cut(self, E1=None, E2=None, in_ex="in"):
         """
-        Cuts the energy spectra at `E1` and `E2` and keeps only the part in between.
+        Cuts the spectral image at ``E1`` and ``E2`` and keeps only the part in between.
 
         Parameters
         ----------
         E1 : float, optional
-            lower cut. The default is no cut.
+            lower cut. The default is ``None``, which means no cut is applied.
         E2 : float, optional
-            upper cut. The default is no cut.
+            upper cut. The default is ``None``, which means no cut is applied.
 
         """
         if (E1 is None) and (E2 is None):
@@ -510,20 +532,20 @@ class SpectralImage:
 
     def smooth(self, window_len=10, window='hanning', keep_original=False):
         """
-        smooth the data using a window with requested size.
+        Smooth the data using a window length ``window_len``.
         
         This method is based on the convolution of a scaled window with the signal.
         The signal is prepared by introducing reflected copies of the signal 
         (with the window size) in both ends so that transient parts are minimized
-        in the begining and end part of the output signal.
+        in the beginning and end part of the output signal.
         
         Parameters
         ----------
         window_len: int, optional
             The dimension of the smoothing window; should be an odd integer.
         window: str, optional
-            the type of window from 'flat', `hanning, `hamming`, `bartlett`, `blackman`.
-            flat window will produce a moving average smoothing.
+            the type of window from ``"flat"``, ``"hanning"``,  ``"bartlett"``, ``"blackman"``.
+            ``"flat"`` will produce a moving average smoothing.
         """
 
         # TODO: add comnparison
@@ -603,8 +625,29 @@ class SpectralImage:
     # %%METHODS ON ZLP
     # CALCULATING ZLPs FROM PRETRAINDED MODELS
 
-    def calc_ZLPs(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+    def calc_zlps_matched(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+        """
+        Returns the shape-(M, N) array of matched ZLP model predictions at pixel (``i``, ``j``) after training.
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
 
+        Parameters
+        ----------
+        i: int
+            horizontal pixel.
+        j: int
+            vertical pixel.
+        signal: str, bool
+            Description of signal type. Set to ``"EELS"`` by default.
+        select_ZLPs: bool, optional
+            Filter out ZLP models based on their arclength in the extrapolating region in between :math:`\Delta E_I` and :math:`\Delta E_{II}`.
+        kwargs: dict, optional
+            Additional keyword arguments.
+
+        Returns
+        -------
+        predictions: numpy.ndarray, shape=(M, N)
+            The matched ZLP predictions at pixel (``i``, ``j``).
+        """
         # Definition for the matching procedure
         def matching(signal, gen_i_ZLP, dE1):
             dE0 = dE1 - 0.5
@@ -627,7 +670,7 @@ class SpectralImage:
             totalfile = np.minimum(totalfile, signal)
             return totalfile
 
-        ZLPs_gen = self.calc_gen_ZLPs(i, j, signal, select_ZLPs, **kwargs)
+        ZLPs_gen = self.calc_zlps(i, j, signal, select_ZLPs, **kwargs)
 
         count = len(ZLPs_gen)
         ZLPs = np.zeros((count, self.l))  # np.zeros((count, len_data))
@@ -641,15 +684,40 @@ class SpectralImage:
             ZLPs[k, :] = matching(signal, predictions, dE1)  # matching(energies, np.exp(mean_k), data)
         return ZLPs
 
-    def calc_gen_ZLPs(self, i, j, signal="eels", select_ZLPs=True, **kwargs):
+    def calc_zlps(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+        """
+        Returns the shape-(M, N) array of ZLP model predictions at pixel (``i``, ``j``) after training, where
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
+
+
+        Parameters
+        ----------'
+        i: int
+            horizontal pixel.
+        j: int
+            vertical pixel.
+        signal: str, bool
+            Description of signal type. Set to ``"EELS"`` by default.
+        select_ZLPs: bool, optional
+            Filter out ZLP models based on their arclength in the extrapolating region in between :math:`\Delta E_I` and :math:`\Delta E_{II}`.
+        kwargs: dict, optional
+            Additional keyword arguments.
+
+
+        Returns
+        -------
+        predictions: numpy.ndarray, shape=(M, N)
+            The ZLP predictions at pixel (``i``, ``j``).
+
+        """
         # Definition for the matching procedure
         signal = self.get_pixel_signal(i, j, signal)
 
         if self.ZLP_models is None:
             try:
-                self.load_ZLP_models_smefit(**kwargs)
+                self.load_zlp_models(**kwargs)
             except:
-                self.load_ZLP_models_smefit()
+                self.load_zlp_models()
 
         count = len(self.ZLP_models)
 
@@ -749,18 +817,86 @@ class SpectralImage:
 
         return (np.std(predictions) / np.average(predictions)) > 1E-3  # very small --> straight line
 
-    def load_ZLP_models_smefit(self, path_to_models="models", name_in_path=False, plotting=False,
-                               idx=None):
-        # if n_rep is None and idx is None:
-        #     print("Please spectify either the number of replicas you wish to load (n_rep)"+\
-        #           " or the specific replica model you wist to load (idx) in load_ZLP_models_smefit.")
-        #     return
-        if self.name is not None and name_in_path:
-            path_to_models = self.name + "_" + path_to_models
+    def calc_zlp_ntot(self, ntot):
+        """
+        Returns the shape-(M, N) array of zlp model predictions at the scaled log integrated intensity ``ntot``.
+        M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
+
+        Parameters
+        ----------
+        ntot: float
+            Log integrated intensity (rescaled)
+        """
+        deltaE = np.linspace(0.1, 0.9, self.l)
+        predict_x_np = np.zeros((self.l, 2))
+        predict_x_np[:, 0] = deltaE
+        predict_x_np[:, 1] = ntot
+
+        predict_x = torch.from_numpy(predict_x_np)
+        count = len(self.ZLP_models)
+        ZLPs = np.zeros((count, self.l))
+
+        for k in range(count):
+            model = self.ZLP_models[k]
+            with torch.no_grad():
+                predictions = np.exp(model(predict_x.float()).flatten())
+            ZLPs[k, :] = predictions
+
+        return ZLPs
+
+    def plot_zlp_ntot(self):
+        """
+        Plot the trained ZLP including uncertainties for the cluster means.
+        """
+
+        rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica'], 'size': 10})
+        rc('text', usetex=True)
+
+        fig, ax = plt.subplots(dpi=200)
+        ax.set_title(r"$\rm{Predicted\;ZLPs\;for\;cluster\;means}$")
+        ax.set_xlabel(r"$\rm{Energy\;loss\;[eV]}$")
+        ax.set_ylabel(r"$\log I_{\rm{EELS}}\;\rm{[a.u.]}$")
+
+        cluster_means = self.clusters
+        scaled_int = [self.scale_var_log_sum_I[0] * i + self.scale_var_log_sum_I[1] for i in cluster_means]
+
+        for i, cluster_mean_scaled in enumerate(scaled_int):
+            zlps = self.calc_zlp_ntot(cluster_mean_scaled)
+
+            low = np.nanpercentile(zlps, 16, axis=0)
+            high = np.nanpercentile(zlps, 84, axis=0)
+            median = np.nanpercentile(zlps, 50, axis=0)
+
+            ax.fill_between(self.deltaE, low, high, alpha=0.3)
+            label = r"$\rm{Vacuum}$" if i == 0 else r"$\rm{Cluster\;%d}$" % i
+            ax.plot(self.deltaE, median, label=label)
+
+        ax.set_ylim(1, 1e3)
+        ax.set_xlim(0.4, 6)
+        ax.legend()
+        plt.yscale('log')
+        fig.savefig(os.path.join(self.output_path, 'scaled_int.pdf'))
+
+
+    def load_zlp_models(self, path_to_models, plot_chi2=False, idx=None):
+        """
+        Loads the trained ZLP models and stores them in ``self.ZLP_models``. Models that have a :math:`\chi^2 > \chi^2_{\mathrm{mean}} + 5\sigma` are
+        discarded, where :math:`\sigma` denotes the 68% CI.
+
+        Parameters
+        ----------
+        path_to_models: str
+            Location where the model predictions have been stored after training.
+        plot_chi2: bool, optional
+            When set to `True`, plot and save the :math:`\chi^2` distribution.
+        idx: int, optional
+            When specified, only the zlp labelled by ``idx`` is loaded, instead of all model predictions.
+
+        """
 
         if not os.path.exists(path_to_models):
             print(
-                "No path " + os.getcwd() + path_to_models + " found. Please ensure spelling and that there are models trained.")
+                "No path " + path_to_models + " found. Please ensure spelling and that there are models trained.")
             return
 
         self.ZLP_models = []
@@ -768,13 +904,13 @@ class SpectralImage:
         path_to_models += (path_to_models[-1] != '/') * '/'
         path_dE1 = "dE1.txt"
         model = train.MLP(num_inputs=2, num_outputs=1)
-        self.dE1 = np.loadtxt(path_to_models + path_dE1)
+        self.dE1 = np.loadtxt(os.path.join(path_to_models, path_dE1))
 
-        path_scale_var = 'scale_var.txt'  # HIER
-        self.scale_var_log_sum_I = np.loadtxt(path_to_models + path_scale_var)
+        path_scale_var = 'scale_var.txt'
+        self.scale_var_log_sum_I = np.loadtxt(os.path.join(path_to_models, path_scale_var))
         try:
             path_scale_var_deltaE = 'scale_var_deltaE.txt'
-            self.scale_var_deltaE = np.loadtxt(path_to_models + path_scale_var_deltaE)
+            self.scale_var_deltaE = np.loadtxt(os.path.join(path_to_models, path_scale_var_deltaE))
             print("found delta E vars")
         except:
             pass
@@ -789,26 +925,12 @@ class SpectralImage:
 
         if idx is not None:
             with torch.no_grad():
-                model.load_state_dict(torch.load(path_to_models + "/nn_rep_" + str(idx)))
+                model.load_state_dict(torch.load(os.path.join(path_to_models, "nn_rep_{}".format(idx))))
             self.ZLP_models.append(copy.deepcopy(model))
             return
 
         path_costs = "costs_test_"
         files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
-        #idx_costs = np.array([int(s.replace(path_costs, "").replace(".txt", "")) for s in files_costs])
-        # path_model_rep = "nn_rep_"
-        # files_model_rep = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_model_rep)]
-        # idx_models = np.array([int(s.replace(path_model_rep, "").replace(".txt", "")) for s in files_model_rep])
-        #
-        # overlap_idx = np.intersect1d(idx_costs, idx_models)
-
-        #n_rep = len(overlap_idx)
-        #costs = np.zeros(n_rep)
-        #files_models = np.zeros(n_rep, dtype='U12')  # reads max 999,999 models, you really do not need more.
-
-        # for i in range(n_rep):
-        #     file = files_costs[i]
-        #     costs[i] =  np.loadtxt(path_to_models + file)
 
         bs_rep_num = len(files_costs)
 
@@ -839,14 +961,14 @@ class SpectralImage:
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
 
         # plot the chi2 distributions
-        if plotting:
+        if plot_chi2:
             fig, ax = plt.subplots(figsize=(1.1 * 10, 1.1 * 6))
             plt.hist(cost_trains, label=r'$\rm{Training}$', bins=40, range=(0, 5* cost_tests_std), alpha=0.4)
             plt.hist(cost_tests, label=r'$\rm{Validation}$', bins=40, range= (0, 5* cost_tests_std), alpha=0.4)
             plt.title(r'$\chi^2\;\rm{distribution}$')
             plt.xlabel(r'$\chi^2$')
             plt.legend(frameon=False, loc='upper right')
-            #fig.savefig('/data/theorie/jthoeve/EELSfitter/output/chi2_p5.pdf')
+            fig.savefig(os.path.join(self.output_path, 'chi2_dist.pdf'))
 
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
@@ -857,7 +979,7 @@ class SpectralImage:
     # METHODS ON DIELECTRIC FUNCTIONS
     def calc_thickness(self, spect, n, N_ZLP=1):
         """
-        Calculates thickness from sample data, using Egerton [1]
+        Calculates thickness from sample data, using Egerton [1]_
 
         Parameters
         ----------
@@ -866,7 +988,7 @@ class SpectralImage:
         n : float
             refraction index
         N_ZLP: float or int
-            Default = 1, for already normalized I_EELS spectra.
+            Set to 1 by default, for already normalized EELS spectra.
 
         Returns
         -------
@@ -876,7 +998,8 @@ class SpectralImage:
         Notes
         -----
         Surface scatterings are not corrected for. If you wish to correct
-        for surface scatterings, please extract the thickness `t` from `kramer_kronig_hs()`
+        for surface scatterings, please extract the thickness ``t`` from :py:meth:`kramers_kronig_hs() <kramers_kronig_hs>`.
+
 
         .. [1] Ray Egerton, "Electron Energy-Loss Spectroscopy in the Electron
            Microscope", Springer-Verlag, 2011.
@@ -1101,33 +1224,30 @@ class SpectralImage:
 
     def KK_pixel(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
         """
-        
-        Option to include pooling, not for thickness, as this is an integral and therefor \
-        more noise robust by default.
+        Perform a Kramer-Krönig analysis on pixel (``i``, ``j``).
+
 
         Parameters
         ----------
-        i : TYPE
-            DESCRIPTION.
-        j : TYPE
-            DESCRIPTION.
-        pooled : TYPE, optional
-            DESCRIPTION. The default is False.
+        i : int
+            x-coordinate of the pixel
+        j : int
+            y-coordinate of the pixel.
 
         Returns
         -------
-        dielectric_functions : TYPE
-            DESCRIPTION.
-        ts : TYPE
-            DESCRIPTION.
-        S_ss : TYPE
-            DESCRIPTION.
-        IEELSs : TYPE
-            DESCRIPTION.
+        dielectric_functions : array_like
+            Collection dielectric-functions replicas at pixel (``i``, ``j``).
+        ts : float
+            Thickness.
+        S_ss : array_like
+            Surface scatterings.
+        IEELSs : array_like
+            Deconvonluted EELS spectrum.
 
         """
         # data_ij = self.get_pixel_signal(i,j)#[self.deltaE>0]
-        ZLPs = self.calc_ZLPs(i, j, select_ZLPs=select_ZLPs)  # [:,self.deltaE>0]
+        ZLPs = self.calc_zlps_matched(i, j, select_ZLPs=select_ZLPs)  # [:,self.deltaE>0]
 
         dielectric_functions = (1 + 1j) * np.zeros(ZLPs[:, self.deltaE > 0].shape)
         S_ss = np.zeros(ZLPs[:, self.deltaE > 0].shape)
@@ -1152,7 +1272,7 @@ class SpectralImage:
         ts_OG = ts
         max_OG = max_ieels
 
-        ZLPs_signal = self.calc_ZLPs(i, j, signal=signal, select_ZLPs=select_ZLPs)
+        ZLPs_signal = self.calc_zlps_matched(i, j, signal=signal, select_ZLPs=select_ZLPs)
         dielectric_functions = (1 + 1j) * np.zeros(ZLPs_signal[:, self.deltaE > 0].shape)
         S_ss = np.zeros(ZLPs_signal[:, self.deltaE > 0].shape)
         ts = np.zeros(ZLPs_signal.shape[0])
@@ -1182,9 +1302,9 @@ class SpectralImage:
 
         pass
 
-    def im_dielectric_function_bs(self, track_process=False, plot=False, save_index=None, save_path="KK_analysis"):
+    def im_dielectric_function(self, track_process=False, plot=False, save_index=None, save_path="KK_analysis"):
         """
-        Computes the dielectric function by performing a Kramer-Kronig analysis at each pixel.
+        Computes the dielectric function by performing a Kramer-Krönig analysis at each pixel.
 
         Parameters
         ----------
@@ -1193,7 +1313,9 @@ class SpectralImage:
         plot: bool, optional
             default is `False`, if `True`, plots all calculated dielectric functions
         save_index: int, optional
+            optional labelling to include in ``save_path``.
         save_path: str, optional
+            location where the dielectric function, SSD and thickness are stored.
         """
 
         self.dielectric_function_im_avg = (1 + 1j) * np.zeros(self.data[:, :, self.deltaE > 0].shape)
@@ -1237,8 +1359,8 @@ class SpectralImage:
 
     def crossings_im(self):
         """
-        Determines the number of crossings of the real part of dielectric function at each pixel `(i, j)` together with the associated
-        `dE` value.
+        Determines the number of crossings of the real part of dielectric function at all pixels together with the associated
+        ``dE`` values.
         """
         self.crossings_E = np.zeros((self.image_shape[0], self.image_shape[1], 1))
         self.crossings_n = np.zeros(self.image_shape)
@@ -1281,18 +1403,18 @@ class SpectralImage:
     def cluster(self, n_clusters=5, based_on="log", **kwargs):
         """
         Clusters the spectral image into clusters according to the (log) integrated intensity at each
-        pixel. Cluster means are stored in the attribute `clusters` and the index to which each cluster belongs is
-        stored in the attribute `clustered`.
+        pixel. Cluster means are stored in the attribute ``self.clusters`` and the index to which each cluster belongs is
+        stored in the attribute ``self.clustered``.
 
         Parameters
         ----------
         n_clusters : int, optional
             Number of clusters, 5 by default
         based_on : str, optional
-            One can cluster either on the sum of the intensities (pass `sum`), the log of the sum (pass `log`) or the thickness (pass `thickness`).
-            The default is `log`.
+            One can cluster either on the sum of the intensities (pass ````sum````), the log of the sum (pass ````log````) or the thickness (pass ````thickness````).
+            The default is ````log````.
         **kwargs : keyword arguments
-            additional keyword arguments to pass to the k_means function.
+            additional keyword arguments to pass to :py:meth:`k_means_clustering.k_means() <k_means_clustering.k_means()>`.
         """
 
         if based_on == "sum":
@@ -1318,7 +1440,7 @@ class SpectralImage:
 
     def cluster_on_cluster_values(self, cluster_values):
         """
-        If the image has been clustered before and the the cluster means are known,
+        If the image has been clustered before and the the cluster means are already known,
         one can use this function to reconstruct the original clustering of the image.
 
         Parameters
@@ -1419,12 +1541,8 @@ class SpectralImage:
             Set whether you only want the ticks to display as integers instead of floats. The default is False.
         save_as : str, optional
             Set the location and name for the heatmap to be saved to. The default is False.
-        **kwargs : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
+        **kwargs : dictionary
+            Additional keyword arguments.
 
         """
         
@@ -1547,13 +1665,13 @@ class SpectralImage:
             
         Returns
         -------
-        xticks : array
+        xticks : array_like
             Array of the xticks positions.
-        yticks : array
+        yticks : array_like
             Array of the yticks positions.
-        xticks_labels : array
+        xticks_labels : array_like
             Array with strings of the xtick labels.
-        yticks_labels : array
+        yticks_labels : array_like
             Array with strings of the ytick labels.
         """
         
@@ -1620,7 +1738,7 @@ class SpectralImage:
     @staticmethod
     def get_prefix(unit, SIunit=None, numeric=True):
         """
-        Method to go from the unit to their associated values.
+        Method to convert units to their associated SI values.
 
         Parameters
         ----------
@@ -1631,7 +1749,7 @@ class SpectralImage:
             The SI unit of the unit
         numeric: bool, optional
             Default is `True`. If `True` the prefix is translated to the numeric value
-            (e.g. 1E3 for k)
+            (e.g. :math:`10^3` for `k`)
 
 
         Returns
