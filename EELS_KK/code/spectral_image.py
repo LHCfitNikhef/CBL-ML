@@ -625,7 +625,7 @@ class SpectralImage:
     # %%METHODS ON ZLP
     # CALCULATING ZLPs FROM PRETRAINDED MODELS
 
-    def calc_zlps_matched(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+    def calc_zlps_matched(self, i, j, signal='EELS', select_ZLPs=False, **kwargs):
         """
         Returns the shape-(M, N) array of matched ZLP model predictions at pixel (``i``, ``j``) after training.
         M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
@@ -684,7 +684,7 @@ class SpectralImage:
             ZLPs[k, :] = matching(signal, predictions, dE1)  # matching(energies, np.exp(mean_k), data)
         return ZLPs
 
-    def calc_zlps(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+    def calc_zlps(self, i, j, signal='EELS', select_ZLPs=False, **kwargs):
         """
         Returns the shape-(M, N) array of ZLP model predictions at pixel (``i``, ``j``) after training, where
         M and N correspond to the number of model predictions and :math:`\Delta E` s respectively.
@@ -851,11 +851,11 @@ class SpectralImage:
 
         rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica'], 'size': 10})
         rc('text', usetex=True)
-
+        print("plotting zlp for clusters...")
         fig, ax = plt.subplots(dpi=200)
         ax.set_title(r"$\rm{Predicted\;ZLPs\;for\;cluster\;means}$")
         ax.set_xlabel(r"$\rm{Energy\;loss\;[eV]}$")
-        ax.set_ylabel(r"$\log I_{\rm{EELS}}\;\rm{[a.u.]}$")
+        ax.set_ylabel(r"$I_{\rm{EELS}}\;\rm{[a.u.]}$")
 
         cluster_means = self.clusters
         scaled_int = [self.scale_var_log_sum_I[0] * i + self.scale_var_log_sum_I[1] for i in cluster_means]
@@ -871,8 +871,8 @@ class SpectralImage:
             label = r"$\rm{Vacuum}$" if i == 0 else r"$\rm{Cluster\;%d}$" % i
             ax.plot(self.deltaE, median, label=label)
 
-        ax.set_ylim(1, 1e3)
-        ax.set_xlim(0.4, 6)
+        ax.set_ylim(1, 1e6)
+        ax.set_xlim(0, 6)
         ax.legend()
         plt.yscale('log')
         fig.savefig(os.path.join(self.output_path, 'scaled_int.pdf'))
@@ -929,35 +929,52 @@ class SpectralImage:
             self.ZLP_models.append(copy.deepcopy(model))
             return
 
-        path_costs = "costs_test_"
-        files_costs = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs)]
-
-        bs_rep_num = len(files_costs)
+        path_costs_test = "costs_test_"
+        path_costs_train = "costs_train_"
+        files_costs_test = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs_test)]
+        files_costs_train = [filename for filename in os.listdir(path_to_models) if filename.startswith(path_costs_train)]
 
         cost_tests = []
         cost_trains = []
-        for i in range(1, bs_rep_num + 1):
-            path_tests = os.path.join(path_to_models, 'costs_test_{}.txt'.format(i))
-            path_trains = os.path.join(path_to_models, 'costs_train_{}.txt'.format(i))
+        nn_rep_idx = []
+
+        for path_cost_test, path_cost_train in zip(files_costs_test, files_costs_train):
+            start = path_cost_test.find("test_") + len("test_")
+            end = path_cost_test.find(".txt")
+            bs_rep_num = int(path_cost_test[start:end])
+
+            path_tests = os.path.join(path_to_models, path_cost_test)
+            path_trains = os.path.join(path_to_models, path_cost_train)
+
+            n_rep = 0
             with open(path_tests) as f:
                 for line in f:
                     cost_tests.append(float(line.strip()))
+                    n_rep += 1
 
             with open(path_trains) as f:
                 for line in f:
                     cost_trains.append(float(line.strip()))
 
+            save_idx_low = n_rep * bs_rep_num - n_rep + 1
+            save_idx_high = n_rep * bs_rep_num
+
+            nn_rep_idx.extend(range(save_idx_low, save_idx_high + 1))
+
+        nn_rep_idx = np.array(nn_rep_idx)
         cost_tests = np.array(cost_tests)
+        cost_trains = np.array(cost_trains)
+
         cost_tests_mean = np.mean(cost_tests)
         cost_tests_std = np.percentile(cost_tests, 68)
         threshold_costs_tests = cost_tests_mean + 5 * cost_tests_std
         cost_tests = cost_tests[cost_tests < threshold_costs_tests]
 
-        cost_trains = np.array(cost_trains)
         cost_trains_mean = np.mean(cost_trains)
         cost_trains_std = np.percentile(cost_trains, 68)
         threshold_costs_trains = cost_trains_mean + 5 * cost_trains_std
-        nn_rep_idx = np.argwhere(cost_trains < threshold_costs_trains) + 1
+
+        nn_rep_idx = nn_rep_idx[cost_trains < threshold_costs_trains]
         cost_trains = cost_trains[cost_trains < threshold_costs_trains]
 
         # plot the chi2 distributions
@@ -968,7 +985,7 @@ class SpectralImage:
             plt.title(r'$\chi^2\;\rm{distribution}$')
             plt.xlabel(r'$\chi^2$')
             plt.legend(frameon=False, loc='upper right')
-            fig.savefig(os.path.join(self.output_path, 'chi2_dist.pdf'))
+            fig.savefig(os.path.join(self.output_path, 'chi2_dist_selected.pdf'))
 
         for idx in nn_rep_idx.flatten():
             path = os.path.join(path_to_models, 'nn_rep_{}'.format(idx))
@@ -1222,7 +1239,7 @@ class SpectralImage:
 
         return eps, te, Srfint
 
-    def KK_pixel(self, i, j, signal='EELS', select_ZLPs=True, **kwargs):
+    def KK_pixel(self, i, j, signal='EELS', select_ZLPs=False, **kwargs):
         """
         Perform a Kramer-Krönig analysis on pixel (``i``, ``j``).
 

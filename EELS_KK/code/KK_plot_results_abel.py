@@ -23,11 +23,13 @@ from spectral_image import SpectralImage
 #path_to_results = "C:/Users/abelbrokkelkam/PhD/data/MLdata/results/dE_nf-ws2_SI-001/image_KK_7.pkl"
 
 #path_to_image = 'C:/Users/abelbrokkelkam/PhD/data/dmfiles/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4'
-path_to_image = '/data/theorie/abelbk/InSe/10n-dop-inse-B1_stem-eels-SI-processed_003.dm4'
+path_to_image = '/data/theorie/abelbk/WS2/area03-eels-SI-aligned.dm4'
+#im = Spectral_image.load_data('C:/Users/abelbrokkelkam/PhD/data/dmfiles/area03-eels-SI-aligned.dm4')
 im = SpectralImage.load_data(path_to_image)
+im.output_path = '/data/theorie/jthoeve/EELSfitter/output'
 
-path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_p16_k5_median'
-im.load_ZLP_models_smefit(path_to_models=path_to_models)
+path_to_models = '/data/theorie/abelbk/bash_train_pyfiles/models/dE_nf-ws2_SI-001/E1_p16_k5_average'
+im.load_zlp_models(path_to_models=path_to_models)
 im.pool(5)
 im.cluster(5)
 im.calc_axes()
@@ -81,403 +83,403 @@ def round_to_nearest(value, base=5):
     return base * round(float(value) / base)
 
 #%% CLUSTER
-im.cluster(5)
-im.plot_heatmap(im.clustered, title = title_specimen + r'$\rm{-\;K=5\;cluster\;}$', 
-                cbar_kws={'label': r'$\rm{[-]\;}$','shrink':cb_scale}, discrete_colormap = True,
-                xlab = r'$\rm{[nm]\;}$', ylab = r'$\rm{[nm]\;}$', cmap = cmap,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Clustered')
-
-#%% THICKNESS
-im.plot_heatmap(im.t[:,:,0], title = title_specimen + r"$\rm{-\;Thickness\;}$", 
-                cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin=0,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Thickness')
-
-im.plot_heatmap(im.t[:,:,0], title = title_specimen + r"$\rm{-\;Thickness\;}$", 
-                cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap, 
-                mask = mask, vmin = 0, vmax = 60, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Thickness_capped')
-
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(2*im.t[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Thickness\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin = 0,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Thickness_Error')
-
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(2*im.t[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Thickness\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin = 0, vmax = 0.03,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Thickness_Error_capped')
-"""
-im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(im.t[:,:,0]), title = title_specimen + " - r"$\rm{-\;Relative\;Broadness\;CI\;Thickness\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin = 0, vmax = 0.02,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Thickness_CI')
-"""
-#%% THICKNESS DISCRETIZED
-"""
-mask_t = (mask | ((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0] >= 1))
-size_t_bins = np.nanpercentile((im.t[:,:,2]-im.t[:,:,1])[~mask_t],100)/0.3
-t_round  = np.round(im.t[:,:,0]/size_t_bins) * size_t_bins
-im.plot_heatmap(t_round, title = title_specimen + r"$\rm{-\;Thickness\;Discretized\;}$", 
-                cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':0.4}, color_bin_size = size_t_bins, discrete_colormap = True,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_t, vmax = 300, vmin = 50,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
-                save_as = save_loc + save_title_specimen + '_thickness_Discretized')
-"""
-
-#%% MAX IEELS
-
-im.plot_heatmap(im.max_ieels[:,:,0], title = title_specimen + r"$\rm{-\;Maximum\;IEELS\;}$", 
-                cbar_kws={'label': 'Energy loss [eV]','shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Max_IEELS')
-
-im.plot_heatmap((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/(2*im.max_ieels[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Maximum\;IEELS\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax = 0.001, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Max_IEELS_Error')
-"""
-im.plot_heatmap((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/(im.max_ieels[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Maximum\;IEELS\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax = 0.001, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Max_IEELS_CI')
-"""
-#%% MAX IEELS DISCRETIZED
-
-mask_max_ieels = (mask | ((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/im.max_ieels[:,:,0] >= 1))
-size_ieels_bins = round_to_nearest(np.nanpercentile((im.max_ieels[:,:,0])[~mask_max_ieels],50)/2,0.5)
-ieels_round  = np.round(im.max_ieels[:,:,0]/size_ieels_bins) * size_ieels_bins
-im.plot_heatmap(ieels_round, title = title_specimen + r"$\rm{-\;Maximum\;IEELS\;Discretized\;}$", 
-                cbar_kws={'label': r"$\rm{Energy\;Loss\;[eV]\;}$", 'shrink':cb_scale}, color_bin_size = size_ieels_bins, discrete_colormap = True,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin = 21, vmax = 26,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Max_IEELS_Discretized')
-
-
-#%% THICKNESS CROSSSECTION
-
-fig1, ax1 = plt.subplots(dpi=200)
-ax1.set_title(title_specimen + r"$\rm{-\;Thickness\;y\;cross\;section}$")
-ax1.set_xlabel(r"$\rm{x-axis\;[nm]\;}$")
-ax1.set_ylabel(r"$\rm{Thickness\;[nm]\;}$")
-for i in np.arange(5,len(im.y_axis),5):
-    row = i
-    colors = cm.coolwarm(np.linspace(0,1,len(im.t[0,:,0])))
-    ax1.set_prop_cycle(color=colors)
-    for j in range(len(im.t[row,:,0]) - 1):
-        ax1.plot(im.x_axis[j:j + 2], im.t[row,:,0][j:j + 2])
-        ax1.fill_between(im.x_axis[j:j + 2], im.t[row,:,2][j:j + 2], im.t[row,:,1][j:j + 2], alpha = 0.3)
-    
-    
-    #ax1.plot(im.x_axis, im.t[row,:,0], label = "Row " + str(row))
-    #ax1.fill_between(im.x_axis, im.t[row,:,2], im.t[row,:,1], alpha = 0.3)
-ax1.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x*1000))))
-#ax1.legend(loc=2)
-
-
-fig2, ax2 = plt.subplots(dpi=200)
-ax2.set_title(title_specimen + r"$\rm{-\;Thickness\;x\;cross\;section}$")
-ax2.set_xlabel(r"$\rm{y-axis\;[nm]\;}$")
-ax2.set_ylabel(r"$\rm{Thickness\;[nm]\;}$")
-for i in np.arange(5,len(im.x_axis),5):
-    column = i
-    colors = cm.coolwarm(np.linspace(0,1,len(im.t[0,:,0])))
-    ax2.plot(im.y_axis, im.t[:,column,0], color = colors[i])
-    #ax2.plot(im.y_axis, im.t[:,column,0], label = "Column " + str(column), color = colors[i])
-    ax2.fill_between(im.y_axis, im.t[:,column,2], im.t[:,column,1], alpha = 0.3, color = colors[i])
-ax2.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x*1000))))
-#ax2.legend(loc=2)
-
-
-#%% NUM CROSSINGS
-
-im.n_cross = np.round(im.n_cross)
-
-mask_cross = (mask | (im.n_cross[:,:,0] == 0))
-
-im.plot_heatmap(im.n_cross[:,:,0], title = title_specimen + r"$\rm{-\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Nr.\;Crossings\;}$",'shrink':cb_scale}, discrete_colormap = True,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Crossings')
-
-im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Nr.\;Crossings\;}$",'shrink':cb_scale}, discrete_colormap = True, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Crossings_CI')
-
-#mask_cross = (mask | (im.n_cross[:,:,2] == 0))
-#im.plot_heatmap(im.n_cross[:,:,0], title = "Indium Selenide Sample \nCrossings $\u03B5_{1}$ \nAlternative mask", cbar_kws={'label': 'nr. crossings','shrink':0.4}, cmap = cmap, mask = mask_cross, discrete_colormap = True, n_xticks=8, n_yticks=6)
-#im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "Indium Selenide Sample \nRelative broadness CI Crossings $\u03B5_{1}$ \nAlternative mask", cbar_kws={'label': 'nr. crossings','shrink':0.4}, cmap = cmap, mask = mask_cross, discrete_colormap = True, n_xticks=8, n_yticks=6)
-
-
-#%% ENERGY AT FIRST CROSSINGS
-
-first_crossings = np.zeros(np.append(im.image_shape, 3))
-first_crossings_CI = np.zeros(im.image_shape)
-for i in range(im.image_shape[0]):
-    for j in range(im.image_shape[1]):
-        if type(im.E_cross[i,j]) == np.ndarray:
-            if len(im.E_cross[i,j]) > 0:
-                first_crossings[i,j,:] = im.E_cross[i,j][0,:]
-                first_crossings_CI[i,j] = (im.E_cross[i,j][0,2]-im.E_cross[i,j][0,1])/(2*im.E_cross[i,j][0,0])
-        
-mask_cross = (mask | (im.n_cross[:,:,0] == 0))        
-im.plot_heatmap(first_crossings[:,:,0], title = title_specimen + r"$\rm{-\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Crossings')
-
-im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Error\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross, vmax = 0.2,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_First_Crossings_CI')
-"""
-im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Broadness\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross, vmax = 0.01,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_First_Crossings_CI')
-"""
-#mask_cross = (mask | (im.n_cross[:,:,2] == 0))        
-#im.plot_heatmap(first_crossings[:,:,0], title = "Indium Selenide Sample \nenergy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-#im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-#im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1), capped at 0.005 \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, vmax = 0.005, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-
-#%% CROSSINGS AT MAX IEELS
-
-mask_max_cross = (mask | (im.n_cross[:,:,0] == 0) | (first_crossings[:,:,0] < 20) | (first_crossings[:,:,0] > 25) )        
-im.plot_heatmap(first_crossings[:,:,0], title = title_specimen + r"$\rm{-\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_max_cross, vmin = 21, vmax = 25, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings')
-
-im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Error\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_max_cross, vmax = 0.2,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_CI')
-"""
-im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Broadness\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross, vmax = 0.01,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_CI')
-"""
-#mask_cross = (mask | (im.n_cross[:,:,2] == 0))        
-#im.plot_heatmap(first_crossings[:,:,0], title = "Indium Selenide Sample \nenergy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-#im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-#im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1), capped at 0.005 \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, vmax = 0.005, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
-
-
-#%% ENERGY CROSSINGS ??
-"""
-first_crossings = np.zeros(np.append(im.image_shape, 3))
-first_crossings_CI = np.zeros(im.image_shape)
-for i in range(im.image_shape[0]):
-    for j in range(im.image_shape[1]):
-        if im.n_cross[i,j,0] > 1:
-            if len(im.n_cross[i,j]) > 0:
-                first_crossings[i,j,:] = im.n_cross[i,j][0,:]
-                first_crossings_CI[i,j] = im.n_cross[i,j][0,2]-im.n_cross[i,j][0,1]
-        
-im.plot_heatmap(first_crossings[:,:,0], title = "energy first crossing real part dielectric function\n(for chance at least 1 crossing > 0.5)", cbar_kws={'label':  'energy [eV]'}, cmap = cmap)
-im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.5)", cbar_kws={'label':  'energy [eV]'}, cmap = cmap)
-"""
-
-#%% ENERGY CROSSING DISCRETIZED
-
-mask_E_cross = (mask | (im.n_cross[:,:,0] == 0))
-size_E_cross_bins = round_to_nearest(np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_E_cross],50)/0.1,1.0)
-E_cross_round  = np.round(first_crossings[:,:,0]/size_E_cross_bins) * size_E_cross_bins
-im.plot_heatmap(E_cross_round, title = title_specimen + r"$\rm{-\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig_cbar = 2,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_cross,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Crossings_Discretized')
-
-mask_E_cross = (mask | (im.n_cross[:,:,0] == 0))
-size_E_cross_bins = round_to_nearest(np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_E_cross],50)/0.5,0.5)
-E_cross_round  = np.round(first_crossings[:,:,0]/size_E_cross_bins) * size_E_cross_bins
-im.plot_heatmap(E_cross_round, title = title_specimen + r"$\rm{-\;Energy\;Max\;Crossings\;}$" + "$\epsilon_{1}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig_cbar = 2,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask_max_cross,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_Discretized')
-
-
-#mask_E_cross = (mask | (im.n_cross[:,:,2] == 0))
-#size_E_cross_bins = np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_cross],50)/0.05
-#E_cross_round  = np.round(first_crossings[:,:,0]/size_E_bins) * size_E_bins
-#im.plot_heatmap(E_cross_round, title = "Indium Selenide Sample \nenergy first crossing $\u03B5_{1}$ discretized \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_E_cross, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig=3, n_xticks=8, n_yticks=6)
-
-#%% DIELECTRIC FUNCTION INDIVIDUAL PIXELS
-
-for i in np.arange(0, len(im.x_axis), 30):
-    for j in np.arange(0, len(im.y_axis), 30):
-        if i != 0 and j != 0:
-            pixx=i
-            pixy=j
-            
-            epsilon1 = im.eps[pixy,pixx,0].real
-            epsilon2 = im.eps[pixy,pixx,0].imag
-            
-            fig1, ax1 = plt.subplots(dpi=200)
-            ax1.plot(im.deltaE[(len(im.deltaE)-len(epsilon1)):], epsilon1, label = "$\epsilon_{1}$")
-            ax1.plot(im.deltaE[(len(im.deltaE)-len(epsilon2)):], epsilon2, label = "$\epsilon_{2}$")
-            ax1.axhline(0, color='black')
-            ax1.set_title(title_specimen + r"$\rm{-\;Dielectric\;Function\;pixel[%d,%d]}$"%(pixx, pixy))
-            ax1.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
-            ax1.set_ylabel(r"$\rm{Dielectric\;Function\;[F/m]\;}$")
-            ax1.set_ylim(-0.2,5)
-            ax1.legend()
-
-            plt.savefig(save_loc + save_title_specimen + '_Dielectric_function_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
-        
-#%% BANDGAP
-im.plot_heatmap(im.E_band[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Energy\;}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap')
-
-im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(2*im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Energy\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_Error')
-
-im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(2*im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Energy\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax=0.2,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_Error_capped')
-"""
-im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Energy\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap, 
-                mask = mask,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_CI')
-
-im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Energy\;}$" + "\n" + r"$\rm{Capped\;at\;0.1\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax = 0.1, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_CI_capped')
-"""
-#%% BANDGAP EXPONENT
-
-im.plot_heatmap(im.b[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$", 
-                cbar_kws={'label': r"$\rm{[-]\;}$", 'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponent')
-
-im.plot_heatmap(im.b[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$" + "\n" + r"$\rm{b\;[1,2]\;}$", 
-                cbar_kws={'label': r"$\rm{[-]\;}$", 'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin=1, vmax=2,  
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponent_capped')
-
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(2*im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Exponent\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_Error')
-
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(2*im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Exponent\;}$", 
-                cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax = 1.0,
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_Error_capped')
-
-"""
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Exponent\;}$", 
-                cbar_kws={'label': 'Ratio [-]','shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_CI')
-
-im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Exponent\;}$" + "\n" + r"$\rm{Capped\;at\;0.2\;}$", 
-                cbar_kws={'label': 'Ratio [-] ','shrink':cb_scale}, 
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmax = 0.2,  
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponent_CI_capped')
-"""
-#%% BANDGAP DISCRETIZED
-
-
-mask_E_band = (mask | ((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0] >= 1))
-size_E_band_bins = round_to_nearest(np.nanpercentile((im.E_band[:,:,2]-im.E_band[:,:,1])[~mask_E_band],50)/6,0.05)
-E_band_round  = np.round(im.E_band[:,:,0]/size_E_band_bins) * size_E_band_bins
-im.plot_heatmap(E_band_round, title = title_specimen + r"$\rm{-\;Bandgap\;Energy\;}$", 
-                cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_band_bins, discrete_colormap = True, sig_cbar = 2,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, vmin = 0.6, vmax = 2.6,  
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_Discretized')
-
-#%% BANDGAP EXPONENT
-
-mask_b = (mask | (im.b[:,:,0] == 0))
-size_b_bins = round_to_nearest(np.nanpercentile((im.b[:,:,2]-im.b[:,:,1])[~mask_b],50)/8,0.2)
-b_round  = np.round(im.b[:,:,0]/size_b_bins) * size_b_bins
-im.plot_heatmap(b_round, title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$", 
-                cbar_kws={'label':'[-]','shrink':cb_scale}, color_bin_size = size_b_bins, discrete_colormap = True, sig_cbar = 2,
-                xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
-                mask = mask, 
-                sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int, 
-                save_as = save_loc + save_title_specimen + '_Bandgap_exponent_Discretized')
-
-#%% BANDGAP FIT INDIVIDUAL PIXELS
+#im.cluster(5)
+# im.plot_heatmap(im.clustered, title = title_specimen + r'$\rm{-\;K=5\;cluster\;}$',
+#                 cbar_kws={'label': r'$\rm{[-]\;}$','shrink':cb_scale}, discrete_colormap = True,
+#                 xlab = r'$\rm{[nm]\;}$', ylab = r'$\rm{[nm]\;}$', cmap = cmap,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Clustered')
+#
+# #%% THICKNESS
+# im.plot_heatmap(im.t[:,:,0], title = title_specimen + r"$\rm{-\;Thickness\;}$",
+#                 cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin=0,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Thickness')
+#
+# im.plot_heatmap(im.t[:,:,0], title = title_specimen + r"$\rm{-\;Thickness\;}$",
+#                 cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 0, vmax = 60,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Thickness_capped')
+#
+# im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(2*im.t[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Thickness\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 0,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Thickness_Error')
+#
+# im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(2*im.t[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Thickness\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 0, vmax = 0.03,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Thickness_Error_capped')
+# """
+# im.plot_heatmap((im.t[:,:,2]-im.t[:,:,1])/(im.t[:,:,0]), title = title_specimen + " - r"$\rm{-\;Relative\;Broadness\;CI\;Thickness\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 0, vmax = 0.02,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Thickness_CI')
+# """
+# #%% THICKNESS DISCRETIZED
+# """
+# mask_t = (mask | ((im.t[:,:,2]-im.t[:,:,1])/im.t[:,:,0] >= 1))
+# size_t_bins = np.nanpercentile((im.t[:,:,2]-im.t[:,:,1])[~mask_t],100)/0.3
+# t_round  = np.round(im.t[:,:,0]/size_t_bins) * size_t_bins
+# im.plot_heatmap(t_round, title = title_specimen + r"$\rm{-\;Thickness\;Discretized\;}$",
+#                 cbar_kws={'label': r"$\rm{[nm]\;}$",'shrink':0.4}, color_bin_size = size_t_bins, discrete_colormap = True,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_t, vmax = 300, vmin = 50,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_thickness_Discretized')
+# """
+#
+# #%% MAX IEELS
+#
+# im.plot_heatmap(im.max_ieels[:,:,0], title = title_specimen + r"$\rm{-\;Maximum\;IEELS\;}$",
+#                 cbar_kws={'label': 'Energy loss [eV]','shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Max_IEELS')
+#
+# im.plot_heatmap((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/(2*im.max_ieels[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Maximum\;IEELS\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax = 0.001,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Max_IEELS_Error')
+# """
+# im.plot_heatmap((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/(im.max_ieels[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Maximum\;IEELS\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax = 0.001,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Max_IEELS_CI')
+# """
+# #%% MAX IEELS DISCRETIZED
+#
+# mask_max_ieels = (mask | ((im.max_ieels[:,:,2]-im.max_ieels[:,:,1])/im.max_ieels[:,:,0] >= 1))
+# size_ieels_bins = round_to_nearest(np.nanpercentile((im.max_ieels[:,:,0])[~mask_max_ieels],50)/2,0.5)
+# ieels_round  = np.round(im.max_ieels[:,:,0]/size_ieels_bins) * size_ieels_bins
+# im.plot_heatmap(ieels_round, title = title_specimen + r"$\rm{-\;Maximum\;IEELS\;Discretized\;}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;Loss\;[eV]\;}$", 'shrink':cb_scale}, color_bin_size = size_ieels_bins, discrete_colormap = True,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 21, vmax = 26,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Max_IEELS_Discretized')
+#
+#
+# #%% THICKNESS CROSSSECTION
+#
+# fig1, ax1 = plt.subplots(dpi=200)
+# ax1.set_title(title_specimen + r"$\rm{-\;Thickness\;y\;cross\;section}$")
+# ax1.set_xlabel(r"$\rm{x-axis\;[nm]\;}$")
+# ax1.set_ylabel(r"$\rm{Thickness\;[nm]\;}$")
+# for i in np.arange(5,len(im.y_axis),5):
+#     row = i
+#     colors = cm.coolwarm(np.linspace(0,1,len(im.t[0,:,0])))
+#     ax1.set_prop_cycle(color=colors)
+#     for j in range(len(im.t[row,:,0]) - 1):
+#         ax1.plot(im.x_axis[j:j + 2], im.t[row,:,0][j:j + 2])
+#         ax1.fill_between(im.x_axis[j:j + 2], im.t[row,:,2][j:j + 2], im.t[row,:,1][j:j + 2], alpha = 0.3)
+#
+#
+#     #ax1.plot(im.x_axis, im.t[row,:,0], label = "Row " + str(row))
+#     #ax1.fill_between(im.x_axis, im.t[row,:,2], im.t[row,:,1], alpha = 0.3)
+# ax1.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x*1000))))
+# #ax1.legend(loc=2)
+#
+#
+# fig2, ax2 = plt.subplots(dpi=200)
+# ax2.set_title(title_specimen + r"$\rm{-\;Thickness\;x\;cross\;section}$")
+# ax2.set_xlabel(r"$\rm{y-axis\;[nm]\;}$")
+# ax2.set_ylabel(r"$\rm{Thickness\;[nm]\;}$")
+# for i in np.arange(5,len(im.x_axis),5):
+#     column = i
+#     colors = cm.coolwarm(np.linspace(0,1,len(im.t[0,:,0])))
+#     ax2.plot(im.y_axis, im.t[:,column,0], color = colors[i])
+#     #ax2.plot(im.y_axis, im.t[:,column,0], label = "Column " + str(column), color = colors[i])
+#     ax2.fill_between(im.y_axis, im.t[:,column,2], im.t[:,column,1], alpha = 0.3, color = colors[i])
+# ax2.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x*1000))))
+# #ax2.legend(loc=2)
+#
+#
+# #%% NUM CROSSINGS
+#
+# im.n_cross = np.round(im.n_cross)
+#
+# mask_cross = (mask | (im.n_cross[:,:,0] == 0))
+#
+# im.plot_heatmap(im.n_cross[:,:,0], title = title_specimen + r"$\rm{-\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Nr.\;Crossings\;}$",'shrink':cb_scale}, discrete_colormap = True,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Crossings')
+#
+# im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Nr.\;Crossings\;}$",'shrink':cb_scale}, discrete_colormap = True,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Crossings_CI')
+#
+# #mask_cross = (mask | (im.n_cross[:,:,2] == 0))
+# #im.plot_heatmap(im.n_cross[:,:,0], title = "Indium Selenide Sample \nCrossings $\u03B5_{1}$ \nAlternative mask", cbar_kws={'label': 'nr. crossings','shrink':0.4}, cmap = cmap, mask = mask_cross, discrete_colormap = True, n_xticks=8, n_yticks=6)
+# #im.plot_heatmap((im.n_cross[:,:,2]-im.n_cross[:,:,1]), title = "Indium Selenide Sample \nRelative broadness CI Crossings $\u03B5_{1}$ \nAlternative mask", cbar_kws={'label': 'nr. crossings','shrink':0.4}, cmap = cmap, mask = mask_cross, discrete_colormap = True, n_xticks=8, n_yticks=6)
+#
+#
+# #%% ENERGY AT FIRST CROSSINGS
+#
+# first_crossings = np.zeros(np.append(im.image_shape, 3))
+# first_crossings_CI = np.zeros(im.image_shape)
+# for i in range(im.image_shape[0]):
+#     for j in range(im.image_shape[1]):
+#         if type(im.E_cross[i,j]) == np.ndarray:
+#             if len(im.E_cross[i,j]) > 0:
+#                 first_crossings[i,j,:] = im.E_cross[i,j][0,:]
+#                 first_crossings_CI[i,j] = (im.E_cross[i,j][0,2]-im.E_cross[i,j][0,1])/(2*im.E_cross[i,j][0,0])
+#
+# mask_cross = (mask | (im.n_cross[:,:,0] == 0))
+# im.plot_heatmap(first_crossings[:,:,0], title = title_specimen + r"$\rm{-\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Crossings')
+#
+# im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Error\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross, vmax = 0.2,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_First_Crossings_CI')
+# """
+# im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Broadness\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross, vmax = 0.01,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_First_Crossings_CI')
+# """
+# #mask_cross = (mask | (im.n_cross[:,:,2] == 0))
+# #im.plot_heatmap(first_crossings[:,:,0], title = "Indium Selenide Sample \nenergy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+# #im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+# #im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1), capped at 0.005 \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, vmax = 0.005, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+#
+# #%% CROSSINGS AT MAX IEELS
+#
+# mask_max_cross = (mask | (im.n_cross[:,:,0] == 0) | (first_crossings[:,:,0] < 20) | (first_crossings[:,:,0] > 25) )
+# im.plot_heatmap(first_crossings[:,:,0], title = title_specimen + r"$\rm{-\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_max_cross, vmin = 21, vmax = 25,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings')
+#
+# im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Error\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_max_cross, vmax = 0.2,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_CI')
+# """
+# im.plot_heatmap(first_crossings_CI, title = title_specimen + r"$\rm{-\;Relative\;Broadness\;Energy\;Crossings\;}$" + "$\epsilon_{1}$" + r"$\rm{IEELS\;Max\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross, vmax = 0.01,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_CI')
+# """
+# #mask_cross = (mask | (im.n_cross[:,:,2] == 0))
+# #im.plot_heatmap(first_crossings[:,:,0], title = "Indium Selenide Sample \nenergy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+# #im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+# #im.plot_heatmap(first_crossings_CI, title = "Indium Selenide Sample \nrelative broadness CI energy first crossings $\u03B5_{1}$ \n(for chance at least 1 crossing > 0.1), capped at 0.005 \nAlternative mask", cbar_kws={'label': 'ratio [-]','shrink':0.4}, vmax = 0.005, cmap = cmap, mask = mask_cross, n_xticks=8, n_yticks=6)
+#
+#
+# #%% ENERGY CROSSINGS ??
+# """
+# first_crossings = np.zeros(np.append(im.image_shape, 3))
+# first_crossings_CI = np.zeros(im.image_shape)
+# for i in range(im.image_shape[0]):
+#     for j in range(im.image_shape[1]):
+#         if im.n_cross[i,j,0] > 1:
+#             if len(im.n_cross[i,j]) > 0:
+#                 first_crossings[i,j,:] = im.n_cross[i,j][0,:]
+#                 first_crossings_CI[i,j] = im.n_cross[i,j][0,2]-im.n_cross[i,j][0,1]
+#
+# im.plot_heatmap(first_crossings[:,:,0], title = "energy first crossing real part dielectric function\n(for chance at least 1 crossing > 0.5)", cbar_kws={'label':  'energy [eV]'}, cmap = cmap)
+# im.plot_heatmap(first_crossings_CI, title = "broadness CI energy first crossing real part dielectric function \n(for chance at least 1 crossing > 0.5)", cbar_kws={'label':  'energy [eV]'}, cmap = cmap)
+# """
+#
+# #%% ENERGY CROSSING DISCRETIZED
+#
+# mask_E_cross = (mask | (im.n_cross[:,:,0] == 0))
+# size_E_cross_bins = round_to_nearest(np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_E_cross],50)/0.1,1.0)
+# E_cross_round  = np.round(first_crossings[:,:,0]/size_E_cross_bins) * size_E_cross_bins
+# im.plot_heatmap(E_cross_round, title = title_specimen + r"$\rm{-\;Energy\;First\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig_cbar = 2,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_cross,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Crossings_Discretized')
+#
+# mask_E_cross = (mask | (im.n_cross[:,:,0] == 0))
+# size_E_cross_bins = round_to_nearest(np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_E_cross],50)/0.5,0.5)
+# E_cross_round  = np.round(first_crossings[:,:,0]/size_E_cross_bins) * size_E_cross_bins
+# im.plot_heatmap(E_cross_round, title = title_specimen + r"$\rm{-\;Energy\;Max\;Crossings\;}$" + "$\epsilon_{1}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig_cbar = 2,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask_max_cross,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Energy_Max_Crossings_Discretized')
+#
+#
+# #mask_E_cross = (mask | (im.n_cross[:,:,2] == 0))
+# #size_E_cross_bins = np.nanpercentile((first_crossings[:,:,2]-first_crossings[:,:,1])[~mask_cross],50)/0.05
+# #E_cross_round  = np.round(first_crossings[:,:,0]/size_E_bins) * size_E_bins
+# #im.plot_heatmap(E_cross_round, title = "Indium Selenide Sample \nenergy first crossing $\u03B5_{1}$ discretized \n(for chance at least 1 crossing > 0.1) \nAlternative mask", cbar_kws={'label': 'energy [eV]','shrink':0.4}, cmap = cmap, mask = mask_E_cross, color_bin_size = size_E_cross_bins, discrete_colormap = True, sig=3, n_xticks=8, n_yticks=6)
+#
+# #%% DIELECTRIC FUNCTION INDIVIDUAL PIXELS
+#
+# for i in np.arange(0, len(im.x_axis), 30):
+#     for j in np.arange(0, len(im.y_axis), 30):
+#         if i != 0 and j != 0:
+#             pixx=i
+#             pixy=j
+#
+#             epsilon1 = im.eps[pixy,pixx,0].real
+#             epsilon2 = im.eps[pixy,pixx,0].imag
+#
+#             fig1, ax1 = plt.subplots(dpi=200)
+#             ax1.plot(im.deltaE[(len(im.deltaE)-len(epsilon1)):], epsilon1, label = "$\epsilon_{1}$")
+#             ax1.plot(im.deltaE[(len(im.deltaE)-len(epsilon2)):], epsilon2, label = "$\epsilon_{2}$")
+#             ax1.axhline(0, color='black')
+#             ax1.set_title(title_specimen + r"$\rm{-\;Dielectric\;Function\;pixel[%d,%d]}$"%(pixx, pixy))
+#             ax1.set_xlabel(r"$\rm{Energy\;Loss\;[eV]\;}$")
+#             ax1.set_ylabel(r"$\rm{Dielectric\;Function\;[F/m]\;}$")
+#             ax1.set_ylim(-0.2,5)
+#             ax1.legend()
+#
+#             plt.savefig(save_loc + save_title_specimen + '_Dielectric_function_pixel[' + str(pixx) + ','+ str(pixy) + '].pdf')
+#
+# #%% BANDGAP
+# im.plot_heatmap(im.E_band[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Energy\;}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap')
+#
+# im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(2*im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Energy\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_Error')
+#
+# im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(2*im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Energy\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax=0.2,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_Error_capped')
+# """
+# im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Energy\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_CI')
+#
+# im.plot_heatmap((im.E_band[:,:,2]-im.E_band[:,:,1])/(im.E_band[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Energy\;}$" + "\n" + r"$\rm{Capped\;at\;0.1\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax = 0.1,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_CI_capped')
+# """
+# #%% BANDGAP EXPONENT
+#
+# im.plot_heatmap(im.b[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$",
+#                 cbar_kws={'label': r"$\rm{[-]\;}$", 'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponent')
+#
+# im.plot_heatmap(im.b[:,:,0], title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$" + "\n" + r"$\rm{b\;[1,2]\;}$",
+#                 cbar_kws={'label': r"$\rm{[-]\;}$", 'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin=1, vmax=2,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponent_capped')
+#
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(2*im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Exponent\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_Error')
+#
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(2*im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Error\;Bandgap\;Exponent\;}$",
+#                 cbar_kws={'label': r"$\rm{Ratio\;[-]\;}$",'shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax = 1.0,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_Error_capped')
+#
+# """
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Exponent\;}$",
+#                 cbar_kws={'label': 'Ratio [-]','shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponenent_CI')
+#
+# im.plot_heatmap((im.b[:,:,2]-im.b[:,:,1])/(im.b[:,:,0]), title = title_specimen + r"$\rm{-\;Relative\;Broadness\;CI\;Bandgap\;Exponent\;}$" + "\n" + r"$\rm{Capped\;at\;0.2\;}$",
+#                 cbar_kws={'label': 'Ratio [-] ','shrink':cb_scale},
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmax = 0.2,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponent_CI_capped')
+# """
+# #%% BANDGAP DISCRETIZED
+#
+#
+# mask_E_band = (mask | ((im.E_band[:,:,2]-im.E_band[:,:,1])/im.E_band[:,:,0] >= 1))
+# size_E_band_bins = round_to_nearest(np.nanpercentile((im.E_band[:,:,2]-im.E_band[:,:,1])[~mask_E_band],50)/6,0.05)
+# E_band_round  = np.round(im.E_band[:,:,0]/size_E_band_bins) * size_E_band_bins
+# im.plot_heatmap(E_band_round, title = title_specimen + r"$\rm{-\;Bandgap\;Energy\;}$",
+#                 cbar_kws={'label': r"$\rm{Energy\;[eV]\;}$",'shrink':cb_scale}, color_bin_size = size_E_band_bins, discrete_colormap = True, sig_cbar = 2,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask, vmin = 0.6, vmax = 2.6,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_Discretized')
+#
+# #%% BANDGAP EXPONENT
+#
+# mask_b = (mask | (im.b[:,:,0] == 0))
+# size_b_bins = round_to_nearest(np.nanpercentile((im.b[:,:,2]-im.b[:,:,1])[~mask_b],50)/8,0.2)
+# b_round  = np.round(im.b[:,:,0]/size_b_bins) * size_b_bins
+# im.plot_heatmap(b_round, title = title_specimen + r"$\rm{-\;Bandgap\;Exponent\;}$",
+#                 cbar_kws={'label':'[-]','shrink':cb_scale}, color_bin_size = size_b_bins, discrete_colormap = True, sig_cbar = 2,
+#                 xlab = r"$\rm{[nm]\;}$", ylab = r"$\rm{[nm]\;}$", cmap = cmap,
+#                 mask = mask,
+#                 sig_ticks = sig_ticks, scale_ticks = scale_ticks, npix_xtick = npix_xtick, npix_ytick = npix_ytick, tick_int = tick_int,
+#                 save_as = save_loc + save_title_specimen + '_Bandgap_exponent_Discretized')
+#
+# #%% BANDGAP FIT INDIVIDUAL PIXELS
 
 def bandgap_test(x, amp, BG, b=1.5):
     result = np.zeros(x.shape)
-    result[x<BG] = 1
+    result[x<BG] = 0
     result[x>=BG] = amp * (x[x>=BG] - BG)**(b)
     return result
 
